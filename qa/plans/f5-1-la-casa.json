@@ -1,0 +1,146 @@
+{
+  "descripcion": "F5 · LA CASA en modo abierto: clic, hover-intent (200 ms), ráfaga rápida sin cortes ni texto mezclado, teclado y mobile.",
+  "steps": [
+    { "viewport": { "width": 1440, "height": 900 } },
+    { "nav": "http://localhost:5173/#la-casa" },
+    { "wait": 2600 },
+    {
+      "eval": "(() => { const root = document.querySelector('[data-mode]'); const panel = document.querySelector('[data-open-panel=\"la-casa\"]'); window.__casaState = () => { const activeTab = panel.querySelector('[role=\"tab\"][aria-selected=\"true\"]'); const allSelected = panel.querySelectorAll('[role=\"tab\"][aria-selected=\"true\"]').length; const tWrap = panel.querySelector('[data-casa-titulo] h3'); const pWrap = panel.querySelector('[data-casa-texto] p'); const tOut = tWrap.children[0]; const tIn = tWrap.children[1]; const pOut = pWrap.children[0]; const pIn = pWrap.children[1]; return { stage: [root.dataset.mode, root.dataset.active, root.dataset.texts, location.hash], item: activeTab?.dataset.casaItem, selectedCount: allSelected, titulo: tIn.textContent, texto: pIn.textContent, outHidden: getComputedStyle(tOut).display === 'none' && getComputedStyle(pOut).display === 'none', inUnclipped: !tIn.style.clipPath && !pIn.style.clipPath }; }; const img = panel.querySelector('[data-casa-marco] img'); return [__casaState(), img?.getAttribute('src')?.includes('r2-retrato') ?? false]; })()",
+      "label": "1 desktop /#la-casa: abre en Fuego con foto r2 en marco inclinado",
+      "expect": [
+        {
+          "stage": ["open", "1", "1", "#la-casa"],
+          "item": "Fuego",
+          "selectedCount": 1,
+          "titulo": "El fuego manda",
+          "texto": "Leña de quebracho y paciencia. El asado de tira pasa doce horas entre brasas antes de llegar a la mesa.",
+          "outHidden": true,
+          "inUnclipped": true
+        },
+        true
+      ]
+    },
+    { "shot": "../shots/f5-la-casa-fuego.png" },
+    {
+      "eval": "(() => { document.querySelector('[data-casa-item=\"Bodega\"]').click(); return 1; })()"
+    },
+    { "wait": 800 },
+    {
+      "eval": "__casaState()",
+      "label": "2 clic en Bodega: cambia título y texto con WipeSwap limpio",
+      "expect": {
+        "stage": ["open", "1", "1", "#la-casa"],
+        "item": "Bodega",
+        "selectedCount": 1,
+        "titulo": "Bodega de autor",
+        "texto": "140 etiquetas de bodegas chicas, de la Quebrada a la Patagonia. Pedí que te recomendemos una.",
+        "outHidden": true,
+        "inUnclipped": true
+      }
+    },
+    { "shot": "../shots/f5-la-casa-bodega.png" },
+    {
+      "eval": "(() => { const el = document.querySelector('[data-casa-item=\"Masa\"]'); el.dispatchEvent(new PointerEvent('pointerover', { bubbles: true, relatedTarget: document.body, pointerType: 'mouse' })); setTimeout(() => el.dispatchEvent(new PointerEvent('pointerout', { bubbles: true, relatedTarget: document.body, pointerType: 'mouse' })), 70); return 1; })()"
+    },
+    { "wait": 260 },
+    {
+      "eval": "__casaState().item",
+      "label": "3 hover < 200 ms se cancela y no cambia el ítem activo",
+      "expect": "Bodega"
+    },
+    {
+      "eval": "(() => { const el = document.querySelector('[data-casa-item=\"Masa\"]'); el.dispatchEvent(new PointerEvent('pointerover', { bubbles: true, relatedTarget: document.body, pointerType: 'mouse' })); return 1; })()"
+    },
+    { "wait": 950 },
+    {
+      "eval": "__casaState()",
+      "label": "4 hover-intent ≥ 200 ms activa Masa",
+      "expect": {
+        "stage": ["open", "1", "1", "#la-casa"],
+        "item": "Masa",
+        "selectedCount": 1,
+        "titulo": "Amasado del día",
+        "texto": "Las pastas se estiran cada mañana con harina de molino de piedra y huevos de granja.",
+        "outHidden": true,
+        "inUnclipped": true
+      }
+    },
+    {
+      "eval": "(() => { const items = ['Huerta', 'Bodega', 'Mesa', 'Familia']; items.forEach((name, idx) => { setTimeout(() => { document.querySelector(`[data-casa-item=\"${name}\"]`).click(); }, idx * 110); }); return 1; })()"
+    },
+    { "wait": 1200 },
+    {
+      "eval": "__casaState()",
+      "label": "5 ráfaga rápida (4 cambios en 330 ms): interrumpe y termina en Familia sin cortes ni texto mezclado",
+      "expect": {
+        "stage": ["open", "1", "1", "#la-casa"],
+        "item": "Familia",
+        "selectedCount": 1,
+        "titulo": "Tres generaciones",
+        "texto": "Empezó la abuela Teresa con un horno de barro en el patio. Hoy la cocina la llevan sus nietos.",
+        "outHidden": true,
+        "inUnclipped": true
+      }
+    },
+    {
+      "eval": "(() => { document.querySelector('[data-casa-item=\"Familia\"]').focus(); return document.activeElement?.getAttribute('data-casa-item'); })()",
+      "label": "6 foco en Familia",
+      "expect": "Familia"
+    },
+    { "key": "ArrowDown" },
+    { "wait": 120 },
+    {
+      "eval": "[document.activeElement?.getAttribute('data-casa-item'), __casaState().item, __casaState().stage]",
+      "label": "7 ArrowDown en tablist cicla de Familia a Fuego sin cambiar de sección del escenario",
+      "expect": ["Fuego", "Fuego", ["open", "1", "1", "#la-casa"]]
+    },
+    { "key": "ArrowDown" },
+    { "wait": 120 },
+    {
+      "eval": "[document.activeElement?.getAttribute('data-casa-item'), __casaState().item]",
+      "label": "8 ArrowDown pasa a Masa",
+      "expect": ["Masa", "Masa"]
+    },
+    { "key": "ArrowUp" },
+    { "wait": 800 },
+    {
+      "eval": "[document.activeElement?.getAttribute('data-casa-item'), __casaState()]",
+      "label": "9 ArrowUp vuelve a Fuego y completa el WipeSwap",
+      "expect": [
+        "Fuego",
+        {
+          "stage": ["open", "1", "1", "#la-casa"],
+          "item": "Fuego",
+          "selectedCount": 1,
+          "titulo": "El fuego manda",
+          "texto": "Leña de quebracho y paciencia. El asado de tira pasa doce horas entre brasas antes de llegar a la mesa.",
+          "outHidden": true,
+          "inUnclipped": true
+        }
+      ]
+    },
+    { "viewport": { "width": 390, "height": 844, "mobile": true, "scale": 2 } },
+    { "nav": "about:blank" },
+    { "nav": "http://localhost:5173/#la-casa" },
+    { "wait": 2600 },
+    {
+      "eval": "(() => { const s = document.querySelector('[data-open-panel=\"la-casa\"] [data-stage-scroller]'); return [document.documentElement.scrollWidth, s.scrollHeight <= s.clientHeight, document.querySelector('[data-open-panel=\"la-casa\"] [role=\"tab\"][aria-selected=\"true\"]')?.dataset.casaItem]; })()",
+      "label": "10 mobile 390×844: sin desborde horizontal y entra en pantalla",
+      "expect": [390, true, "Fuego"]
+    },
+    {
+      "eval": "(() => { document.querySelector('[data-casa-item=\"Huerta\"]').click(); return 1; })()"
+    },
+    { "wait": 800 },
+    {
+      "eval": "(() => { const panel = document.querySelector('[data-open-panel=\"la-casa\"]'); const tIn = panel.querySelector('[data-casa-titulo] h3').children[1]; const pIn = panel.querySelector('[data-casa-texto] p').children[1]; return [panel.querySelector('[role=\"tab\"][aria-selected=\"true\"]')?.dataset.casaItem, tIn.textContent, pIn.textContent]; })()",
+      "label": "11 mobile tap en Huerta: cambia título y texto",
+      "expect": [
+        "Huerta",
+        "Lo que da la estación",
+        "Compramos a tres productores del cinturón verde. Cuando cambia la tierra, cambia la carta."
+      ]
+    },
+    { "shot": "../shots/f5-m-la-casa.png" }
+  ]
+}

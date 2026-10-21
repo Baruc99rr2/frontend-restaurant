@@ -168,3 +168,12 @@ Probado en Chrome (headless por DevTools, con emulación táctil a 390 px) con `
 - Velo (`velo`) sobre el media en modo abierto, con fundido al abrir y cerrar.
 - `OpenPlaceholder` de F3 se reemplaza por `OpenView`; los 5 paneles que faltan usan un placeholder simple (título + frases + "Este panel se está armando.") hasta F5–F8.
 - QA versionada: planes en `qa/plans/*.json` con `expect` (comparación por JSON; el plan falla si difiere) y `pnpm qa:regresion` (`scripts/qa-all.mjs`) los corre todos. Las capturas van a `qa/shots/` (ignorada). Motivo: la regresión de F3 tiene que poder repetirse en cada fase, también por otro agente. Los planes no tienen nada privado.
+
+## F5 — LA CASA (2026-10-21)
+
+- Fondo radial `hoja → monte → noche` colocado dentro del inset del marco abierto (`inset-[clamp(12px,1.6vw,28px)]`) con margen interno `-inset-6` y envuelto en `[data-open-text]` → respeta el borde negro del marco abierto, entra con fundido al activarse `LA CASA` y se desvanece junto con los textos al salir sin tapar la transición de escena entre paneles.
+- Lista de los 6 ítems (`copy.laCasa.items`) como `role="tablist"` con `role="tab"` y `aria-selected` → clic inmediato, hover-intent de 200 ms solo con puntero de mouse (`pointerType === 'mouse'`) que se cancela al salir antes de los 200 ms, y navegación por teclado (`ArrowDown`/`ArrowRight`/`ArrowUp`/`ArrowLeft`/`Home`/`End`) que consume el evento (`preventDefault`) cuando el foco está en la lista para no disparar el paso de sección del escenario.
+- En mobile/vertical (`< lg` o portrait), los 6 ítems van en grilla 3×2 compacta (`whitespace-nowrap`) arriba del marco inclinado → las 6 opciones, la foto central y las tarjetas derechas entran completas en 390×844 sin scroll vertical ni truncado de etiquetas.
+- Foto central fija (`editorial.medios.laCasa` → `r2` en `shape="retrato"`) dentro del marco inclinado (`rotate-(--marco-rotacion)`) con `scale-[1.18]` y parallax leve con `gsap.quickTo` (±11 px X / ±9 px Y sobre puntero mouse, desactivado con reduced motion).
+- Columna derecha con dos tarjetas claras `bg-champan` (como ref. 02 y §1): arriba la cita en Caslon cursiva (`Reveal words`), abajo el panel de detalle con título (`font-gigante text-monte`) y descripción (`font-ui text-noche/90`) envueltos cada uno en su `WipeSwap`.
+

@@ -1,0 +1,128 @@
+{
+  "local": {
+    "slug": "quebracho-demo",
+    "name": "Quebracho",
+    "vertical": "restaurant",
+    "address": "Güemes 1150, San Salvador de Jujuy",
+    "time_zone": "America/Argentina/Jujuy",
+    "open_now": true,
+    "open_until": "2026-10-22T03:30:00.000Z",
+    "next_opening": null,
+    "weekly": [
+      { "weekday": 0, "opens_at": "12:00", "closes_at": "16:30", "closes_next_day": false },
+      { "weekday": 2, "opens_at": "12:00", "closes_at": "15:30", "closes_next_day": false },
+      { "weekday": 2, "opens_at": "20:00", "closes_at": "00:30", "closes_next_day": true },
+      { "weekday": 3, "opens_at": "12:00", "closes_at": "15:30", "closes_next_day": false },
+      { "weekday": 3, "opens_at": "20:00", "closes_at": "00:30", "closes_next_day": true },
+      { "weekday": 4, "opens_at": "12:00", "closes_at": "15:30", "closes_next_day": false },
+      { "weekday": 4, "opens_at": "20:00", "closes_at": "00:30", "closes_next_day": true },
+      { "weekday": 5, "opens_at": "12:00", "closes_at": "15:30", "closes_next_day": false },
+      { "weekday": 5, "opens_at": "20:00", "closes_at": "01:30", "closes_next_day": true },
+      { "weekday": 6, "opens_at": "12:00", "closes_at": "15:30", "closes_next_day": false },
+      { "weekday": 6, "opens_at": "20:00", "closes_at": "01:30", "closes_next_day": true }
+    ],
+    "special_days": [
+      { "date": "2026-11-23", "closed": false, "opens_at": "12:00", "closes_at": "16:00" },
+      { "date": "2026-12-08", "closed": true, "opens_at": null, "closes_at": null }
+    ],
+    "promotions": [
+      { "title": "Martes a jueves de bodega", "body": "20% en vinos por botella, a la noche." }
+    ]
+  },
+
+  "menu": {
+    "date": "2026-10-21",
+    "categories": [
+      {
+        "id": "ca7e0000-0000-4000-8000-000000000001",
+        "name": "Entradas",
+        "items": [
+          { "id": "d1500000-0000-4000-8000-000000000101", "name": "Matambrito a la brasa", "description": "Sobre crema de queso de cabra, con cherrys tatemados y cilantro.", "price_cents": 1250000, "available": true, "allergens": ["lacteos"] },
+          { "id": "d1500000-0000-4000-8000-000000000102", "name": "Provoleta de la casa", "description": "Con orégano, ají molido y aceite de oliva. Llega burbujeando.", "price_cents": 1100000, "available": true, "allergens": ["lacteos"] },
+          { "id": "d1500000-0000-4000-8000-000000000103", "name": "Empanadas de carne cortada a cuchillo", "description": "Fritas en grasa, jugosas, como en el norte.", "price_cents": 650000, "available": true, "allergens": ["gluten", "huevo"] },
+          { "id": "d1500000-0000-4000-8000-000000000104", "name": "Mollejas al limón", "description": "Crocantes por fuera, tiernas por dentro. Limón y sal gruesa.", "price_cents": 1450000, "available": false, "allergens": [] },
+          { "id": "d1500000-0000-4000-8000-000000000105", "name": "Morcilla y chorizo de campo", "description": "La picada del parrillero, con pan de campo y chimichurri.", "price_cents": 980000, "available": true, "allergens": ["gluten"] }
+        ]
+      },
+      {
+        "id": "ca7e0000-0000-4000-8000-000000000002",
+        "name": "Fuegos",
+        "items": [
+          { "id": "d1500000-0000-4000-8000-000000000201", "name": "Bife de chorizo grueso", "description": "Cuatro dedos de alto, sellado en brasa de quebracho y servido a punto.", "price_cents": 3200000, "available": true, "allergens": [] },
+          { "id": "d1500000-0000-4000-8000-000000000202", "name": "Ojo de bife", "description": "Con la grasa justa para que no se seque. Va con papas rústicas.", "price_cents": 3050000, "available": true, "allergens": [] },
+          { "id": "d1500000-0000-4000-8000-000000000203", "name": "Asado de tira 12 horas", "description": "Doce horas entre brasas. Se desprende del hueso con el tenedor.", "price_cents": 2650000, "available": true, "allergens": [] },
+          { "id": "d1500000-0000-4000-8000-000000000204", "name": "Vacío a la llama", "description": "Piel crocante, adentro jugoso. Para compartir.", "price_cents": 2800000, "available": false, "allergens": [] },
+          { "id": "d1500000-0000-4000-8000-000000000205", "name": "Entraña fina", "description": "A la brasa viva, con chimichurri de la casa.", "price_cents": 2450000, "available": true, "allergens": [] },
+          { "id": "d1500000-0000-4000-8000-000000000206", "name": "Hamburguesa de la casa", "description": "Doble carne de bife, queso azul, rúcula y pan brioche. Con papas fritas.", "price_cents": 1850000, "available": true, "allergens": ["gluten", "lacteos", "huevo"] }
+        ]
+      },
+      {
+        "id": "ca7e0000-0000-4000-8000-000000000003",
+        "name": "Pastas",
+        "items": [
+          { "id": "d1500000-0000-4000-8000-000000000301", "name": "Sorrentinos gratinados", "description": "De jamón y queso, en sartén de hierro con fileto, ricota y albahaca.", "price_cents": 1750000, "available": true, "allergens": ["gluten", "huevo", "lacteos"] },
+          { "id": "d1500000-0000-4000-8000-000000000302", "name": "Spaghetti con langostinos", "description": "Langostinos patagónicos, tomate, espinaca y ralladura de limón.", "price_cents": 2200000, "available": true, "allergens": ["gluten", "huevo", "crustaceos"] },
+          { "id": "d1500000-0000-4000-8000-000000000303", "name": "Rigatoni con albóndigas", "description": "Salsa blanca, arvejas y las albóndigas de la abuela Teresa.", "price_cents": 1650000, "available": true, "allergens": ["gluten", "huevo", "lacteos"] },
+          { "id": "d1500000-0000-4000-8000-000000000304", "name": "Ñoquis de papa", "description": "Amasados a mano, con estofado de osobuco.", "price_cents": 1550000, "available": true, "allergens": ["gluten", "huevo"] },
+          { "id": "d1500000-0000-4000-8000-000000000305", "name": "Tallarines al huevo", "description": "Manteca, salvia y queso de cabra. Simple y de esta mañana.", "price_cents": 1450000, "available": true, "allergens": ["gluten", "huevo", "lacteos"] }
+        ]
+      },
+      {
+        "id": "ca7e0000-0000-4000-8000-000000000004",
+        "name": "Del horno",
+        "items": [
+          { "id": "d1500000-0000-4000-8000-000000000401", "name": "Lomo al horno de barro", "description": "Rosado en el centro, con vegetales asados y romero.", "price_cents": 2950000, "available": true, "allergens": [] },
+          { "id": "d1500000-0000-4000-8000-000000000402", "name": "Pollo de campo al horno", "description": "Con papas y zanahorias asadas, y salsa de verdeo.", "price_cents": 1900000, "available": true, "allergens": ["lacteos"] },
+          { "id": "d1500000-0000-4000-8000-000000000403", "name": "Cordero al horno de barro", "description": "Cocción lenta con hierbas del monte. Para dos.", "price_cents": 3800000, "available": true, "allergens": [] },
+          { "id": "d1500000-0000-4000-8000-000000000404", "name": "Locro norteño", "description": "Maíz blanco, porotos, zapallo y cerdo. Con su salsita picante.", "price_cents": 1600000, "available": true, "allergens": [] },
+          { "id": "d1500000-0000-4000-8000-000000000405", "name": "Humita en chala", "description": "Choclo rallado, queso de cabra y albahaca.", "price_cents": 1200000, "available": false, "allergens": ["lacteos"] }
+        ]
+      },
+      {
+        "id": "ca7e0000-0000-4000-8000-000000000005",
+        "name": "Del mar y la huerta",
+        "items": [
+          { "id": "d1500000-0000-4000-8000-000000000501", "name": "Langostinos a la plancha", "description": "Sobre cuscús, con espárragos, morrón y queso feta.", "price_cents": 2350000, "available": true, "allergens": ["crustaceos", "gluten", "lacteos"] },
+          { "id": "d1500000-0000-4000-8000-000000000502", "name": "Pesca del día", "description": "A la brasa, sobre ensalada tibia de quinoa y tomate.", "price_cents": 2400000, "available": true, "allergens": ["pescado"] },
+          { "id": "d1500000-0000-4000-8000-000000000503", "name": "Verduras a la brasa", "description": "Lo que da la huerta esta semana, con hummus de garbanzos.", "price_cents": 1300000, "available": true, "allergens": ["sesamo"] },
+          { "id": "d1500000-0000-4000-8000-000000000504", "name": "Ensalada de estación", "description": "Hojas verdes, cebolla morada, tomate y queso de cabra.", "price_cents": 1050000, "available": true, "allergens": ["lacteos"] }
+        ]
+      },
+      {
+        "id": "ca7e0000-0000-4000-8000-000000000006",
+        "name": "Bodega",
+        "items": [
+          { "id": "d1500000-0000-4000-8000-000000000601", "name": "Malbec de Valle de Uco", "description": "Fruta roja y taninos firmes. Pide carne.", "price_cents": 2800000, "available": true, "allergens": ["sulfitos"] },
+          { "id": "d1500000-0000-4000-8000-000000000602", "name": "Cabernet Franc de altura", "description": "Herbal y especiado, de viñedos a 1.400 metros.", "price_cents": 3400000, "available": true, "allergens": ["sulfitos"] },
+          { "id": "d1500000-0000-4000-8000-000000000603", "name": "Pinot Noir patagónico", "description": "Tinto liviano, de clima frío.", "price_cents": 3100000, "available": false, "allergens": ["sulfitos"] },
+          { "id": "d1500000-0000-4000-8000-000000000604", "name": "Torrontés de Cafayate", "description": "Blanco floral y fresco. Va perfecto con empanadas.", "price_cents": 2200000, "available": true, "allergens": ["sulfitos"] },
+          { "id": "d1500000-0000-4000-8000-000000000605", "name": "Rosado de Malbec", "description": "Seco y frutado, para el mediodía.", "price_cents": 2000000, "available": true, "allergens": ["sulfitos"] },
+          { "id": "d1500000-0000-4000-8000-000000000606", "name": "Descorche", "description": "Por botella. Te la servimos a la temperatura justa.", "price_cents": 600000, "available": true, "allergens": [] }
+        ]
+      }
+    ],
+    "uncategorized": [
+      { "id": "d1500000-0000-4000-8000-000000000901", "name": "Agua mineral", "description": "Con o sin gas.", "price_cents": 350000, "available": true, "allergens": [] },
+      { "id": "d1500000-0000-4000-8000-000000000902", "name": "Gaseosa", "description": null, "price_cents": 400000, "available": true, "allergens": [] }
+    ],
+    "daily_menu": [
+      { "id": "d1500000-0000-4000-8000-000000000801", "name": "Carbonada en zapallo", "description": "Con choclo, durazno seco y carne de ternera. Solo hoy.", "price_cents": 1650000, "available": true, "allergens": [] }
+    ],
+    "orders": {
+      "taking_orders": true,
+      "until": "2026-10-22T03:00:00.000Z",
+      "resumes_at": null
+    }
+  },
+
+  "delivery_zones": {
+    "items": [
+      { "name": "Alto Padilla", "fee_cents": 250000, "min_order_cents": 3000000, "eta_minutes": 50 },
+      { "name": "Bajo La Viña", "fee_cents": 200000, "min_order_cents": 2500000, "eta_minutes": 40 },
+      { "name": "Centro", "fee_cents": 150000, "min_order_cents": 2000000, "eta_minutes": 35 },
+      { "name": "Ciudad de Nieva", "fee_cents": 200000, "min_order_cents": 2500000, "eta_minutes": 40 },
+      { "name": "Cuyaya", "fee_cents": 250000, "min_order_cents": 2500000, "eta_minutes": 45 },
+      { "name": "Los Perales", "fee_cents": 250000, "min_order_cents": 2500000, "eta_minutes": null }
+    ]
+  }
+}

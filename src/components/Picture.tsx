@@ -1,0 +1,36 @@
+import type { ImageShapeName, MediaImage } from '@/content/media.types'
+
+type Props = {
+  image: MediaImage
+  shape: ImageShapeName
+  alt: string
+  /** Atributo `sizes` del <img>; por defecto ocupa el ancho de la pantalla. */
+  sizes?: string
+  className?: string
+  loading?: 'lazy' | 'eager'
+}
+
+/** <picture> AVIF + WebP con placeholder borroso de fondo mientras carga. */
+export function Picture({ image, shape, alt, sizes = '100vw', className = '', loading = 'lazy' }: Props) {
+  const s = image[shape]
+  const variantes = s.sm.width === s.lg.width ? [s.lg] : [s.sm, s.lg]
+  const srcset = (fmt: 'avif' | 'webp') => variantes.map((v) => `${v[fmt]} ${v.width}w`).join(', ')
+
+  return (
+    <picture>
+      <source type="image/avif" srcSet={srcset('avif')} sizes={sizes} />
+      <img
+        src={s.lg.webp}
+        srcSet={srcset('webp')}
+        sizes={sizes}
+        width={s.lg.width}
+        height={s.lg.height}
+        alt={alt}
+        loading={loading}
+        decoding="async"
+        className={`bg-cover bg-center ${className}`}
+        style={{ backgroundImage: `url(${s.placeholder})` }}
+      />
+    </picture>
+  )
+}

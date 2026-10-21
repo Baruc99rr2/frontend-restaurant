@@ -114,7 +114,7 @@ frontend/
 
 ## 4. Capa de datos (calcada del backend)
 
-El backend ya expone, sin login, un **endpoint público por local** (sub-fase 6.8): nombre, dirección, horario semanal, días distintos (feriados, cierres), si está abierto ahora y cuándo abre, la carta por categorías con precio, alérgenos y **stock de hoy**, el **menú del día**, las zonas de delivery y si la cocina está tomando pedidos. No trae datos personales.
+El backend ya expone, sin login, la **API pública del local** (sub-fase 6.8). En el contrato real son tres endpoints que se usan acá: `GET /v1/public/{slug}` (datos, horario, abierto/cerrado, promociones), `GET /v1/public/{slug}/menu` (carta, menú del día, si la cocina toma pedidos) y `GET /v1/public/{slug}/delivery-zones`; `/services` es para el rubro salón y no se usa. El mock guarda las tres respuestas, una clave por endpoint. Entre los tres traen: nombre, dirección, horario semanal, días distintos (feriados, cierres), si está abierto ahora y cuándo abre, la carta por categorías con precio, alérgenos y **stock de hoy**, el **menú del día**, las zonas de delivery y si la cocina está tomando pedidos. No trae datos personales.
 
 Los datos se parten en dos orígenes, y esa frontera es la que hace vendible el template:
 
@@ -125,7 +125,7 @@ Los datos se parten en dos orígenes, y esa frontera es la que hace vendible el 
 
 - **Contrato:** vive en `api/openapi.json`, una copia local del backend que está **fuera del repo a propósito** (es local y nunca se sube). Los tipos propios (`src/data/types.ts`, versionados) siguen la forma del endpoint público; `pnpm api:types` genera los tipos reales desde ese archivo dentro de `api/`, y un chequeo local verifica que los propios coincidan. Sin `api/` el proyecto compila igual. En F12 se escribe el mapper API → tipos propios (si hace falta). Los componentes no cambian.
 - **Unión por id:** `editorial.json` asocia fotos y textos extra a categorías y platos por su id del backend (`{ dishId → mediaId, categoryId → coverMediaId, origen, región }`). Un plato sin entrada editorial se muestra igual, sin foto; un plato nuevo cargado por el dueño aparece solo.
-- **Interfaz única:** `PublicLocalRepository` con `getLocal()`, `getCarta()`, `getMenuDelDia()`. Hoy `MockPublicRepository`; después `ApiPublicRepository`. Los componentes solo conocen la interfaz y un hook `useLocal()` que hace **un solo pedido por carga** y lo cachea (la API tiene límite de pedidos por minuto).
+- **Interfaz única:** `PublicLocalRepository` con `getLocal()`, `getCarta()`, `getMenuDelDia()`, `getZonasDelivery()`. Hoy `MockPublicRepository`; después `ApiPublicRepository`. Los componentes solo conocen la interfaz y un hook `useLocal()` que hace **un solo pedido por carga** y lo cachea (la API tiene límite de pedidos por minuto).
 - Campos que probablemente no estén en el backend (porción o gramos, fotos, origen del plato) van a `editorial.json`, no al mock operativo.
 - Precios: centavos → `Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' })`. Horarios: UTC → `America/Argentina/Jujuy`.
 - Para conectar de verdad hará falta cargar el dominio de la web en la variable de CORS del backend; se anota en el README, no se toca ahora.

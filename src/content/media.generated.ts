@@ -1,0 +1,857 @@
+// ARCHIVO GENERADO por `pnpm media` (scripts/process-*.mjs). No editar a mano.
+import type { MediaCatalog } from './media.types'
+
+export const media = {
+  "images": {
+    "f1": {
+      "id": "f1",
+      "kind": "comida",
+      "source": {
+        "file": "food1.png",
+        "width": 1280,
+        "height": 853
+      },
+      "paisaje": {
+        "lg": {
+          "width": 1280,
+          "height": 720,
+          "avif": "/media/img/f1-paisaje-lg.avif",
+          "webp": "/media/img/f1-paisaje-lg.webp"
+        },
+        "sm": {
+          "width": 1280,
+          "height": 720,
+          "avif": "/media/img/f1-paisaje-sm.avif",
+          "webp": "/media/img/f1-paisaje-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRngAAABXRUJQVlA4IGwAAABQAgCdASoQAAkAA4BaJbACdAYsj2s3j5OiQAAA/uiSPyZlwVHTdKWacJe9fCXC/Y26KHQRG8Z4WFvH8RY6qQKU1+JwH3FfHpTgJfg5YbbTnMWIs5N+nQt3sti7LtmZ/Jvgg2f6ivPi9MOIAAA="
+      },
+      "retrato": {
+        "lg": {
+          "width": 682,
+          "height": 853,
+          "avif": "/media/img/f1-retrato-lg.avif",
+          "webp": "/media/img/f1-retrato-lg.webp"
+        },
+        "sm": {
+          "width": 600,
+          "height": 750,
+          "avif": "/media/img/f1-retrato-sm.avif",
+          "webp": "/media/img/f1-retrato-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRp4AAABXRUJQVlA4IJIAAABQBACdASoQABQAPu1iqU2ppaOiMAgBMB2JbAC7AYvC7dyCJ0P73iZS2DoAAP7h2zcl6+3CF0OcDbolF5aeRaSuLD7ctoFkGW/fgJGIXnzMd6AnHGKY1+gNSe3xCg2qFlUnYNcspppqeW5X9Te5Lgh7B5HNCJpJEZhQ79mn0erax48U3/0irmzGcwE32YBc4QQAAA=="
+      },
+      "banda": {
+        "lg": {
+          "width": 1280,
+          "height": 533,
+          "avif": "/media/img/f1-banda-lg.avif",
+          "webp": "/media/img/f1-banda-lg.webp"
+        },
+        "sm": {
+          "width": 1280,
+          "height": 533,
+          "avif": "/media/img/f1-banda-sm.avif",
+          "webp": "/media/img/f1-banda-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRmgAAABXRUJQVlA4IFwAAAAwAgCdASoQAAcAA4BaJbACdAYsP2s3T7idQAD+6JI/JmWXFlN0ZVpYl7l8Jbn9jboodA7rxmk4Feak761E0SAv9qt5m441hr6/KLn0hMb67lnupMyKJkkhin0AAA=="
+      }
+    },
+    "f2": {
+      "id": "f2",
+      "kind": "comida",
+      "source": {
+        "file": "food2.png",
+        "width": 547,
+        "height": 365
+      },
+      "paisaje": {
+        "lg": {
+          "width": 547,
+          "height": 308,
+          "avif": "/media/img/f2-paisaje-lg.avif",
+          "webp": "/media/img/f2-paisaje-lg.webp"
+        },
+        "sm": {
+          "width": 547,
+          "height": 308,
+          "avif": "/media/img/f2-paisaje-sm.avif",
+          "webp": "/media/img/f2-paisaje-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRmgAAABXRUJQVlA4IFwAAACQAQCdASoQAAkAA4BaJZACdABWBNAA/k2ww8j4Z5F8d28DMrOfcq2RzqOA43ZPUAl4SPxodvBG4j5E76QPGWOZ28QNSQ+MmRlUhJ7gF0FJcvORThcGUVOZhcAAAA=="
+      },
+      "retrato": {
+        "lg": {
+          "width": 292,
+          "height": 365,
+          "avif": "/media/img/f2-retrato-lg.avif",
+          "webp": "/media/img/f2-retrato-lg.webp"
+        },
+        "sm": {
+          "width": 292,
+          "height": 365,
+          "avif": "/media/img/f2-retrato-sm.avif",
+          "webp": "/media/img/f2-retrato-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRpYAAABXRUJQVlA4IIoAAAAQBACdASoQABQAPu1iqU2ppaOiMAgBMB2JbACdLwAVgS3uP+Gahx75WAD+UrbQUiuakfmex/DOd4sgnGZWL0LEZzlB8/Tu6X8/iMCYzDMLIUsTquFe2X5119NU+jEi3HV0SnPFYj+OU//APJk39ILIE3uYn3TwgZs3Jz7zXQilBIxPTXUedv3vgAA="
+      },
+      "banda": {
+        "lg": {
+          "width": 547,
+          "height": 228,
+          "avif": "/media/img/f2-banda-lg.avif",
+          "webp": "/media/img/f2-banda-lg.webp"
+        },
+        "sm": {
+          "width": 547,
+          "height": 228,
+          "avif": "/media/img/f2-banda-sm.avif",
+          "webp": "/media/img/f2-banda-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRnAAAABXRUJQVlA4IGQAAAAQAgCdASoQAAcAA4BaJbACdAYvW9u6wjEAAP5NsD2X8UjIuZjv9DPIVPVJWnIerBukO6kta1kw7b5zXD67z57bbnwVUqIo3u6Fm+94dmDr4s9a0nGe0XetZdgxuJ958UHl38AA"
+      }
+    },
+    "f3": {
+      "id": "f3",
+      "kind": "comida",
+      "source": {
+        "file": "food3.png",
+        "width": 1280,
+        "height": 854
+      },
+      "paisaje": {
+        "lg": {
+          "width": 1280,
+          "height": 720,
+          "avif": "/media/img/f3-paisaje-lg.avif",
+          "webp": "/media/img/f3-paisaje-lg.webp"
+        },
+        "sm": {
+          "width": 1280,
+          "height": 720,
+          "avif": "/media/img/f3-paisaje-sm.avif",
+          "webp": "/media/img/f3-paisaje-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRmwAAABXRUJQVlA4IGAAAADwAQCdASoQAAkAA4BaJbACdADMJfno5/AA/rgr3YOsBFwH2kd0HHKsrJopbUnwGqqGDIAiZg2isWsPrtsI0U7nXlOvB6cmvNdlmGg/T8lKNOqvf5j2/bdixfqmslLQAAA="
+      },
+      "retrato": {
+        "lg": {
+          "width": 683,
+          "height": 854,
+          "avif": "/media/img/f3-retrato-lg.avif",
+          "webp": "/media/img/f3-retrato-lg.webp"
+        },
+        "sm": {
+          "width": 600,
+          "height": 750,
+          "avif": "/media/img/f3-retrato-sm.avif",
+          "webp": "/media/img/f3-retrato-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRqgAAABXRUJQVlA4IJwAAABwBACdASoQABQAPu1iqU2ppaOiMAgBMB2JbACdMoRwAdEM4hCExl67znWYrAD+yOTxActWFN4ZaSZK61vELwrPUX66nYuxE35cHD6TOgs65L1cwKX4GHM3n33EhWDewtUt7ExzZm2z8kbYJF3gztuE8JIEc2bsb2H9gWB/XYb9uq/55UPgSv/pI/Gzoc+X304KM5LJrQYFx5f0AAA="
+      },
+      "banda": {
+        "lg": {
+          "width": 1280,
+          "height": 533,
+          "avif": "/media/img/f3-banda-lg.avif",
+          "webp": "/media/img/f3-banda-lg.webp"
+        },
+        "sm": {
+          "width": 1280,
+          "height": 533,
+          "avif": "/media/img/f3-banda-sm.avif",
+          "webp": "/media/img/f3-banda-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAAAwAgCdASoQAAcAA4BaJbACdAYsZL478D6ZgAD+uEDhHATuQkG2ocOp0MQBK3FP+7CavqMNqRPN1hpPOHbHfs3IOEvz5uAIY1aELpKr5HA5eHb/vAQUQAAA"
+      }
+    },
+    "f4": {
+      "id": "f4",
+      "kind": "comida",
+      "source": {
+        "file": "food4.png",
+        "width": 678,
+        "height": 452
+      },
+      "paisaje": {
+        "lg": {
+          "width": 678,
+          "height": 381,
+          "avif": "/media/img/f4-paisaje-lg.avif",
+          "webp": "/media/img/f4-paisaje-lg.webp"
+        },
+        "sm": {
+          "width": 678,
+          "height": 381,
+          "avif": "/media/img/f4-paisaje-sm.avif",
+          "webp": "/media/img/f4-paisaje-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRmwAAABXRUJQVlA4IGAAAADwAQCdASoQAAkAA4BaJbACdADwKtXMqjgA/fzUK1SNBE+mZ+kcLxYNBWbn7emyAhV71y7BFi1sAe1NklXwEmIs0XI1K2obNrLDmWEw57VkSQlLVpvSG/drYoMS7v8YAAA="
+      },
+      "retrato": {
+        "lg": {
+          "width": 361,
+          "height": 451,
+          "avif": "/media/img/f4-retrato-lg.avif",
+          "webp": "/media/img/f4-retrato-lg.webp"
+        },
+        "sm": {
+          "width": 361,
+          "height": 451,
+          "avif": "/media/img/f4-retrato-sm.avif",
+          "webp": "/media/img/f4-retrato-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRrIAAABXRUJQVlA4IKYAAABwBACdASoQABQAPu1iqU2ppaOiMAgBMB2JbACdMoMgg0eFt+VMOKvzUbG0QAD+7YPGvaoYo6z/N+KQ0IXFLp7mdp677eOoOEyXHzGVFIQoppDOYqMQs9bx52eC++SEAAJGhk/ujyQ8X4sxicncsUPtNgvdO9M2h0kmLuULnPVIt1Bhb6/c9HL+KOzubHqaBGvZAGKUo4dknXuxtfTsQTuEcLBqCyAA"
+      },
+      "banda": {
+        "lg": {
+          "width": 678,
+          "height": 283,
+          "avif": "/media/img/f4-banda-lg.avif",
+          "webp": "/media/img/f4-banda-lg.webp"
+        },
+        "sm": {
+          "width": 678,
+          "height": 283,
+          "avif": "/media/img/f4-banda-sm.avif",
+          "webp": "/media/img/f4-banda-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRmgAAABXRUJQVlA4IFwAAADwAQCdASoQAAcAA4BaJbACdADwSThv1oAA/fzUK1SNBE+mZ+kcLxYNBWbn7emxfsj09RzUI0aJiuH9XrVdUarwb/cgijcA6Gl9qyHNcs0yHnlHSBRVihc/4RAAAA=="
+      }
+    },
+    "f5": {
+      "id": "f5",
+      "kind": "comida",
+      "source": {
+        "file": "food5.png",
+        "width": 554,
+        "height": 554
+      },
+      "paisaje": {
+        "lg": {
+          "width": 554,
+          "height": 312,
+          "avif": "/media/img/f5-paisaje-lg.avif",
+          "webp": "/media/img/f5-paisaje-lg.webp"
+        },
+        "sm": {
+          "width": 554,
+          "height": 312,
+          "avif": "/media/img/f5-paisaje-sm.avif",
+          "webp": "/media/img/f5-paisaje-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRl4AAABXRUJQVlA4IFIAAAAQAgCdASoQAAkAA4BaJZACdAEfbog5RDewAP728jpVepjil9Zwd4+O1YRQquCIZD80S9wxluiP2+Elp5qBMHmq92jlxXPf9JJDAjmnTDPTQAAA"
+      },
+      "retrato": {
+        "lg": {
+          "width": 443,
+          "height": 554,
+          "avif": "/media/img/f5-retrato-lg.avif",
+          "webp": "/media/img/f5-retrato-lg.webp"
+        },
+        "sm": {
+          "width": 443,
+          "height": 554,
+          "avif": "/media/img/f5-retrato-sm.avif",
+          "webp": "/media/img/f5-retrato-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRoAAAABXRUJQVlA4IHQAAAAwBACdASoQABQAPu1iqU2ppaOiMAgBMB2JZACdMoAC/JdpsN+J21XoMgAA/vQy1+2uCIk3HQRjyCb89vR9iRovg93dcr+NJoliRCWwYXD6Mo5daq52eTGfhjkde0E+DjQuqvrOxMROQwE1yxpgiUv7huoAAA=="
+      },
+      "banda": {
+        "lg": {
+          "width": 554,
+          "height": 231,
+          "avif": "/media/img/f5-banda-lg.avif",
+          "webp": "/media/img/f5-banda-lg.webp"
+        },
+        "sm": {
+          "width": 554,
+          "height": 231,
+          "avif": "/media/img/f5-banda-sm.avif",
+          "webp": "/media/img/f5-banda-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAAAwAgCdASoQAAcAA4BaJZACdAYtzkjXRTkiwAD+9MCwjObq9nMYp26OQ0P9yL8a8F2b0UcrVdJRNe2QN+4O9qK1MGPi/uMpN2hW+YJXX46c6/AokiExDFAA"
+      }
+    },
+    "f6": {
+      "id": "f6",
+      "kind": "comida",
+      "source": {
+        "file": "food6.png",
+        "width": 739,
+        "height": 415
+      },
+      "paisaje": {
+        "lg": {
+          "width": 737,
+          "height": 415,
+          "avif": "/media/img/f6-paisaje-lg.avif",
+          "webp": "/media/img/f6-paisaje-lg.webp"
+        },
+        "sm": {
+          "width": 737,
+          "height": 415,
+          "avif": "/media/img/f6-paisaje-sm.avif",
+          "webp": "/media/img/f6-paisaje-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRloAAABXRUJQVlA4IE4AAADwAQCdASoQAAkAA4BaJZgCdAEG4Crsd2AA/uYKplfW9XiMjdJBY0e2KjA9/dJPtFlVD5nqLYD0hDIatJTk3m5AXTy+uwU3wvek+naSAAA="
+      },
+      "retrato": {
+        "lg": {
+          "width": 332,
+          "height": 415,
+          "avif": "/media/img/f6-retrato-lg.avif",
+          "webp": "/media/img/f6-retrato-lg.webp"
+        },
+        "sm": {
+          "width": 332,
+          "height": 415,
+          "avif": "/media/img/f6-retrato-sm.avif",
+          "webp": "/media/img/f6-retrato-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRoYAAABXRUJQVlA4IHoAAABwBACdASoQABQAPu1iqU2ppaOiMAgBMB2JZgCdL1yCGDN8mDOnwOGtvtO6wAD+7rAXs4qEgQWYXomNZmDPY7x6o77YhZgsZUBUg2DoLlGdLF0AYon2FWWpkWYVFIi4I998qMkIVeihxNymPjgVi/JjrgMTZq8nDBSAAA=="
+      },
+      "banda": {
+        "lg": {
+          "width": 739,
+          "height": 308,
+          "avif": "/media/img/f6-banda-lg.avif",
+          "webp": "/media/img/f6-banda-lg.webp"
+        },
+        "sm": {
+          "width": 739,
+          "height": 308,
+          "avif": "/media/img/f6-banda-sm.avif",
+          "webp": "/media/img/f6-banda-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRlgAAABXRUJQVlA4IEwAAAAQAgCdASoQAAcAA4BaJaACdAED+G6CpmOwAP6/xaUZOumjnGZKC57BlK0T7kgl0khzlLqvF1R4KBJz1pAqHYFDMXDH4eBw/9YctqgA"
+      }
+    },
+    "f7": {
+      "id": "f7",
+      "kind": "comida",
+      "source": {
+        "file": "food7.png",
+        "width": 853,
+        "height": 1280
+      },
+      "paisaje": {
+        "lg": {
+          "width": 853,
+          "height": 480,
+          "avif": "/media/img/f7-paisaje-lg.avif",
+          "webp": "/media/img/f7-paisaje-lg.webp"
+        },
+        "sm": {
+          "width": 853,
+          "height": 480,
+          "avif": "/media/img/f7-paisaje-sm.avif",
+          "webp": "/media/img/f7-paisaje-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRmwAAABXRUJQVlA4IGAAAABQAgCdASoQAAkAA4BaJZACsAYr7bPCehC0zYAA/nU2LWu3wgMUsbCNlH3ZygAiGpci2lEw1t1+hV1ui9VgX4hvFMNQcnxAhVBaxIu3DuRSz0nr9EmH2RpdwwGYmbi6AAA="
+      },
+      "retrato": {
+        "lg": {
+          "width": 853,
+          "height": 1066,
+          "avif": "/media/img/f7-retrato-lg.avif",
+          "webp": "/media/img/f7-retrato-lg.webp"
+        },
+        "sm": {
+          "width": 600,
+          "height": 750,
+          "avif": "/media/img/f7-retrato-sm.avif",
+          "webp": "/media/img/f7-retrato-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRqoAAABXRUJQVlA4IJ4AAAAwBACdASoQABQAPu1iqU2ppaOiMAgBMB2JZACdAYtKrKfR2Uz+BX3HtRAA/rYzlTXjEWUZp3hT0777TPZqxEHUq6mR+Ur0XUmUtRj6AdPrffYBI8vtX1kJVw6RFrfhqSQNBOX573Xp0BeDmtCv4du4F8I2681uRFfkWKIuDTVhzYfvj4Cxx9z2+lz2ZzKySfTobUC0yIVLqWehVoAAAA=="
+      },
+      "banda": {
+        "lg": {
+          "width": 853,
+          "height": 355,
+          "avif": "/media/img/f7-banda-lg.avif",
+          "webp": "/media/img/f7-banda-lg.webp"
+        },
+        "sm": {
+          "width": 853,
+          "height": 355,
+          "avif": "/media/img/f7-banda-sm.avif",
+          "webp": "/media/img/f7-banda-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAAAQAgCdASoQAAcAA4BaJYgCsAEeqlkdlUsAAP6+HCHGYXjqSFLfk7/nBc+SKkGIclDlxtID2jy4NBX/+nlycpS4JGJ0/s8tj/nXIbGq7VhvtggTysLEgAAA"
+      }
+    },
+    "f8": {
+      "id": "f8",
+      "kind": "comida",
+      "source": {
+        "file": "food8.png",
+        "width": 640,
+        "height": 479
+      },
+      "paisaje": {
+        "lg": {
+          "width": 640,
+          "height": 360,
+          "avif": "/media/img/f8-paisaje-lg.avif",
+          "webp": "/media/img/f8-paisaje-lg.webp"
+        },
+        "sm": {
+          "width": 640,
+          "height": 360,
+          "avif": "/media/img/f8-paisaje-sm.avif",
+          "webp": "/media/img/f8-paisaje-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRnAAAABXRUJQVlA4IGQAAADQAQCdASoQAAkAA4BaJZgCdAYpbHNy0AD+amobpoXSXrGB6NOqu/AcYOW55hFiAv7UC6tOdH0hp7EomU9sll90CqV3cRFYfVpr3feMm7oTKyn1tDkUcA1Me4TsnCRkFfl/3AAA"
+      },
+      "retrato": {
+        "lg": {
+          "width": 383,
+          "height": 479,
+          "avif": "/media/img/f8-retrato-lg.avif",
+          "webp": "/media/img/f8-retrato-lg.webp"
+        },
+        "sm": {
+          "width": 383,
+          "height": 479,
+          "avif": "/media/img/f8-retrato-sm.avif",
+          "webp": "/media/img/f8-retrato-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRqgAAABXRUJQVlA4IJwAAACQBACdASoQABQAPu1iqU2ppaOiMAgBMB2JbACdMoR3AdBlB6HjKUbyLv5yJzAA/MsP/sVnvwqzn3V2lfZxCaEVO9ggmpiuYjVAm3RdDU+TYmGBlWUjs6V8tSO6+Rq7fB6OXzidDnsaRaztVjrV9YMeEsuPDlMe01rCvAz4TOZxQRExA97+raS22yOvMQ5LDnefHVIsW3tnJDcAAAA="
+      },
+      "banda": {
+        "lg": {
+          "width": 640,
+          "height": 267,
+          "avif": "/media/img/f8-banda-lg.avif",
+          "webp": "/media/img/f8-banda-lg.webp"
+        },
+        "sm": {
+          "width": 640,
+          "height": 267,
+          "avif": "/media/img/f8-banda-sm.avif",
+          "webp": "/media/img/f8-banda-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAABQAgCdASoQAAcAA4BaJZgCdAYrJq4EVzZhBwAA99+p0e0DUXvlC7vPMrOOeW0w6sfdztb26Qoa9vZFL6vG4pXHtv1R4OrWGiKHUGExxM4L4l8em42CEAAA"
+      }
+    },
+    "f9": {
+      "id": "f9",
+      "kind": "comida",
+      "source": {
+        "file": "food9.png",
+        "width": 853,
+        "height": 1280
+      },
+      "paisaje": {
+        "lg": {
+          "width": 853,
+          "height": 480,
+          "avif": "/media/img/f9-paisaje-lg.avif",
+          "webp": "/media/img/f9-paisaje-lg.webp"
+        },
+        "sm": {
+          "width": 853,
+          "height": 480,
+          "avif": "/media/img/f9-paisaje-sm.avif",
+          "webp": "/media/img/f9-paisaje-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRmIAAABXRUJQVlA4IFYAAADwAQCdASoQAAkAA4BaJZgCdAC3hG/poAAA+SpjoR4/q3pJZzZsHsLcfI4icRSbX/xqs0tC0i2scLuhCPjorGjWKc4fleReeJSYmKcIicxIVvSd82AAAA=="
+      },
+      "retrato": {
+        "lg": {
+          "width": 853,
+          "height": 1066,
+          "avif": "/media/img/f9-retrato-lg.avif",
+          "webp": "/media/img/f9-retrato-lg.webp"
+        },
+        "sm": {
+          "width": 600,
+          "height": 750,
+          "avif": "/media/img/f9-retrato-sm.avif",
+          "webp": "/media/img/f9-retrato-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRpwAAABXRUJQVlA4IJAAAAAwBACdASoQABQAPu1iqU2ppaOiMAgBMB2JbACsABmDe3ctsDo/Q57ucYAA/pu7SCpTdR8HNWT7uOqTCwSsrkKQzhVl3vkhaG/PSRr1qZxC9inmgl0OOYnPser3lm/2RsAw9+yljYTwzofbmjCcKc4wv2aTDkmzg/zwqlS5Fgf7uFgpg+eKefwynTARvqMuAAA="
+      },
+      "banda": {
+        "lg": {
+          "width": 853,
+          "height": 355,
+          "avif": "/media/img/f9-banda-lg.avif",
+          "webp": "/media/img/f9-banda-lg.webp"
+        },
+        "sm": {
+          "width": 853,
+          "height": 355,
+          "avif": "/media/img/f9-banda-sm.avif",
+          "webp": "/media/img/f9-banda-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRlgAAABXRUJQVlA4IEwAAACwAQCdASoQAAcAA4BaJYgCdACZ/LEAAPudVy+0mlh6AXLaMI9iZLti6TMyM1UgTl/NC4XyY+ntKABYRBv8tY1Y0QmiqFOAOn9mwAAA"
+      }
+    },
+    "f10": {
+      "id": "f10",
+      "kind": "comida",
+      "source": {
+        "file": "food10.png",
+        "width": 495,
+        "height": 619
+      },
+      "paisaje": {
+        "lg": {
+          "width": 495,
+          "height": 278,
+          "avif": "/media/img/f10-paisaje-lg.avif",
+          "webp": "/media/img/f10-paisaje-lg.webp"
+        },
+        "sm": {
+          "width": 495,
+          "height": 278,
+          "avif": "/media/img/f10-paisaje-sm.avif",
+          "webp": "/media/img/f10-paisaje-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRnIAAABXRUJQVlA4IGYAAADwAQCdASoQAAkAA4BaJagCdADPz/4jJYAA/kE2MxDNPG8LvrdXs2G3Gmqby5EeN1Re2dEGfefQ0WJsJLiIm1/umrxXdw5dW2/qBzAMxiE5axv1S7CuVVG6j4wmrh1AbNfZQxQAAAA="
+      },
+      "retrato": {
+        "lg": {
+          "width": 495,
+          "height": 619,
+          "avif": "/media/img/f10-retrato-lg.avif",
+          "webp": "/media/img/f10-retrato-lg.webp"
+        },
+        "sm": {
+          "width": 495,
+          "height": 619,
+          "avif": "/media/img/f10-retrato-sm.avif",
+          "webp": "/media/img/f10-retrato-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRqQAAABXRUJQVlA4IJgAAADwBACdASoQABQAPu1iqU2ppaOiMAgBMB2JZgCdMoRwAc+NF+0O1ksGXtcCg0o/tkAA/qxasFtT6fXCg7W8XMj25U5327Ug0ODtId4Dq3iXW0yUxzwin2hhkB02rQ8gV/13ME94FbjtuX0/8EDAi3cg98K+J1nqrb3TJILsiosekh9s8vzJ3zMciKo0xqFP9X5J8IUTuUAAAA=="
+      },
+      "banda": {
+        "lg": {
+          "width": 495,
+          "height": 206,
+          "avif": "/media/img/f10-banda-lg.avif",
+          "webp": "/media/img/f10-banda-lg.webp"
+        },
+        "sm": {
+          "width": 495,
+          "height": 206,
+          "avif": "/media/img/f10-banda-sm.avif",
+          "webp": "/media/img/f10-banda-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRnIAAABXRUJQVlA4IGYAAABQAgCdASoQAAcAA4BaJaACdAYvDlKg5H4b6UgA8pBNvmKFyUxOQWkK7kR4lWysAKPDkz9UXaN+QyXC+4+MwNEDVW8Xi6/kLJk19ZmcuAproF0n4Z7BTgYVsvQDR2a+b5xNTlAAAAA="
+      }
+    },
+    "r1": {
+      "id": "r1",
+      "kind": "restaurante",
+      "source": {
+        "file": "restaurant1.png",
+        "width": 1280,
+        "height": 720
+      },
+      "paisaje": {
+        "lg": {
+          "width": 1280,
+          "height": 720,
+          "avif": "/media/img/r1-paisaje-lg.avif",
+          "webp": "/media/img/r1-paisaje-lg.webp"
+        },
+        "sm": {
+          "width": 1280,
+          "height": 720,
+          "avif": "/media/img/r1-paisaje-sm.avif",
+          "webp": "/media/img/r1-paisaje-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRngAAABXRUJQVlA4IGwAAADwAQCdASoQAAkAA4BaJbACdAEflA1e9yAA/CE7fIRIvkbMfck8U+IGYr8Z75Ft0J6MYU6AtA/shZU3KetULZ1QYboxOPS1c1niiAelFeR4XklfnMdhKWwh4HR7tWXVYGjXG6Bvr/kUOeNAAAA="
+      },
+      "retrato": {
+        "lg": {
+          "width": 576,
+          "height": 720,
+          "avif": "/media/img/r1-retrato-lg.avif",
+          "webp": "/media/img/r1-retrato-lg.webp"
+        },
+        "sm": {
+          "width": 576,
+          "height": 720,
+          "avif": "/media/img/r1-retrato-sm.avif",
+          "webp": "/media/img/r1-retrato-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRr4AAABXRUJQVlA4ILIAAABQBACdASoQABQAPu1iqU2ppaOiMAgBMB2JbACdMoFWwAUnz3wkxdOQMJNYAP7r2mcJ3Z9AKaVRzOUK5lYIL1KRB67PtPWldIKntHfDwV238V3ydJcnybPk17mfWwLjyye7+6z6PTDmo5cCCj1s8nfmgJ7JW+/LLl1/c/uI42Xuy0YoYGWWk6WdpbBZR6bwcZGsG6akW11SHAypZEmMNf4rZs5+saePeeN7y2nXtAZGRAAA"
+      },
+      "banda": {
+        "lg": {
+          "width": 1280,
+          "height": 533,
+          "avif": "/media/img/r1-banda-lg.avif",
+          "webp": "/media/img/r1-banda-lg.webp"
+        },
+        "sm": {
+          "width": 1280,
+          "height": 533,
+          "avif": "/media/img/r1-banda-sm.avif",
+          "webp": "/media/img/r1-banda-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRmoAAABXRUJQVlA4IF4AAAAQAgCdASoQAAcAA4BaJbACdAECv919WnIQAP6H1LChlBTsx/mdr66khgAS9RQ4g5IUjNgV9z5430d/+5dxZ75+8ubBRYhJPKF/JE5pIuTMGZ283NVUbVdccNMk3dgA"
+      }
+    },
+    "r2": {
+      "id": "r2",
+      "kind": "restaurante",
+      "source": {
+        "file": "restaurant2.png",
+        "width": 1280,
+        "height": 720
+      },
+      "paisaje": {
+        "lg": {
+          "width": 1280,
+          "height": 720,
+          "avif": "/media/img/r2-paisaje-lg.avif",
+          "webp": "/media/img/r2-paisaje-lg.webp"
+        },
+        "sm": {
+          "width": 1280,
+          "height": 720,
+          "avif": "/media/img/r2-paisaje-sm.avif",
+          "webp": "/media/img/r2-paisaje-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRmoAAABXRUJQVlA4IF4AAADQAQCdASoQAAkAA4BaJYgCdAC8llFMAAD+9ZvOscocBE7WfUX6KMpRi3n1cJoyXiejOkCcSULN+jBulTJUle+JswzQK7+ks3VGE38aTuoaxCOKtpFg2FCE0TMRqtwA"
+      },
+      "retrato": {
+        "lg": {
+          "width": 576,
+          "height": 720,
+          "avif": "/media/img/r2-retrato-lg.avif",
+          "webp": "/media/img/r2-retrato-lg.webp"
+        },
+        "sm": {
+          "width": 576,
+          "height": 720,
+          "avif": "/media/img/r2-retrato-sm.avif",
+          "webp": "/media/img/r2-retrato-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRqgAAABXRUJQVlA4IJwAAABQBACdASoQABQAPu1iqU2ppaOiMAgBMB2JaACdMoRwABt/ObN4gxbL+YWYAP4m3aCQrYA4iUbUBSo9qNXtgJTxWvcRuS8tEfyZl6j/SoVr5/lELelnT5kZqC5MYBj/urXNHICYxcxfaRNhYz00kScSqZrKU8CC2eEybo9LqZ6+gjvRimFdw6KPxH1gUzihWddOetKZ22hCRov6AAA="
+      },
+      "banda": {
+        "lg": {
+          "width": 1280,
+          "height": 533,
+          "avif": "/media/img/r2-banda-lg.avif",
+          "webp": "/media/img/r2-banda-lg.webp"
+        },
+        "sm": {
+          "width": 1280,
+          "height": 533,
+          "avif": "/media/img/r2-banda-sm.avif",
+          "webp": "/media/img/r2-banda-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRnQAAABXRUJQVlA4IGgAAAAQAgCdASoQAAcAA4BaJZgCdAYuRWep2ANMAP71m84hsJW40F/Plv6KC4MyK+Eoyl2VOkDn/5v4PjBiosrcBukU4Jw6ez8g2BaQpv6tVKpXqKJXuOUz466tT/5N7bEAiZsHOEk/+AAAAA=="
+      }
+    },
+    "r3": {
+      "id": "r3",
+      "kind": "restaurante",
+      "source": {
+        "file": "restaurant3.png",
+        "width": 1280,
+        "height": 720
+      },
+      "paisaje": {
+        "lg": {
+          "width": 1280,
+          "height": 720,
+          "avif": "/media/img/r3-paisaje-lg.avif",
+          "webp": "/media/img/r3-paisaje-lg.webp"
+        },
+        "sm": {
+          "width": 1280,
+          "height": 720,
+          "avif": "/media/img/r3-paisaje-sm.avif",
+          "webp": "/media/img/r3-paisaje-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRmoAAABXRUJQVlA4IF4AAAAwAgCdASoQAAkAA4BaJZgCdAYr7a3ah7rJ4AD+5pFGPflQwV91qXzm6UhzaOfc5/QEl83zHeWx2KnEtmAdN7sYqvPZeZSGkMw5gQ/Kzf8PGTiQ2Yy3t2GWrqRSIAAA"
+      },
+      "retrato": {
+        "lg": {
+          "width": 576,
+          "height": 720,
+          "avif": "/media/img/r3-retrato-lg.avif",
+          "webp": "/media/img/r3-retrato-lg.webp"
+        },
+        "sm": {
+          "width": 576,
+          "height": 720,
+          "avif": "/media/img/r3-retrato-sm.avif",
+          "webp": "/media/img/r3-retrato-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRqQAAABXRUJQVlA4IJgAAAAQBACdASoQABQAPu1iqU2ppaOiMAgBMB2JagCdAYwcbxRyS1Cw/zoHzAD+8rPCdKoTf9+D2uc6p0b1dUpa5hFbz8Ut392Ewuh8DdPy3uqQnaQMfmTC139IrGCnuRt5XFKRPXc5NvlJi0kytwE6ZPh34esShl93uniYx/8M4tRBMlDZG/QWOb0CsSnZ/ZucygQSYEtnGAAAAA=="
+      },
+      "banda": {
+        "lg": {
+          "width": 1280,
+          "height": 533,
+          "avif": "/media/img/r3-banda-lg.avif",
+          "webp": "/media/img/r3-banda-lg.webp"
+        },
+        "sm": {
+          "width": 1280,
+          "height": 533,
+          "avif": "/media/img/r3-banda-sm.avif",
+          "webp": "/media/img/r3-banda-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRmQAAABXRUJQVlA4IFgAAAAwAgCdASoQAAcAA4BaJZACdAYtVL09OWb4AAD9eM3ggIpOvJvFsrdnn/Otb+6y5+wXuMBK/P8lh4bwXbfsQJlH8NsjYsDp6PcIMWWU1S5ww2+JccvMAAAA"
+      }
+    },
+    "r4": {
+      "id": "r4",
+      "kind": "restaurante",
+      "source": {
+        "file": "restaurant4.png",
+        "width": 1280,
+        "height": 720
+      },
+      "paisaje": {
+        "lg": {
+          "width": 1280,
+          "height": 720,
+          "avif": "/media/img/r4-paisaje-lg.avif",
+          "webp": "/media/img/r4-paisaje-lg.webp"
+        },
+        "sm": {
+          "width": 1280,
+          "height": 720,
+          "avif": "/media/img/r4-paisaje-sm.avif",
+          "webp": "/media/img/r4-paisaje-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAADwAQCdASoQAAkAA4BaJZACdADdqpvsVogA/upSrVm4R2tct7al1o0+9NVWratNGfJK/KmTJ5E66Ur4tMJa3yk1IOVetE5QAAA="
+      },
+      "retrato": {
+        "lg": {
+          "width": 576,
+          "height": 720,
+          "avif": "/media/img/r4-retrato-lg.avif",
+          "webp": "/media/img/r4-retrato-lg.webp"
+        },
+        "sm": {
+          "width": 576,
+          "height": 720,
+          "avif": "/media/img/r4-retrato-sm.avif",
+          "webp": "/media/img/r4-retrato-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRngAAABXRUJQVlA4IGwAAADQAwCdASoQABQAPu1iqU2ppaOiMAgBMB2JQBOgA3ZGM5KBJl3qDYAA/tHy/vDPuiJcE+uskkP6ea83V1hhlY8sGLl4k1Cqo2ZuKtnyxn8r7GJvpAbjOKvjVhlGkOoc8w7XW1jQzZyHjZTRqgA="
+      },
+      "banda": {
+        "lg": {
+          "width": 1280,
+          "height": 533,
+          "avif": "/media/img/r4-banda-lg.avif",
+          "webp": "/media/img/r4-banda-lg.webp"
+        },
+        "sm": {
+          "width": 1280,
+          "height": 533,
+          "avif": "/media/img/r4-banda-sm.avif",
+          "webp": "/media/img/r4-banda-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRlIAAABXRUJQVlA4IEYAAAAwAgCdASoQAAcAA4BaJZACdAEWYVr5gulmAAD+0pxtIuhFaFf8/cMIlrx4coNF0lmcSPt1KUaL0QQajN0JjtkW6OfzSAAA"
+      }
+    },
+    "r5": {
+      "id": "r5",
+      "kind": "restaurante",
+      "source": {
+        "file": "restaurant5.png",
+        "width": 1280,
+        "height": 878
+      },
+      "paisaje": {
+        "lg": {
+          "width": 1280,
+          "height": 720,
+          "avif": "/media/img/r5-paisaje-lg.avif",
+          "webp": "/media/img/r5-paisaje-lg.webp"
+        },
+        "sm": {
+          "width": 1280,
+          "height": 720,
+          "avif": "/media/img/r5-paisaje-sm.avif",
+          "webp": "/media/img/r5-paisaje-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRmIAAABXRUJQVlA4IFYAAACwAQCdASoQAAkAA4BaJZQAAm12iYNUAP7vq7QJhM1Yjn2dh1RS2KTdwn/uqfSfMHR+1I9FxFJljYlx9FogxWSnbphmj4uJMvTz1KVuLzeAZ74HcyAAAA=="
+      },
+      "retrato": {
+        "lg": {
+          "width": 702,
+          "height": 878,
+          "avif": "/media/img/r5-retrato-lg.avif",
+          "webp": "/media/img/r5-retrato-lg.webp"
+        },
+        "sm": {
+          "width": 600,
+          "height": 750,
+          "avif": "/media/img/r5-retrato-sm.avif",
+          "webp": "/media/img/r5-retrato-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRpAAAABXRUJQVlA4IIQAAAAwBACdASoQABQAPu1iqU2ppaOiMAgBMB2JZQDG+agBD9T9XXMcCrxvGHAA/iKdNAHXayWJH+BxULLmfNcJVdorLzv+TckJhctMtcoKxqb79a9D+p1dBDRsyWcgIBXiMlX0VEvl4rzakpDNn54r3GU5DlpopnBhidZOM6Bmp1zatPHmAAA="
+      },
+      "banda": {
+        "lg": {
+          "width": 1280,
+          "height": 533,
+          "avif": "/media/img/r5-banda-lg.avif",
+          "webp": "/media/img/r5-banda-lg.webp"
+        },
+        "sm": {
+          "width": 1280,
+          "height": 533,
+          "avif": "/media/img/r5-banda-sm.avif",
+          "webp": "/media/img/r5-banda-sm.webp"
+        },
+        "placeholder": "data:image/webp;base64,UklGRlwAAABXRUJQVlA4IFAAAADQAQCdASoQAAcAA4BaJYwC7ADitXbgAAD+76u0CYTNWI59nYdUUtik3cJ/7qn0nzByIGy+B0QTe+rgObvnj9xvCjaZMYeCx6rHVwktv9kAAA=="
+      }
+    }
+  },
+  "video": {
+    "source": {
+      "file": "video.mp4",
+      "width": 852,
+      "height": 480,
+      "duration": 31.06,
+      "kb": 6093
+    },
+    "sources": {
+      "lg": {
+        "src": "/media/video/hero-lg.mp4",
+        "width": 852,
+        "height": 480,
+        "kb": 2797
+      },
+      "sm": {
+        "src": "/media/video/hero-sm.mp4",
+        "width": 852,
+        "height": 480,
+        "kb": 2263
+      }
+    },
+    "poster": {
+      "lg": {
+        "width": 852,
+        "height": 480,
+        "avif": "/media/video/hero-poster-lg.avif",
+        "webp": "/media/video/hero-poster-lg.webp"
+      },
+      "sm": {
+        "width": 852,
+        "height": 480,
+        "avif": "/media/video/hero-poster-sm.avif",
+        "webp": "/media/video/hero-poster-sm.webp"
+      },
+      "placeholder": "data:image/webp;base64,UklGRkwAAABXRUJQVlA4IEAAAACwAQCdASoQAAkAA4BaJYwC7ACZAE/QAP7y48ocNyrAA0xuUPnEKJ54L3YjF+QagGF1pH4zuP2pqD10hyNzmkAA"
+    }
+  }
+} as const satisfies MediaCatalog
+
+export type MediaId = keyof typeof media.images

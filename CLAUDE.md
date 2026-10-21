@@ -37,6 +37,19 @@ Motivo visual único: el **marco inclinado** (cuadrilátero rotado ~-16°, token
 - `pnpm dev` — servidor de desarrollo (http://localhost:5173)
 - `pnpm build` — typecheck (`tsc -b`) + build de producción
 - `pnpm lint` — ESLint
+- `pnpm media` — procesa `content/` → `public/media/` + `src/content/media.generated.ts`
+- `pnpm check:content` — ids de `editorial.json` ↔ mock ↔ medios
+- `pnpm api:check` — genera tipos desde `api/openapi.json` y verifica que `src/data/types.ts` sea idéntico (solo local)
+- QA de datos: `pnpm dev` → http://localhost:5173/dev/datos
+- Capturas: la extensión de Chrome puede no estar conectada; alternativa: Chrome headless
+  (`chrome.exe --headless=new --screenshot=... --window-size=1440,H --virtual-time-budget=30000 URL`).
+  Headless no baja de ~500px de ancho: no sirve para capturas mobile.
+
+## Datos
+
+- Operativo (backend): `src/data/` — tipos con forma exacta de la API, `PublicLocalRepository`, `MockPublicRepository` (lee `mocks/public-local.json`), `useLocal()` (un pedido por endpoint por carga, cacheado).
+- Editorial (por cliente): `src/config/site.config.ts`, `src/content/*`. Se une al operativo por id del backend.
+- Nunca escribir precios ni horarios a mano en editorial.
 
 ## Convenciones técnicas
 
@@ -46,4 +59,5 @@ Motivo visual único: el **marco inclinado** (cuadrilátero rotado ~-16°, token
 - Tipografía: `font-gigante` (Archivo ancho 125 / 800), `font-ui` (Archivo ancho 100), `font-serif` (Libre Caslon Text).
   Escala fluida: `text-gigante`, `text-display`, `text-titulo`, `text-subtitulo`, `text-cuerpo`, `text-ui`, `text-etiqueta`.
 - Overlay oscuro sobre fotos/video: utilidad `velo`.
-- TypeScript fijado en 6.0.x hasta que `typescript-eslint` soporte TS 7.
+- TypeScript fijado en `~6.0` hasta que `typescript-eslint` soporte TS 7.
+- pnpm 11 bloquea scripts de instalación: los permitidos van en `pnpm-workspace.yaml` → `allowBuilds` (hoy solo `ffmpeg-static`).

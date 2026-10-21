@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "types": [],
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+    "skipLibCheck": false,
+    "strict": true
+  },
+  "files": ["contract/check.ts"]
+}

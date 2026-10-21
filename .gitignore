@@ -20,9 +20,9 @@ Thumbs.db
 
 # fuera del repo a propósito (ver ROADMAP §3)
 # contrato del backend: local, nunca se sube (openapi.json + tipos generados)
-api/
+/api/
 # capturas de referencia y material crudo del usuario
-references/
-content/
+/references/
+/content/
 # salida del pipeline de medios: ignorada hasta confirmar licencia libre de las fotos
-public/media/
+/public/media/

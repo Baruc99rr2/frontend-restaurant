@@ -1,6 +1,7 @@
 # ROADMAP — Frontend genérico de restaurante (template vendible)
 
 Carpeta de trabajo: `D:\WebsSkyTech\trabajos\frontend` (repo git propio, hermano de `proyecto-ia` y `proyecto-ia-panel`, **no** dentro de `proyecto-ia`).
+Repo remoto **público**: https://github.com/Baruc99rr2/frontend-restaurant. Nada privado del backend entra al repo (ni el contrato `api/openapi.json`, ni tokens, ni URLs internas).
 Ejecutor: Claude Code. Planificación y revisión: chat de Claude.
 Backend: no se conecta todavía, pero los datos locales imitan desde el día uno la forma exacta del endpoint público del backend (sub-fase 6.8), así conectar es cambiar una implementación (ver §4).
 
@@ -15,10 +16,12 @@ Qué es y qué no es: esta es la **web pública** de un restaurante (lo que ve e
 - Windows/PowerShell: todo script va a un archivo (`scripts/*.mjs`), nunca inline ni en heredoc.
 - Paquetes con `pnpm`. Repo independiente: no leer ni tocar nada de `proyecto-ia` .
 - Plata en **centavos enteros** y horarios en **UTC**, convertidos a `America/Argentina/Jujuy` solo al mostrarlos (mismas reglas que el backend).
-- Las imágenes de `reference/` se miran con la herramienta de visión cuando la sub-fase lo indique. Son referencia de layout y movimiento, no de colores.
+- Las imágenes de `references/` se miran con la herramienta de visión cuando la sub-fase lo indique. Son referencia de layout y movimiento, no de colores.
 - Decisiones nuevas → `DECISIONES.md` (una línea por decisión + motivo).
 
-### Mapa de referencias (`reference/`)
+### Mapa de referencias (`references/`)
+
+Los archivos se llaman `imagenN.png`, con N = número de la tabla (ref. 06 = `references/imagen6.png`). La carpeta está fuera del repo (`.gitignore`).
 
 | Archivo | Uso |
 |---|---|
@@ -84,10 +87,11 @@ Overlay oscuro sobre video/fotos: `rgba(0,0,0,.55)` + viñeta radial. Valores en
 
 ```
 frontend/
+  api/                       ← openapi.json del backend + tipos generados. LOCAL, fuera del repo a propósito: nunca se sube
   mocks/                     ← public-local.json (forma exacta del endpoint público)
-  reference/                 ← capturas (01..14), solo lectura
-  content/                   ← material crudo del usuario, solo lectura
-  public/media/              ← salida generada por scripts (no editar a mano)
+  references/                ← capturas imagen1..imagen14.png, solo lectura, fuera del repo
+  content/                   ← material crudo del usuario, solo lectura, fuera del repo
+  public/media/              ← salida generada por scripts (no editar a mano); fuera del repo hasta confirmar licencia de las fotos
   scripts/
     process-images.mjs
     process-video.mjs
@@ -119,7 +123,7 @@ Los datos se parten en dos orígenes, y esa frontera es la que hace vendible el 
 | **Operativo** (backend) | nombre, dirección, teléfono, horarios, abierto/cerrado, categorías, platos, precios, alérgenos, stock, menú del día, zonas, cocina tomando pedidos | `mocks/public-local.json` con la forma exacta del endpoint | `ApiPublicRepository` contra el endpoint |
 | **Editorial** (este repo) | fotos, textos de LA CASA, platos insignia, eventos, FAQ, redes, coordenadas del mapa, colores, tipografías | `site.config.ts`, `copy.es.ts`, `editorial.json` | queda igual: es lo que se diseña por cliente |
 
-- **Contrato:** por ahora los tipos son propios (`src/data/types.ts`), pensados con la forma del endpoint público descrita arriba. En F12 se generan los tipos reales con `openapi-typescript` directo desde la URL del backend levantado (`/docs/json`), sin copiar archivos, y se escribe un mapper API → tipos propios. Los componentes no cambian.
+- **Contrato:** vive en `api/openapi.json`, una copia local del backend que está **fuera del repo a propósito** (es local y nunca se sube). Los tipos propios (`src/data/types.ts`, versionados) siguen la forma del endpoint público; `pnpm api:types` genera los tipos reales desde ese archivo dentro de `api/`, y un chequeo local verifica que los propios coincidan. Sin `api/` el proyecto compila igual. En F12 se escribe el mapper API → tipos propios (si hace falta). Los componentes no cambian.
 - **Unión por id:** `editorial.json` asocia fotos y textos extra a categorías y platos por su id del backend (`{ dishId → mediaId, categoryId → coverMediaId, origen, región }`). Un plato sin entrada editorial se muestra igual, sin foto; un plato nuevo cargado por el dueño aparece solo.
 - **Interfaz única:** `PublicLocalRepository` con `getLocal()`, `getCarta()`, `getMenuDelDia()`. Hoy `MockPublicRepository`; después `ApiPublicRepository`. Los componentes solo conocen la interfaz y un hook `useLocal()` que hace **un solo pedido por carga** y lo cachea (la API tiene límite de pedidos por minuto).
 - Campos que probablemente no estén en el backend (porción o gramos, fotos, origen del plato) van a `editorial.json`, no al mock operativo.
@@ -433,7 +437,7 @@ Cada sub-fase: leer `CLAUDE.md`, `ESTADO.md`, la sección indicada de este ROADM
 - Commit: `chore(web): pulido y documentacion white-label`
 
 ### F12 — Conexión al backend (no ejecutar todavía)
-- Se planifica cuando haya un local real. Tipos con `openapi-typescript` desde `/docs/json` del backend, mapper a los tipos propios, `ApiPublicRepository`, URL por variable de entorno, dominio cargado en CORS del backend, estados de carga y error con el estilo del sitio, y prueba contra `restaurante-demo`.
+- Se planifica cuando haya un local real. Tipos con `openapi-typescript` desde `api/openapi.json` (local, actualizado desde `/docs/json` del backend; nunca se sube), mapper a los tipos propios, `ApiPublicRepository`, URL por variable de entorno, dominio cargado en CORS del backend, estados de carga y error con el estilo del sitio, y prueba contra `restaurante-demo`.
 
 ---
 

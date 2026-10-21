@@ -23,10 +23,14 @@ Ningún cambio de estado es brusco.
 
 Motivo visual único: el **marco inclinado** (cuadrilátero rotado ~-16°, token `--marco-rotacion`). Se repite con intención (marco del modo cerrado, imagen central de LA CASA, cartelitos de la carta, polaroids). Todo lo demás es sobrio.
 
-## Rutas reales (difieren del ROADMAP)
+## Repo y carpetas fuera del repo
 
-- Las capturas están en `references/imagenN.png` (no `reference/NN`). `imagenN.png` = ref. N del mapa de §0 (p. ej. `imagen6.png` = ref. 06).
-- `content/` (material crudo) y `api/` son solo lectura y se abren recién en F1.
+- Remoto **público**: https://github.com/Baruc99rr2/frontend-restaurant. Nada privado del backend entra al repo.
+- Fuera del repo (`.gitignore`), solo lectura:
+  - `api/` — `openapi.json` del backend + tipos generados. Local a propósito: **nunca se sube**.
+  - `references/` — capturas `imagenN.png` (N = ref. del mapa de §0; `imagen6.png` = ref. 06).
+  - `content/` — material crudo del usuario.
+- `public/media/` también está ignorada hasta confirmar que las fotos son de licencia libre.
 
 ## Comandos
 

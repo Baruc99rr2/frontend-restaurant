@@ -17,3 +17,12 @@ pnpm-debug.log*
 Thumbs.db
 *.suo
 *.sw?
+
+# fuera del repo a propósito (ver ROADMAP §3)
+# contrato del backend: local, nunca se sube (openapi.json + tipos generados)
+api/
+# capturas de referencia y material crudo del usuario
+references/
+content/
+# salida del pipeline de medios: ignorada hasta confirmar licencia libre de las fotos
+public/media/

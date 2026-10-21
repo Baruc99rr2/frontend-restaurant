@@ -191,7 +191,7 @@ Probado en Chrome (headless por DevTools, con emulación táctil a 390 px) con `
 - Selección inicial en `invitados.inicial` (`40`), `ocasiones[0].id` (`'dia-de-la-madre'`) y `formatos[0].id` (`'coctel'`) → al entrar a `EVENTOS` el primer chip de cada grupo está activo, consistente con `LA CASA` y `PLATOS`.
 - En la tarjeta de `kg` (`id: 'kg'`), `CountUp` recibe `decimals={1}` con un formateador `maximumFractionDigits: 1, minimumFractionDigits: 0` → cuando el resultado es entero (`18`, `6`, `90`) se muestra sin `,0` y cuando tiene decimal (`24,8`, `4,5`) no se redondea a entero por el `decimals={0}` por defecto de `CountUp`.
 - En la tarjeta de `pasos` (`id: 'pasos'`), la etiqueta usa `WipeSwap` (`"bocados"` en `Cóctel` ↔ `"pasos de menú"` en `Mesa servida` y `Asado a la vista`) → cumple la regla de oro de movimiento cuando cambia la unidad del resultado.
-- Fondo con veta cálida diagonal (`radial-gradient` mezclando `--color-oro` y `--color-vino` con `color-mix`) dentro del inset del marco abierto sobre la foto `r3` oscurecida de `StageMedia` → reproduce el brillo cálido de la ref. 04 usando exclusivamente tokens de marca.
+- Fondo con veta cálida diagonal (`radial-gradient` mezclando `--color-oro`, `--color-hoja` y `--color-monte` con `color-mix`, sin `--color-vino`) dentro del inset del marco abierto sobre la foto `r3` oscurecida de `StageMedia` → reproduce el brillo cálido de la ref. 04 usando exclusivamente tokens permitidos (§1 reserva `vino` al líquido del `MenuButton`).
 
 
 

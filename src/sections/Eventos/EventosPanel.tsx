@@ -99,7 +99,7 @@ export function EventosPanel({ active }: Props) {
         <div data-open-text className="absolute inset-0">
           <div
             ref={glowRef}
-            className="size-full opacity-0 [background:radial-gradient(ellipse_75%_55%_at_62%_38%,color-mix(in_srgb,var(--color-oro)_24%,transparent)_0%,color-mix(in_srgb,var(--color-vino)_18%,transparent)_48%,transparent_80%)]"
+            className="size-full opacity-0 [background:radial-gradient(ellipse_75%_55%_at_62%_38%,color-mix(in_srgb,var(--color-oro)_26%,transparent)_0%,color-mix(in_srgb,var(--color-oro)_14%,var(--color-hoja)_22%)_48%,color-mix(in_srgb,var(--color-monte)_30%,transparent)_80%)]"
           />
         </div>
       </div>

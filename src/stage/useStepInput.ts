@@ -120,7 +120,7 @@ export function useStepInput({ enabled, onStep }: Options) {
       if (enabledRef.current) onStepRef.current(dir)
     }
     const wheel = createWheelGesture(emit)
-    let touchTarget: EventTarget | null = null
+    let touchScroll = { down: false, up: false }
 
     const observer = Observer.create({
       target: window,
@@ -135,14 +135,17 @@ export function useStepInput({ enabled, onStep }: Options) {
         wheel.push(delta, performance.now(), puedeScrollear(e.target, dir))
       },
       onPress: (self) => {
-        touchTarget = self.event.target
+        // Se mira al apoyar el dedo: si el scroller interno podía moverse en esa
+        // dirección, el gesto es para scrollearlo aunque al soltar ya esté en el borde.
+        const target = self.event.target
+        touchScroll = { down: puedeScrollear(target, 1), up: puedeScrollear(target, -1) }
       },
       onRelease: (self) => {
         const dy = (self.y ?? 0) - (self.startY ?? 0)
         const dx = (self.x ?? 0) - (self.startX ?? 0)
         if (Math.abs(dy) < SWIPE_UMBRAL || Math.abs(dy) < Math.abs(dx)) return
         const dir: StepDir = dy < 0 ? 1 : -1 // dedo hacia arriba → panel siguiente
-        if (puedeScrollear(touchTarget, dir)) return
+        if (dir > 0 ? touchScroll.down : touchScroll.up) return
         emit(dir)
       },
     })

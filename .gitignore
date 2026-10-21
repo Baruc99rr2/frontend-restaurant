@@ -26,3 +26,6 @@ Thumbs.db
 /content/
 # salida del pipeline de medios: ignorada hasta confirmar licencia libre de las fotos
 /public/media/
+
+# Capturas de QA (pnpm qa / qa:regresion)
+/qa/shots/

@@ -50,6 +50,31 @@ export function Navbar({
 
   const [mobileSheetOpen, setMobileSheetOpen] = useState(false)
   const reduced = useReducedMotion()
+  // Sin links (modo cerrado) la lámina queda cerrada aunque estuviera abierta.
+  const sheetOpen = mobileSheetOpen && showLinks
+  const linksRef = useRef<HTMLElement | null>(null)
+  const sheetButtonRef = useRef<HTMLButtonElement | null>(null)
+  const linksFirstRef = useRef(true)
+
+  // Píldora y botón de links: fundido + leve desplazamiento al mostrarse/ocultarse.
+  useGSAP(
+    () => {
+      const targets = [linksRef.current, sheetButtonRef.current].filter(Boolean)
+      const vars = { autoAlpha: showLinks ? 1 : 0, y: showLinks || reduced ? 0 : -8 }
+      if (linksFirstRef.current) {
+        linksFirstRef.current = false
+        gsap.set(targets, vars)
+        return
+      }
+      gsap.to(targets, {
+        ...vars,
+        duration: reduced ? motionDuration.reduced : motionDuration.navbarIndicator,
+        delay: showLinks && !reduced ? 0.15 : 0,
+        ease: motionEase.ui,
+      })
+    },
+    { dependencies: [showLinks, reduced] },
+  )
 
   const syncIndicator = useCallback(
     (animate: boolean) => {
@@ -171,7 +196,7 @@ export function Navbar({
       const tl = gsap.timeline()
       sheetTlRef.current = tl
 
-      if (mobileSheetOpen) {
+      if (sheetOpen) {
         gsap.set(sheet, { display: 'block' })
         tl.fromTo(
           sheet,
@@ -197,7 +222,7 @@ export function Navbar({
         tl.kill()
       }
     },
-    { dependencies: [mobileSheetOpen, reduced], scope: navRef },
+    { dependencies: [sheetOpen, reduced], scope: navRef },
   )
 
   const [linea1, linea2] = siteConfig.marca.wordmark
@@ -227,8 +252,13 @@ export function Navbar({
       </button>
 
       {/* Centro (Desktop): Píldora de vidrio con barra dorada deslizante (refs 01–02) */}
-      {showLinks && (
-        <nav aria-label="Secciones principales" className="hidden @min-[75rem]:block">
+      {/* Siempre montada: con `showLinks` cambia con fundido, nunca aparece de golpe. */}
+      <nav
+        ref={linksRef}
+        aria-label="Secciones principales"
+        aria-hidden={!showLinks}
+        className="hidden @min-[75rem]:block"
+      >
           <ul
             ref={pillRef}
             className="relative flex items-center gap-1 rounded-full border border-champan/15 bg-champan/10 px-3 py-1.5 backdrop-blur-md"
@@ -261,16 +291,16 @@ export function Navbar({
             })}
           </ul>
         </nav>
-      )}
 
       {/* Derecha: Botón de links (mobile) + Botón MENU */}
       <div className="flex shrink-0 items-center gap-2 sm:gap-2.5">
-        {showLinks && (
           <button
+            ref={sheetButtonRef}
             type="button"
-            aria-expanded={mobileSheetOpen}
+            aria-hidden={!showLinks}
+            aria-expanded={sheetOpen}
             aria-controls="navbar-mobile-sheet"
-            aria-label={mobileSheetOpen ? siteConfig.botones.cerrar : 'Secciones'}
+            aria-label={sheetOpen ? siteConfig.botones.cerrar : 'Secciones'}
             onClick={() => setMobileSheetOpen((v) => !v)}
             className="relative inline-flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-full border border-champan/20 bg-champan/10 text-champan backdrop-blur-md transition-colors hover:border-oro hover:text-oro focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro @min-[75rem]:hidden"
           >
@@ -278,23 +308,21 @@ export function Navbar({
             <ListFilter
               aria-hidden="true"
               className={`absolute size-5 transition-[opacity,transform] duration-300 ${
-                mobileSheetOpen ? 'scale-75 rotate-90 opacity-0' : 'opacity-100'
+                sheetOpen ? 'scale-75 rotate-90 opacity-0' : 'opacity-100'
               }`}
             />
             <X
               aria-hidden="true"
               className={`absolute size-5 transition-[opacity,transform] duration-300 ${
-                mobileSheetOpen ? 'opacity-100' : 'scale-75 -rotate-90 opacity-0'
+                sheetOpen ? 'opacity-100' : 'scale-75 -rotate-90 opacity-0'
               }`}
             />
           </button>
-        )}
 
         <MenuButton open={menuOpen} onToggle={onToggleMenu} />
       </div>
 
       {/* Lámina simple con los 5 links para mobile */}
-      {showLinks && (
         <div
           id="navbar-mobile-sheet"
           ref={sheetRef}
@@ -327,7 +355,6 @@ export function Navbar({
             })}
           </ul>
         </div>
-      )}
     </header>
   )
 }

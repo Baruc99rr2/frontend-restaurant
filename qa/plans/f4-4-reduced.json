@@ -1,0 +1,21 @@
+{
+  "descripcion": "F4 · Reduced motion en modo abierto: abre con fade, el video no corre, el paso es un fundido.",
+  "steps": [
+    { "viewport": { "width": 1440, "height": 900 } },
+    { "reducedMotion": true },
+    { "nav": "http://localhost:5173/" },
+    { "wait": 2500 },
+    { "eval": "(() => { const root=document.querySelector('[data-mode]'); const v=document.querySelector('video'); window.__st=()=>[root.dataset.mode, root.dataset.active, root.dataset.texts ?? '-', location.hash, v.paused ? 'pausa' : 'play']; return __st() })()", "expect": ["closed", "0", "-", "", "pausa"] },
+    { "key": "Enter" },
+    { "wait": 700 },
+    { "eval": "__st()", "label": "20 abre en ~0,2 s y el video no corre (queda el póster)", "expect": ["open", "0", "0", "#home", "pausa"] },
+    { "key": "ArrowDown" },
+    { "wait": 100 },
+    { "eval": "[...document.querySelectorAll('[data-panel]')].filter(l => l.style.visibility === 'visible').map(l => [l.dataset.panel, l.style.transform])", "label": "21 a mitad: fundido, nada se desplaza", "expect": [["home", ""], ["la-casa", "translate(0px, 0px)"]] },
+    { "wait": 500 },
+    { "eval": "__st()", "label": "22 fin del paso", "expect": ["open", "1", "1", "#la-casa", "pausa"] },
+    { "key": "Escape" },
+    { "wait": 800 },
+    { "eval": "__st()", "label": "23 Esc cierra", "expect": ["closed", "1", "-", "", "pausa"] }
+  ]
+}

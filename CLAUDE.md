@@ -44,9 +44,11 @@ Motivo visual único: el **marco inclinado** (cuadrilátero rotado ~-16°, token
 - Escenario (`src/stage/`): estado en `stageMachine.ts` (reducer puro); los timelines viven en `Stage.tsx`/`Intro.tsx`
   y al terminar despachan el evento siguiente. Movimiento nuevo → usar/extender las primitivas de `src/motion/`, no duplicarlas.
 - Capturas y QA de movimiento: si la extensión de Chrome no está conectada, `pnpm qa <plan.json>`
-  (`scripts/qa-browser.mjs`: Chrome headless por DevTools, sin dependencias). El plan (JSON, fuera del repo)
-  admite viewport con emulación táctil (sirve para mobile real a 390 px), reduced motion, wheel, teclado,
-  swipe, clic, `eval` y capturas. Ver el encabezado del script.
+  (`scripts/qa-browser.mjs`: Chrome headless por DevTools, sin dependencias). El plan (JSON) admite viewport
+  con emulación táctil (sirve para mobile real a 390 px), reduced motion, wheel, teclado, swipe, clic,
+  `eval` (con `expect` opcional: falla si el resultado difiere) y capturas. Ver el encabezado del script.
+- **Regresión:** `pnpm qa:regresion` corre todos los planes de `qa/plans/` (con `pnpm dev` levantado).
+  Cada fase suma sus planes (`fN-*.json`) y antes de cerrar corre la regresión completa. Capturas en `qa/shots/` (ignorada).
 
 ## Datos
 

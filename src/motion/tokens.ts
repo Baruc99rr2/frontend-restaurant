@@ -83,6 +83,20 @@ export const motionDuration = {
     openClose: 1.4,
     /** Textos del modo cerrado al abrir/cerrar. */
     openCloseTexts: 0.4,
+    open: {
+      /** Al abrir: momento (s) en que entran los textos del panel. */
+      textsAt: 0.55,
+      /** Al cerrar: los textos del panel salen antes de que el marco se achique. */
+      frameCloseDelay: 0.3,
+      /** Salida de textos del panel: opacity + y, stagger corto (§5). */
+      textOutY: -12,
+      textOutStagger: 0.04,
+      /** Panel saliente en el paso abierto: sube un 30% y se oscurece. */
+      outgoingYPercent: 30,
+      outgoingBrightness: 0.35,
+      /** Velo sobre el media del modo abierto. */
+      velo: 0.8,
+    },
     openStepLock: 2.0,
     openStep: {
       textOut: 0.45,

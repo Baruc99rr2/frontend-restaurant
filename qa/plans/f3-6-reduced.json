@@ -1,0 +1,15 @@
+{
+  "descripcion": "F3 · Reduced motion: intro con fades y paso cerrado con fundido de 200 ms (sin desplazar).",
+  "steps": [
+    { "viewport": { "width": 1440, "height": 900 } },
+    { "reducedMotion": true },
+    { "nav": "http://localhost:5173/" },
+    { "wait": 2500 },
+    { "eval": "document.querySelector('[data-mode]').dataset.mode", "label": "S intro corta → cerrado", "expect": "closed" },
+    { "key": "ArrowDown" },
+    { "wait": 100 },
+    { "eval": "[...document.querySelectorAll('[data-panel]')].filter(l => l.style.visibility === 'visible').map(l => [l.dataset.panel, l.style.transform])", "label": "T a mitad: fundido, nada se desplaza", "expect": [["home", ""], ["la-casa", "translate(0px, 0px)"]] },
+    { "wait": 500 },
+    { "eval": "[document.querySelector('[data-mode]').dataset.active, document.querySelector('video').paused]", "label": "U fin", "expect": ["1", true] }
+  ]
+}

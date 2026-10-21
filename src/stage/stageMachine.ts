@@ -68,7 +68,8 @@ export function stageReducer(state: StageState, event: StageEvent): StageState {
 
     case 'STEP':
     case 'GOTO': {
-      if (state.mode !== 'closed') return state // F4: pasos en modo abierto
+      // Pasos en modo cerrado (corte dentro del marco) y abierto (paso entre secciones).
+      if (state.mode !== 'closed' && state.mode !== 'open') return state
       const target = targetFor(state, event)
       if (state.lock) {
         // Cola de 1: solo si no hay nada encolado y el pedido mueve algo.

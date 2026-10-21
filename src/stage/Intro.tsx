@@ -28,6 +28,8 @@ type Props = {
   /** Entrada directa en modo abierto (la URL trae hash). */
   openOnEnter: boolean
   onTextsIn: () => void
+  /** Entrada directa en modo abierto: mostrar los textos del panel. */
+  onEnterOpen: () => void
 }
 
 const RADIO = 30
@@ -75,14 +77,17 @@ export function Intro({
   initialIndex,
   openOnEnter,
   onTextsIn,
+  onEnterOpen,
 }: Props) {
   const { dispatch } = useStage()
   const loaderRef = useRef<HTMLDivElement | null>(null)
   const ringRef = useRef<SVGCircleElement | null>(null)
   const onTextsInRef = useRef(onTextsIn)
+  const onEnterOpenRef = useRef(onEnterOpen)
   useEffect(() => {
     onTextsInRef.current = onTextsIn
-  }, [onTextsIn])
+    onEnterOpenRef.current = onEnterOpen
+  }, [onTextsIn, onEnterOpen])
 
   useEffect(() => {
     const loader = loaderRef.current
@@ -139,6 +144,7 @@ export function Intro({
           frame.set({ kind: 'open' })
           dispatch({ type: 'READY_OPEN', index: initialIndex })
           onTextsInRef.current()
+          onEnterOpenRef.current()
         })
         tl.to([wrap, chrome], { autoAlpha: 1, duration: reduced ? motionDuration.reduced : t.chromeFade, ease: motionEase.ui })
         return

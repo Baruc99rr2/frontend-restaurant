@@ -18,6 +18,7 @@ pnpm dev          # http://localhost:5173
 |---|---|
 | `pnpm dev` | Servidor de desarrollo. `/` = escenario · solo en dev: `/dev` primitivas y navbar, `/dev/datos` datos y medios, `/dev/tokens` muestras |
 | `pnpm qa <plan.json>` | QA en Chrome headless por DevTools (viewport/táctil, reduced motion, wheel, teclado, capturas). Ver `scripts/qa-browser.mjs` |
+| `pnpm qa:regresion` | Corre todos los planes de `qa/plans/` con sus resultados esperados (necesita `pnpm dev`). Capturas en `qa/shots/` |
 | `pnpm build` | Typecheck + build de producción |
 | `pnpm lint` | ESLint |
 | `pnpm media` | Procesa `content/` → `public/media/` y `src/content/media.generated.ts` |

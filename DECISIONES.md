@@ -152,3 +152,19 @@ Probado en Chrome (headless por DevTools, con emulación táctil a 390 px) con `
 - Velo `noche/25` sobre el media del escenario y `velo` en el placeholder abierto. Motivo: legibilidad de etiquetas y texto sobre fotos claras.
 - `Picture` suma `fetchPriority` y `onLoad`: la foto del panel de entrada carga con prioridad alta y el resto con baja, todas `eager` (en capas ocultas `lazy` no cargaba hasta mostrarse).
 - `getReducedMotionSnapshot()` para la intro (timeline que se arma una sola vez por montaje).
+
+## F4 — Escenario II: modo abierto, transiciones y HOME (2026-10-21)
+
+- El reducer acepta `STEP`/`GOTO` también en modo abierto (misma cola de 1). `Stage` elige el timeline por modo: corte dentro del marco (cerrado) o el paso de §5 (abierto). Motivo: una sola máquina y un solo input para los dos modos.
+- Paso abierto con los tiempos de `motionDuration.stage.openStep` (ya estaban desde F2): textos fuera 0–0,45 s (opacity + y -12, stagger 0,04), marco a inset 0 a los 0,2 s, panel nuevo desde abajo 0,6–1,4 s mientras el actual sube un 30% y baja a `brightness(0.35)`, marco al inset a 1,4 s, textos nuevos a 1,8 s. El input se libera a 2,0 s; los reveals siguen hasta ~2,6 s.
+- `textsPanel` (estado de `Stage`) decide qué panel muestra sus textos, y lo cambian los timelines (abrir a 0,55 s, paso a 1,8 s, cerrar después de la salida). Motivo: separa "qué panel está activo" de "cuándo entran sus textos" sin tocar la máquina.
+- La salida de textos del panel es un fundido de los `[data-open-text]` (wrappers), no la salida enmascarada de `Reveal`. Motivo: §5 pide "se desvanecen (opacity + y -12px)"; el wrapper se limpia antes de que el panel vuelva a entrar.
+- El video corre cuando HOME es el panel que se muestra en modo abierto (`displayIndex`): se pausa apenas arranca la salida de HOME y vuelve a correr al empezar la entrada. Sigue pausado en modo cerrado, con la pestaña oculta y con reduced motion.
+- Hash: abrir y cada paso abierto escriben `#clave` (`replaceState`); cerrar lo limpia. Un hash que no es un panel se ignora y se limpia al cargar.
+- Navbar: la píldora de links y el botón de la lámina quedan siempre montados y aparecen/desaparecen con fundido (antes se montaban de golpe con `showLinks`). La lámina se cierra sola si los links se ocultan. El wordmark lleva a HOME en los dos modos.
+- HOME (§8, ref. 01): un bloque `champan` por línea, del ancho del texto (`whitespace-nowrap`, tamaño fluido 2,25–5,75 rem); subtítulo con `Reveal words`; "Ver la carta" (por ahora abre el estado del botón MENU; el overlay es F9) y "Reservar mesa" (WhatsApp de config); "Conocer la casa" → LA CASA; columna derecha con `CountUp` (cuenta desde 0 al entrar). En vertical, la columna de datos pasa abajo en grilla 2×2.
+- Cada panel abierto es un scroller interno (`data-stage-scroller`, `touch-action: pan-y`). En HOME en 390×844 entra sin scroll; en pantallas bajas scrollea y el paso de panel llega recién en el borde.
+- Swipe: se decide al apoyar el dedo si el scroller interno podía moverse en esa dirección. Motivo: antes un mismo swipe scrolleaba hasta el borde y además pasaba de panel.
+- Velo (`velo`) sobre el media en modo abierto, con fundido al abrir y cerrar.
+- `OpenPlaceholder` de F3 se reemplaza por `OpenView`; los 5 paneles que faltan usan un placeholder simple (título + frases + "Este panel se está armando.") hasta F5–F8.
+- QA versionada: planes en `qa/plans/*.json` con `expect` (comparación por JSON; el plan falla si difiere) y `pnpm qa:regresion` (`scripts/qa-all.mjs`) los corre todos. Las capturas van a `qa/shots/` (ignorada). Motivo: la regresión de F3 tiene que poder repetirse en cada fase, también por otro agente. Los planes no tienen nada privado.

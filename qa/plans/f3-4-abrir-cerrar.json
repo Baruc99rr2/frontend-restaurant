@@ -1,0 +1,28 @@
+{
+  "descripcion": "F3 · Clic en número lateral, clic en el marco, Esc, clic fuera del polígono y Enter.",
+  "steps": [
+    { "viewport": { "width": 1440, "height": 900 } },
+    { "nav": "http://localhost:5173/" },
+    { "wait": 4500 },
+    { "eval": "(() => { const root=document.querySelector('[data-mode]'); window.__log=[]; new MutationObserver(()=>{ const e=[root.dataset.active, root.dataset.mode]; const l=__log[__log.length-1]; if(!l||l.join()!==e.join()) __log.push(e) }).observe(root,{attributes:true,attributeFilter:['data-active','data-mode']}); window.__take=()=>__log.splice(0); return root.dataset.mode })()", "expect": "closed" },
+    { "move": { "x": 40, "y": 426 } },
+    { "wait": 600 },
+    { "eval": "(() => { const b=[...document.querySelectorAll('nav[aria-label=Paneles] button')][4]; const r=b.getBoundingClientRect(); return [Math.round(r.x+r.width/2), Math.round(r.y+r.height/2)] })()", "label": "posición de 05 desplegado", "expect": [50, 516] },
+    { "click": { "x": 46, "y": 516 } },
+    { "move": { "x": 720, "y": 300 } },
+    { "wait": 1600 },
+    { "eval": "__take()", "label": "I clic en 05 → salto directo", "expect": [["4", "closed"]] },
+    { "click": { "x": 720, "y": 400 } },
+    { "wait": 2200 },
+    { "eval": "[__take(), location.hash]", "label": "J clic en el marco → abre y escribe el hash", "expect": [[["4", "opening"], ["4", "open"]], "#preguntas"] },
+    { "key": "Escape" },
+    { "wait": 2000 },
+    { "eval": "[__take(), location.hash]", "label": "K Esc → cierra y limpia la URL", "expect": [[["4", "closing"], ["4", "closed"]], ""] },
+    { "click": { "x": 60, "y": 520 } },
+    { "wait": 600 },
+    { "eval": "__take()", "label": "L clic fuera del polígono no abre", "expect": [] },
+    { "key": "Enter" },
+    { "wait": 2000 },
+    { "eval": "__take()", "label": "M Enter abre", "expect": [["4", "opening"], ["4", "open"]] }
+  ]
+}

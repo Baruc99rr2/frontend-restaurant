@@ -1,0 +1,24 @@
+{
+  "descripcion": "F3 · Mobile táctil 390×844: swipe, swipe corto, swipe hacia abajo y tap en el marco.",
+  "steps": [
+    { "viewport": { "width": 390, "height": 844, "mobile": true, "scale": 2 } },
+    { "nav": "http://localhost:5173/" },
+    { "wait": 4500 },
+    { "eval": "(() => { const root=document.querySelector('[data-mode]'); window.__log=[]; new MutationObserver(()=>{ const e=[root.dataset.active, root.dataset.mode]; const l=__log[__log.length-1]; if(!l||l.join()!==e.join()) __log.push(e) }).observe(root,{attributes:true,attributeFilter:['data-active','data-mode']}); window.__take=()=>__log.splice(0); return [root.dataset.mode, document.documentElement.scrollWidth] })()", "label": "cerrado, sin scroll horizontal", "expect": ["closed", 390] },
+    { "shot": "../shots/f3-m-cerrado-home.png" },
+    { "swipe": { "x": 200, "fromY": 620, "toY": 380, "steps": 8 } },
+    { "wait": 500 },
+    { "shot": "../shots/f3-m-paso.png" },
+    { "wait": 1300 },
+    { "swipe": { "x": 200, "fromY": 620, "toY": 600, "steps": 4 } },
+    { "wait": 1300 },
+    { "eval": "__take()", "label": "N swipe 240 px → paso; 20 px → nada", "expect": [["1", "closed"]] },
+    { "shot": "../shots/f3-m-cerrado-lacasa.png" },
+    { "swipe": { "x": 200, "fromY": 380, "toY": 620, "steps": 8 } },
+    { "wait": 1500 },
+    { "eval": "__take()", "label": "O swipe hacia abajo → panel anterior", "expect": [["0", "closed"]] },
+    { "swipe": { "x": 200, "fromY": 420, "toY": 420, "steps": 1 } },
+    { "wait": 2000 },
+    { "eval": "__take()", "label": "P tap en el marco → abre", "expect": [["0", "opening"], ["0", "open"]] }
+  ]
+}

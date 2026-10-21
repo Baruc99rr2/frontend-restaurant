@@ -1,6 +1,6 @@
 # ESTADO
 
-Última actualización: 2026-10-21 — **F3 completa**.
+Última actualización: 2026-10-21 — **F4 completa**.
 Repo remoto: https://github.com/Baruc99rr2/frontend-restaurant (público).
 
 ## Sub-fases
@@ -12,45 +12,46 @@ Repo remoto: https://github.com/Baruc99rr2/frontend-restaurant (público).
 | F1 — Assets, contrato y contenido | ✅ hecha | `feat(web): medios, contrato y contenido` |
 | F2 — Primitivas de movimiento, Navbar y botón MENU | ✅ hecha (Gemini) + revisión | `feat(web): primitivas de movimiento, navbar y botón menu` · `fix(web): revision de F2` |
 | F3 — Escenario I: intro y modo cerrado | ✅ hecha | `feat(web): escenario, intro y modo cerrado` |
-| F4 — Escenario II: modo abierto, transiciones y HOME | ⏭ siguiente | — |
-| F5–F12 | pendiente | — |
+| F4 — Escenario II: modo abierto, transiciones y HOME | ✅ hecha | `feat(web): modo abierto y home` |
+| F5 — LA CASA | ⏭ siguiente | — |
+| F6–F12 | pendiente | — |
 
 ## Qué hay hoy
 
 - **Stack:** Vite 8 + React 19 + TS 6 strict + Tailwind v4 + ESLint 10 + GSAP 3.15 (`@gsap/react`) + `lucide-react`. Alias `@/`.
 - **Rutas:** `/` escenario · solo en dev: `/dev` (primitivas, navbar, MENU, reduced motion), `/dev/datos` (datos + editorial + medios), `/dev/tokens` (muestras).
 - **Escenario (`src/stage/`):**
-  - `stageMachine.ts` (reducer: `loading → intro → closed ⇄ opening/closing → open`, `lock`, cola de 1) + `StageProvider.tsx`.
-  - `geometry.ts` (polígono por forma y viewport) + `frameController.ts` (tween de los 8 números, seguro ante resize) + `Frame.tsx` (clip-path, clic/Enter para abrir).
-  - `useStepInput.ts` (Observer: wheel con un paso por gesto e inercia filtrada, swipe > 50 px, ↓/↑, PageDown/PageUp, Espacio; soporte de scroller interno).
-  - `Intro.tsx` (loader con anillo dorado → marco a escala 0.25 que crece → textos), `ClosedView.tsx` (título gigante ajustado al ancho, etiquetas que ruedan, números laterales desplegables, "Hacé clic / Tocá para entrar"), `StageMedia.tsx` (video de HOME + 5 fotos), `OpenPlaceholder.tsx` (modo abierto provisorio con "Vista general" y Esc), `Stage.tsx` (orquesta los timelines).
-  - Hash: `/#eventos` entra directo abierto; abrir escribe el hash, cerrar lo limpia.
-- **Movimiento (`src/motion/`):** `gsap.ts`, `tokens.ts` (incluye intro y paso cerrado), `useReducedMotion` (+ `getReducedMotionSnapshot`), primitivas `Reveal` (entrada y salida enmascaradas), `SlideIn`, `WipeSwap`, `BlurSwapImage`, `CountUp`.
-- **Componentes:** `Picture` (AVIF + WebP + placeholder, `fetchPriority`), `Navbar` (píldora por container query ≥ 75rem, barra dorada deslizante, lámina mobile), `MenuButton` (líquido con doble ola).
-- **Datos y contenido:** igual que F1 (`src/data/`, `src/content/`, mock). `copy.es.ts` suma `escenario` (textos accesibles y del placeholder).
-- **QA:** `pnpm qa <plan.json>` (`scripts/qa-browser.mjs`): Chrome headless por DevTools con emulación táctil, reduced motion, wheel/teclado/swipe y capturas.
+  - `stageMachine.ts` (reducer: `loading → intro → closed ⇄ opening/closing → open`, `lock`, cola de 1; pasos en modo cerrado y abierto) + `StageProvider.tsx`.
+  - `geometry.ts` + `frameController.ts` (tween de los 8 números, seguro ante resize) + `Frame.tsx` (clip-path, clic/Enter para abrir).
+  - `useStepInput.ts` (Observer: wheel con un paso por gesto e inercia filtrada, swipe > 50 px, ↓/↑, PageDown/PageUp, Espacio; respeta scrollers internos).
+  - `Intro.tsx`, `ClosedView.tsx`, `StageMedia.tsx` (video de HOME + 5 fotos), `OpenView.tsx` (secciones del modo abierto, velo, "Vista general"), `Stage.tsx` (orquesta los timelines: paso cerrado, paso abierto, abrir, cerrar).
+  - Hash: `/#eventos` entra directo abierto; abrir y cada paso abierto escriben el hash; cerrar lo limpia; hash inválido → intro normal.
+- **Secciones (`src/sections/`):** `Home/HomePanel.tsx` (bloques, subtítulo, Ver la carta / Reservar mesa, Conocer la casa, columna de datos con CountUp). Los otros 5 paneles: placeholder simple en `OpenView`.
+- **Movimiento (`src/motion/`):** `gsap.ts`, `tokens.ts` (intro, paso cerrado, paso abierto, abrir/cerrar), `useReducedMotion` (+ snapshot), primitivas `Reveal` (entrada y salida), `SlideIn`, `WipeSwap`, `BlurSwapImage`, `CountUp`.
+- **Componentes:** `Picture`, `Navbar` (links con fundido según modo, píldora ≥ 75rem, barra dorada, lámina mobile), `MenuButton`.
+- **Datos y contenido:** igual que F1 (`src/data/`, `src/content/`, mock).
+- **QA:** `pnpm qa <plan.json>` y `pnpm qa:regresion` (todos los planes de `qa/plans/`, con resultados esperados). Capturas en `qa/shots/` (ignorada). Requiere `pnpm dev`.
 
-## Verificación F3
+## Verificación F4
 
 - `pnpm build` ✅ · `pnpm lint` ✅ · `pnpm check:content` ✅.
-- Probado en Chrome (desktop 1440×900 y mobile 390×844 táctil):
-  - Intro completa: loader → marco crece → HOME + etiquetas + wordmark/MENU → modo cerrado.
-  - Wheel: 6 notches seguidos → 1 paso; trackpad con inercia → 1 paso; 2.º swipe sobre la inercia → encolado (2 pasos); 3 notches durante una transición → 2 pasos (cola de 1).
-  - Teclado: 3× ↓ rápido → 2 pasos; PageUp/Espacio ok; Enter abre; Esc cierra.
-  - Swipe 240 px → paso; 20 px → nada; hacia abajo → panel anterior; tap en el marco → abre.
-  - Clic fuera del polígono no abre; clic en un número lateral salta directo.
-  - Resize a mitad de paso y después: el polígono queda centrado y con la forma del nuevo tamaño.
-  - `/#eventos` → abierto en EVENTOS; Esc → cerrado y URL limpia.
-  - Reduced motion: intro con fades, paso con fundido de 200 ms sin desplazamiento, video pausado.
-- `/dev` (revisión de F2): barra del navbar se desliza, líquido parejo, táctil sin vino trabado, Reveal sale y re-entra a mitad sin saltos.
+- `pnpm qa:regresion` ✅ **10/10 planes** (desktop 1440×900 y mobile 390×844 táctil):
+  - F3 sin cambios: intro, wheel/trackpad/cola, teclado, resize, números laterales, abrir/Esc/Enter, clic fuera del marco, mobile, reduced motion.
+  - F4: abrir HOME (hash `#home`, video corre, links visibles) → recorrer las 6 secciones (hash en cada paso, video pausado fuera de HOME, ↓ en la última no hace nada) → navbar "Nuestros servicios" salta directo a EVENTOS → wordmark vuelve a HOME (video corre) → "Conocer la casa" → "Vista general" cierra (URL limpia, sin links) → el modo cerrado sigue andando → Enter/Esc.
+  - `/#eventos` entra directo abierto con navbar; subir a HOME arranca el video; hash inválido → intro normal y URL limpia.
+  - Mobile: HOME entra en 390×844 sin scroll; lámina de links salta a PREGUNTAS y se cierra; en 390×600 el swipe scrollea HOME y recién en el borde pasa de panel.
+  - Reduced motion: abre en ~0,2 s, el video no corre, paso con fundido sin desplazamiento, Esc cierra.
+- `/dev` sigue pasando (barra deslizante, líquido).
 
 ## Pendientes / para la próxima sesión
 
-- **F4:** `OpenView` real (apertura con textos de panel, paso entre secciones abiertas, links del navbar, "Vista general" definitivo), panel HOME completo.
-- **Licencias:** confirmar si fotos y video son de licencia libre → recién ahí versionar `public/media/`. Ojo: el video (HOME) muestra el cartel de otro negocio ("Historia… Turkish cuisine"), `restaurant5` el nombre "Gustav", `food2` una botella de Guinness.
+- **F5 — LA CASA** (ref. 02): lista con íconos, imagen central en marco inclinado, título + texto con `WipeSwap`.
+- **"Ver la carta"** hoy solo cambia el botón MENU a CERRAR: el overlay de la carta es F9.
+- **Licencias:** confirmar si fotos y video son de licencia libre → recién ahí versionar `public/media/`. Ojo: el video (HOME, ahora a pantalla completa) muestra el cartel de otro negocio ("Historia Meze & Grill"), `restaurant5` el nombre "Gustav", `food2` una botella de Guinness.
 - **Medios en baja resolución:** fuentes de 495–1280 px y video 852×480; a pantalla completa se notan.
+- **Datos de HOME** (140 etiquetas, 12 h, 38 cubiertos, 4,8) son placeholder en `site.config.ts → home`.
 - **Sin fotos de postres.**
 - **Pedir al backend:** teléfono y email, slug y orden de categorías, coordenadas, horario de cocina, porción, foto por ítem/categoría, etiquetas dietarias, catálogo de alérgenos.
-- Probar en un trackpad y un teléfono reales (las pruebas de inercia y touch son simuladas).
+- Probar en un trackpad y un teléfono reales (inercia y touch están simulados).
 - `useGSAP` con dependencias acumula animaciones en su contexto hasta desmontar (menor).
 - Subir TypeScript a 7 cuando `typescript-eslint` lo soporte.

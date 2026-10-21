@@ -1,0 +1,18 @@
+{
+  "descripcion": "F4 · /#eventos entra directo abierto; subir a HOME arranca el video; hash inválido → intro normal.",
+  "steps": [
+    { "viewport": { "width": 1440, "height": 900 } },
+    { "nav": "http://localhost:5173/#eventos" },
+    { "wait": 2600 },
+    { "eval": "(() => { const r=document.querySelector('[data-mode]'); const v=document.querySelector('video'); window.__st=()=>[r.dataset.mode, r.dataset.active, r.dataset.texts ?? '-', location.hash, v.paused ? 'pausa' : 'play']; const s=document.querySelector('[data-open-panel=eventos]'); return [__st(), s.inert, getComputedStyle(document.querySelector('nav[aria-label=\"Secciones principales\"]')).visibility] })()", "label": "11 /#eventos: abierto en EVENTOS con navbar", "expect": [["open", "3", "3", "#eventos", "pausa"], false, "visible"] },
+    { "shot": "../shots/f4-hash-eventos.png" },
+    { "key": "ArrowUp" }, { "wait": 2800 },
+    { "key": "ArrowUp" }, { "wait": 2800 },
+    { "key": "ArrowUp" }, { "wait": 2800 },
+    { "eval": "__st()", "label": "12 subir hasta HOME: el video corre", "expect": ["open", "0", "0", "#home", "play"] },
+    { "nav": "about:blank" },
+    { "nav": "http://localhost:5173/#no-existe" },
+    { "wait": 4800 },
+    { "eval": "[document.querySelector('[data-mode]').dataset.mode, location.hash]", "label": "13 hash inválido → intro normal y URL limpia", "expect": ["closed", ""] }
+  ]
+}

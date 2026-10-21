@@ -6,7 +6,8 @@
 //   { "reducedMotion": true|false }
 //   { "nav": "http://localhost:5173/" }
 //   { "wait": 500 }                              (ms)
-//   { "eval": "expresión JS", "label": "..." }   (await permitido; imprime el resultado)
+//   { "eval": "expresión JS", "label": "...", "expect"?: valor }
+//        (await permitido; imprime el resultado; con `expect` compara por JSON y el plan falla si difiere)
 //   { "shot": "ruta.png" }                       (captura del viewport)
 //   { "wheel": { "x": 700, "y": 450, "dy": 120, "count": 1, "interval": 16 } }
 //   { "key": "ArrowDown" }                       (ArrowDown, ArrowUp, PageDown, PageUp, Space, Enter, Escape)
@@ -114,6 +115,7 @@ const KEYS = {
 }
 
 let viewport = { width: 1440, height: 900, mobile: false, scale: 1 }
+let fallas = 0
 
 async function run() {
   ws = new WebSocket(await getPageWs())
@@ -170,7 +172,15 @@ async function run() {
         returnByValue: true,
       })
       const val = r.exceptionDetails ? `ERROR ${r.exceptionDetails.exception?.description ?? r.exceptionDetails.text}` : r.result.value
-      console.log(`[eval${step.label ? ` ${step.label}` : ''}]`, typeof val === 'string' ? val : JSON.stringify(val))
+      const texto = typeof val === 'string' ? val : JSON.stringify(val)
+      if ('expect' in step) {
+        // Comparación exacta por JSON: el plan falla (exit 1) si algo cambió.
+        const ok = JSON.stringify(val) === JSON.stringify(step.expect)
+        if (!ok) fallas++
+        console.log(`[${ok ? 'OK' : 'FALLA'}${step.label ? ` ${step.label}` : ''}]`, texto, ok ? '' : `≠ esperado ${JSON.stringify(step.expect)}`)
+      } else {
+        console.log(`[eval${step.label ? ` ${step.label}` : ''}]`, texto)
+      }
     } else if (step.shot) {
       // Rutas relativas: respecto del archivo del plan (así las capturas no caen en el repo).
       const out = resolve(dirname(resolve(planPath)), step.shot)
@@ -210,6 +220,10 @@ async function run() {
 
 try {
   await run()
+  if (fallas > 0) {
+    console.log(`✗ ${fallas} chequeo(s) fallaron`)
+    process.exitCode = 1
+  }
 } catch (err) {
   console.error(err)
   process.exitCode = 1

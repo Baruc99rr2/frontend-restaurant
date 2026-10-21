@@ -1,0 +1,153 @@
+{
+  "descripcion": "F7 · EVENTOS en modo abierto: stepper en límites (10 y 200), 4 combinaciones de ocasión y formato calculadas a mano, ráfaga rápida en el stepper sin que CountUp quede intermedio, URL de WhatsApp y desktop (100svh) + mobile.",
+  "steps": [
+    { "viewport": { "width": 1440, "height": 900 } },
+    { "nav": "http://localhost:5173/#eventos" },
+    {
+      "eval": "(async () => { window.__waitUntil = async (fn, pred, timeout = 4500) => { const t0 = performance.now(); while (performance.now() - t0 < timeout) { const v = fn(); if (pred(v)) return v; await new Promise((r) => setTimeout(r, 30)); } return fn(); }; window.__eventosState = () => { const root = document.querySelector('[data-mode]'); const panel = document.querySelector('[data-open-panel=\"eventos\"]'); const scroller = panel.querySelector('[data-stage-scroller]'); const inv = Number(panel.querySelector('[data-eventos-invitados]').textContent); const menosDis = panel.querySelector('[data-eventos-menos]').disabled; const masDis = panel.querySelector('[data-eventos-mas]').disabled; const oca = panel.querySelector('[data-eventos-ocasion][aria-checked=\"true\"]')?.dataset.eventosOcasion; const fmt = panel.querySelector('[data-eventos-formato][aria-checked=\"true\"]')?.dataset.eventosFormato; const cards = {}; ['kg', 'botellas', 'mozos', 'pasos', 'horas', 'presupuesto'].forEach((id) => { const vEl = panel.querySelector(`[data-eventos-valor=\"${id}\"] p`); const eWrap = panel.querySelector(`[data-eventos-etiqueta=\"${id}\"] p`); const eOut = eWrap.children[0]; const eIn = eWrap.children[1]; cards[id] = { valor: vEl.textContent.replace(/\\u00a0/g, ' '), etiqueta: eIn.textContent, settled: getComputedStyle(eOut).display === 'none' && !eIn.style.clipPath }; }); return { stage: [root.dataset.mode, root.dataset.active, root.dataset.texts, location.hash], fits100svh: scroller.scrollHeight <= scroller.clientHeight, invitados: inv, menosDis, masDis, ocasion: oca, formato: fmt, valores: Object.fromEntries(Object.entries(cards).map(([k, v]) => [k, v.valor])), etiquetas: Object.fromEntries(Object.entries(cards).map(([k, v]) => [k, v.etiqueta])), allSettled: Object.values(cards).every((c) => c.settled) }; }; return await __waitUntil(__eventosState, (s) => s.stage[0] === 'open' && s.stage[2] === '3' && s.valores.presupuesto === '$ 22.000' && s.valores.botellas === '16' && s.allSettled); })()",
+      "label": "1 desktop /#eventos (Combinación 1 inicial: 40 inv · Día de la Madre · Cóctel) y entra en 100svh",
+      "expect": {
+        "stage": ["open", "3", "3", "#eventos"],
+        "fits100svh": true,
+        "invitados": 40,
+        "menosDis": false,
+        "masDis": false,
+        "ocasion": "dia-de-la-madre",
+        "formato": "coctel",
+        "valores": {
+          "kg": "6",
+          "botellas": "16",
+          "mozos": "3",
+          "pasos": "8",
+          "horas": "4",
+          "presupuesto": "$ 22.000"
+        },
+        "etiquetas": {
+          "kg": "kg a la brasa",
+          "botellas": "botellas sugeridas",
+          "mozos": "mozos asignados",
+          "pasos": "bocados",
+          "horas": "horas de servicio",
+          "presupuesto": "desde, por persona"
+        },
+        "allSettled": true
+      }
+    },
+    { "shot": "../shots/f7-eventos-inicial.png" },
+    {
+      "eval": "(async () => { const menos = document.querySelector('[data-eventos-menos]'); for (let i = 0; i < 8; i++) menos.click(); document.querySelector('[data-eventos-ocasion=\"navidad\"]').click(); document.querySelector('[data-eventos-formato=\"mesa\"]').click(); return await __waitUntil(__eventosState, (s) => s.invitados === 10 && s.valores.kg === '3' && s.valores.botellas === '5' && s.valores.presupuesto === '$ 40.000' && s.allSettled); })()",
+      "label": "2 límite inferior (10) + Combinación 2 (10 inv · Navidad · Mesa servida) con WipeSwap en etiqueta de pasos",
+      "expect": {
+        "stage": ["open", "3", "3", "#eventos"],
+        "fits100svh": true,
+        "invitados": 10,
+        "menosDis": true,
+        "masDis": false,
+        "ocasion": "navidad",
+        "formato": "mesa",
+        "valores": {
+          "kg": "3",
+          "botellas": "5",
+          "mozos": "1",
+          "pasos": "4",
+          "horas": "4",
+          "presupuesto": "$ 40.000"
+        },
+        "etiquetas": {
+          "kg": "kg a la brasa",
+          "botellas": "botellas sugeridas",
+          "mozos": "mozos asignados",
+          "pasos": "pasos de menú",
+          "horas": "horas de servicio",
+          "presupuesto": "desde, por persona"
+        },
+        "allSettled": true
+      }
+    },
+    {
+      "eval": "(async () => { const mas = document.querySelector('[data-eventos-mas]'); document.querySelector('[data-eventos-ocasion=\"empresa\"]').click(); document.querySelector('[data-eventos-formato=\"asado\"]').click(); for (let i = 0; i < 9; i++) { setTimeout(() => mas.click(), i * 55); } return await __waitUntil(__eventosState, (s) => s.invitados === 55 && s.valores.kg === '24,8' && s.valores.botellas === '22' && s.valores.horas === '3' && s.valores.presupuesto === '$ 41.800' && s.allSettled); })()",
+      "label": "3 ráfaga rápida de 9 clics en + (10 → 55) + Combinación 3 (55 inv · Empresa · Asado a la vista): CountUp converge al valor exacto sin quedar intermedio",
+      "expect": {
+        "stage": ["open", "3", "3", "#eventos"],
+        "fits100svh": true,
+        "invitados": 55,
+        "menosDis": false,
+        "masDis": false,
+        "ocasion": "empresa",
+        "formato": "asado",
+        "valores": {
+          "kg": "24,8",
+          "botellas": "22",
+          "mozos": "5",
+          "pasos": "5",
+          "horas": "3",
+          "presupuesto": "$ 41.800"
+        },
+        "etiquetas": {
+          "kg": "kg a la brasa",
+          "botellas": "botellas sugeridas",
+          "mozos": "mozos asignados",
+          "pasos": "pasos de menú",
+          "horas": "horas de servicio",
+          "presupuesto": "desde, por persona"
+        },
+        "allSettled": true
+      }
+    },
+    {
+      "eval": "(async () => { const mas = document.querySelector('[data-eventos-mas]'); for (let i = 0; i < 32; i++) mas.click(); document.querySelector('[data-eventos-ocasion=\"ano-nuevo\"]').click(); return await __waitUntil(__eventosState, (s) => s.invitados === 200 && s.valores.kg === '90' && s.valores.botellas === '96' && s.valores.mozos === '17' && s.valores.horas === '6' && s.valores.presupuesto === '$ 51.300' && s.allSettled); })()",
+      "label": "4 límite superior (200) + Combinación 4 (200 inv · Año Nuevo · Asado a la vista)",
+      "expect": {
+        "stage": ["open", "3", "3", "#eventos"],
+        "fits100svh": true,
+        "invitados": 200,
+        "menosDis": false,
+        "masDis": true,
+        "ocasion": "ano-nuevo",
+        "formato": "asado",
+        "valores": {
+          "kg": "90",
+          "botellas": "96",
+          "mozos": "17",
+          "pasos": "5",
+          "horas": "6",
+          "presupuesto": "$ 51.300"
+        },
+        "etiquetas": {
+          "kg": "kg a la brasa",
+          "botellas": "botellas sugeridas",
+          "mozos": "mozos asignados",
+          "pasos": "pasos de menú",
+          "horas": "horas de servicio",
+          "presupuesto": "desde, por persona"
+        },
+        "allSettled": true
+      }
+    },
+    {
+      "eval": "(() => { const a = document.querySelector('[data-eventos-whatsapp]'); const m = document.querySelector('[data-eventos-mailto]'); const url = new URL(a.href); const text = (url.searchParams.get('text') ?? '').replace(/\\u00a0/g, ' '); return { host: url.host, path: url.pathname, text, hasMailto: m.href.startsWith('mailto:hola@quebracho.example?subject=') }; })()",
+      "label": "5 URL de WhatsApp (wa.me) con resumen URL-encoded exacto y alternativa mailto",
+      "expect": {
+        "host": "wa.me",
+        "path": "/5493880000000",
+        "text": "Hola, quiero pedir presupuesto para un evento: 200 invitados, Año Nuevo, formato Asado a la vista.\nCocina: 90 kg a la brasa · Bodega: 96 botellas sugeridas · Salón: 17 mozos asignados · Cocina: 5 pasos de menú · Equipo: 6 horas de servicio · Presupuesto: $ 51.300 desde, por persona",
+        "hasMailto": true
+      }
+    },
+    { "shot": "../shots/f7-eventos-200.png" },
+    { "viewport": { "width": 390, "height": 844, "mobile": true, "scale": 2 } },
+    { "nav": "about:blank" },
+    { "nav": "http://localhost:5173/#eventos" },
+    {
+      "eval": "(async () => { const wait = async (fn, pred, timeout = 4500) => { const t0 = performance.now(); while (performance.now() - t0 < timeout) { const v = fn(); if (pred(v)) return v; await new Promise((r) => setTimeout(r, 30)); } return fn(); }; const read = () => { const root = document.querySelector('[data-mode]'); const panel = document.querySelector('[data-open-panel=\"eventos\"]'); const inv = Number(panel.querySelector('[data-eventos-invitados]').textContent); const pres = panel.querySelector('[data-eventos-valor=\"presupuesto\"] p').textContent.replace(/\\u00a0/g, ' '); return [root.dataset.mode, document.documentElement.scrollWidth, inv, pres]; }; return await wait(read, (v) => v[0] === 'open' && v[3] === '$ 22.000'); })()",
+      "label": "6 mobile 390×844: sin desborde horizontal y abre con valores iniciales",
+      "expect": ["open", 390, 40, "$ 22.000"]
+    },
+    {
+      "eval": "(async () => { document.querySelector('[data-eventos-ocasion=\"cumpleanos\"]').click(); document.querySelector('[data-eventos-formato=\"asado\"]').click(); const wait = async (fn, pred, timeout = 3000) => { const t0 = performance.now(); while (performance.now() - t0 < timeout) { const v = fn(); if (pred(v)) return v; await new Promise((r) => setTimeout(r, 30)); } return fn(); }; const read = () => { const panel = document.querySelector('[data-open-panel=\"eventos\"]'); const kg = panel.querySelector('[data-eventos-valor=\"kg\"] p').textContent.replace(/\\u00a0/g, ' '); const pres = panel.querySelector('[data-eventos-valor=\"presupuesto\"] p').textContent.replace(/\\u00a0/g, ' '); return [kg, pres]; }; return await wait(read, (v) => v[0] === '18' && v[1] === '$ 38.000'); })()",
+      "label": "7 mobile tap en Cumpleaños y Asado a la vista actualiza las tarjetas con CountUp",
+      "expect": ["18", "$ 38.000"]
+    },
+    { "shot": "../shots/f7-m-eventos.png" }
+  ]
+}

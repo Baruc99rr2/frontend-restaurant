@@ -1,6 +1,10 @@
 // Calculadora de EVENTOS (§8). Fórmulas editables por cliente.
 // Plata en centavos enteros, como todo el sitio.
 
+import { siteConfig, whatsappUrl } from '@/config/site.config'
+import { copy } from '@/content/copy.es'
+import { formatPrecio } from '@/data/format'
+
 export const invitados = { min: 10, max: 200, paso: 5, inicial: 40 } as const
 
 export const ocasiones = [
@@ -52,7 +56,13 @@ const MULTIPLICADOR: Record<OcasionId, number> = {
 }
 
 /** Redondea a $100 (10.000 centavos) para que el número sea legible. */
-const redondearPlata = (cents: number) => Math.round(cents / 10_000) * 10_000
+export const redondearPlata = (cents: number) => Math.round(cents / 10_000) * 10_000
+
+/** Acota la cantidad de invitados al rango permitido (10–200) en múltiplos del paso (5). */
+export function clampInvitados(n: number): number {
+  const stepped = Math.round(n / invitados.paso) * invitados.paso
+  return Math.max(invitados.min, Math.min(invitados.max, stepped))
+}
 
 export function calcularEvento({ invitados: n, ocasion, formato }: Seleccion): Resultado[] {
   const fiesta = ocasion === 'navidad' || ocasion === 'ano-nuevo'
@@ -71,4 +81,41 @@ export function calcularEvento({ invitados: n, ocasion, formato }: Seleccion): R
     { id: 'horas', area: 'Equipo', valor: horas, unidad: 'numero', etiqueta: 'horas de servicio' },
     { id: 'presupuesto', area: 'Presupuesto', valor: presupuesto, unidad: 'plata', etiqueta: 'desde, por persona' },
   ]
+}
+
+/** Formatea el valor numérico o en centavos de un resultado de `calcularEvento`. */
+export function formatearResultado(r: Resultado): string {
+  if (r.unidad === 'plata') return formatPrecio(r.valor)
+  return r.valor.toLocaleString(siteConfig.locale, {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 1,
+  })
+}
+
+/** Arma el texto completo del resumen para WhatsApp y mail a partir de `copy.eventos.mensaje`. */
+export function armarMensajeEvento(sel: Seleccion): string {
+  const ocasionNombre = ocasiones.find((o) => o.id === sel.ocasion)?.nombre ?? sel.ocasion
+  const formatoNombre = formatos.find((f) => f.id === sel.formato)?.nombre ?? sel.formato
+  const resultados = calcularEvento(sel)
+  const resumen = resultados
+    .map((r) => `${r.area}: ${formatearResultado(r)} ${r.etiqueta}`)
+    .join(' · ')
+
+  return copy.eventos.mensaje
+    .replace('{invitados}', String(sel.invitados))
+    .replace('{ocasion}', ocasionNombre)
+    .replace('{formato}', formatoNombre)
+    .replace('{resumen}', resumen)
+}
+
+/** URL de WhatsApp (`wa.me`) con el resumen de la selección URL-encoded. */
+export function whatsappEventoUrl(sel: Seleccion): string {
+  return whatsappUrl(armarMensajeEvento(sel))
+}
+
+/** Alternativa `mailto:` con asunto y cuerpo prellenados. */
+export function mailtoEventoUrl(sel: Seleccion): string {
+  const subject = encodeURIComponent(copy.eventos.asuntoMail)
+  const body = encodeURIComponent(armarMensajeEvento(sel))
+  return `mailto:${siteConfig.contacto.email}?subject=${subject}&body=${body}`
 }

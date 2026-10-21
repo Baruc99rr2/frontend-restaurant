@@ -9,6 +9,7 @@ import { useReducedMotion } from '@/motion/useReducedMotion'
 import { HomePanel } from '@/sections/Home/HomePanel'
 import { LaCasaPanel } from '@/sections/LaCasa/LaCasaPanel'
 import { PlatosPanel } from '@/sections/Platos/PlatosPanel'
+import { EventosPanel } from '@/sections/Eventos/EventosPanel'
 
 /**
  * Modo abierto (§5, §8): una sección por panel, apiladas encima del marco.
@@ -99,6 +100,8 @@ export function OpenView({ rootRef, textsPanel, visible, onClose, onVerCarta, on
               <LaCasaPanel active={active} />
             ) : panel.key === 'platos' ? (
               <PlatosPanel active={active} onVerCarta={onVerCarta} />
+            ) : panel.key === 'eventos' ? (
+              <EventosPanel active={active} />
             ) : (
               <PanelPlaceholder panel={panel} active={active} />
             )}

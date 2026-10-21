@@ -1,6 +1,6 @@
 # ESTADO
 
-Última actualización: 2026-10-21 — **F6 completa**.
+Última actualización: 2026-10-21 — **F7 completa**.
 Repo remoto: https://github.com/Baruc99rr2/frontend-restaurant (público).
 
 ## Sub-fases
@@ -15,8 +15,9 @@ Repo remoto: https://github.com/Baruc99rr2/frontend-restaurant (público).
 | F4 — Escenario II: modo abierto, transiciones y HOME | ✅ hecha | `feat(web): modo abierto y home` |
 | F5 — LA CASA | ✅ hecha | `feat(web): seccion la casa` |
 | F6 — PLATOS | ✅ hecha | `feat(web): seccion platos` |
-| F7 — EVENTOS | ⏭ siguiente | — |
-| F8–F12 | pendiente | — |
+| F7 — EVENTOS | ✅ hecha | `feat(web): seccion eventos` |
+| F8 — PREGUNTAS y CONTACTO | ⏭ siguiente | — |
+| F9–F12 | pendiente | — |
 
 ## Qué hay hoy
 
@@ -32,11 +33,23 @@ Repo remoto: https://github.com/Baruc99rr2/frontend-restaurant (público).
   - `Home/HomePanel.tsx` (bloques, subtítulo, Ver la carta / Reservar mesa, Conocer la casa, columna de datos con CountUp).
   - `LaCasa/LaCasaPanel.tsx` (fondo radial `hoja → monte → noche`, 6 ítems con íconos lucide y activo `champan` por clic, hover-intent 200 ms o teclado, foto `r2` fija en el marco inclinado con parallax leve, cita con `Reveal` y panel de título + texto con `WipeSwap`).
   - `Platos/PlatosPanel.tsx` (franja superior sobre la foto `f8` oscurecida del escenario con título y "Ver la carta completa"; fila inferior de 3 paneles: foto en marco 1px `champan` con `BlurSwapImage`, panel `monte` con origen en Caslon + región en `WipeSwap`, panel `tizon` con puntos de guía, descripción en cursiva, nombre en `oro`, categoría + precio del repositorio + porción en `WipeSwap`, y botones atrás/adelante con anillo SVG de 7 s que avanza solo y se pausa con hover/focus, pestaña oculta, reduced motion o fuera de `PLATOS`).
-  - Los otros 3 paneles: placeholder simple en `OpenView`.
+  - `Eventos/EventosPanel.tsx` (calculadora de catering sobre la foto `r3` oscurecida con veta cálida: stepper de invitados 10–200 paso 5 inicial 40, chips de ocasión y formato, 6 tarjetas `champan` con `CountUp` en `monte` y etiquetas con `WipeSwap`, nota orientativa y CTA WhatsApp `wa.me` + alternativa `mailto:` desde `src/content/eventos.ts`).
+  - Los otros 2 paneles: placeholder simple en `OpenView`.
 - **Movimiento (`src/motion/`):** `gsap.ts`, `tokens.ts` (intro, paso cerrado, paso abierto, abrir/cerrar), `useReducedMotion` (+ snapshot), primitivas `Reveal` (entrada y salida), `SlideIn`, `WipeSwap`, `BlurSwapImage`, `CountUp`.
 - **Componentes:** `Picture`, `Navbar` (links con fundido según modo, píldora ≥ 75rem, barra dorada, lámina mobile), `MenuButton`.
 - **Datos y contenido:** igual que F1 (`src/data/`, `src/content/`, mock).
 - **QA:** `pnpm qa <plan.json>` y `pnpm qa:regresion` (todos los planes de `qa/plans/`, con resultados esperados). Capturas en `qa/shots/` (ignorada). Requiere `pnpm dev`.
+
+## Verificación F7
+
+- `pnpm build` ✅ · `pnpm lint` ✅ · `pnpm check:content` ✅.
+- `pnpm qa:regresion` ✅ **13/13 planes** (F3 + F4 + F5 + F6 + `f7-1-eventos.json` en desktop 1440×900 y mobile 390×844 táctil):
+  - Entrada directa a `/#eventos` entrando en `100svh` en desktop sin scroll (`scrollHeight <= clientHeight`) con la selección inicial (`40` invitados · `Día de la Madre` · `Cóctel`).
+  - Límites del stepper verificados en `10` (`disabled` en `-`) y `200` (`disabled` en `+`), con paso de `5`.
+  - 4 combinaciones de invitados, ocasión y formato verificadas contra las fórmulas de `src/content/eventos.ts` (incluyendo el cambio de etiqueta `"bocados"` ↔ `"pasos de menú"` con `WipeSwap`).
+  - Ráfaga rápida de 9 clics seguidos en `+` (`10 → 55`): `CountUp` retoma en cada interrupción y converge al valor final exacto (`24,8` kg, `22` botellas, `$ 41.800`) sin quedar en un valor intermedio.
+  - Botón `"Pedir presupuesto"` con URL `https://wa.me/5493880000000?text=...` URL-encoded con el resumen exacto y alternativa `mailto:`.
+  - Mobile 390×844: sin desborde horizontal (`scrollWidth === 390`) y cambio de chips con actualización animada de las 6 tarjetas.
 
 ## Verificación F6
 
@@ -73,7 +86,7 @@ Repo remoto: https://github.com/Baruc99rr2/frontend-restaurant (público).
 
 ## Pendientes / para la próxima sesión
 
-- **F7 — EVENTOS** (ref. 04): columna izquierda y panel derecho `tizon` con selector de formato, comensales (8–38), 3 niveles de menú, presupuesto estimado con `CountUp` y CTA a WhatsApp con el resumen prellenado.
+- **Sub-fases restantes:** F8, F9, F10, F11, F12.
 - **"Ver la carta"** hoy solo cambia el botón MENU a CERRAR: el overlay de la carta es F9.
 - **Licencias:** confirmar si fotos y video son de licencia libre → recién ahí versionar `public/media/`. Ojo: el video (HOME, ahora a pantalla completa) muestra el cartel de otro negocio ("Historia Meze & Grill"), `restaurant5` el nombre "Gustav", `food2` una botella de Guinness.
 - **Medios en baja resolución:** fuentes de 495–1280 px y video 852×480; a pantalla completa se notan.

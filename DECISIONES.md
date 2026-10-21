@@ -185,4 +185,13 @@ Probado en Chrome (headless por DevTools, con emulación táctil a 390 px) con `
 - Anillo de progreso SVG en el botón "Plato siguiente" animado con un tween lineal de GSAP (`0 → 1` en 7 s sobre `strokeDashoffset`) que se pausa/reanuda en el lugar (`tween.paused(isPaused)`) ante hover de mouse (`pointerType === 'mouse'`), foco de teclado dentro de la fila, pestaña oculta (`visibilitychange`) o `useReducedMotion()`, y se reinicia de cero al cambiar de plato (manual o automático).
 - En mobile/vertical (`< lg` o portrait), la fila inferior se organiza en grilla de 2 columnas arriba (foto `BlurSwapImage` a la izquierda + panel `monte` de origen a la derecha, `h-36 sm:h-44`) y el panel `tizon` de detalle abajo ocupando las 2 columnas → los tres paneles y la cabecera entran en 390×844 sin scroll vertical ni desborde horizontal.
 
+## F7 — EVENTOS (2026-10-21)
+
+- Se reutilizan las fórmulas, constantes y tipos ya creados en `src/content/eventos.ts` (F1), que coinciden con la tabla de §8 EVENTOS, completando ese mismo módulo con `clampInvitados`, `formatearResultado`, `armarMensajeEvento`, `whatsappEventoUrl` y `mailtoEventoUrl` → toda la lógica de cálculo y armado del resumen de WhatsApp/mail vive en `src/content/eventos.ts` sin duplicar en el componente.
+- Selección inicial en `invitados.inicial` (`40`), `ocasiones[0].id` (`'dia-de-la-madre'`) y `formatos[0].id` (`'coctel'`) → al entrar a `EVENTOS` el primer chip de cada grupo está activo, consistente con `LA CASA` y `PLATOS`.
+- En la tarjeta de `kg` (`id: 'kg'`), `CountUp` recibe `decimals={1}` con un formateador `maximumFractionDigits: 1, minimumFractionDigits: 0` → cuando el resultado es entero (`18`, `6`, `90`) se muestra sin `,0` y cuando tiene decimal (`24,8`, `4,5`) no se redondea a entero por el `decimals={0}` por defecto de `CountUp`.
+- En la tarjeta de `pasos` (`id: 'pasos'`), la etiqueta usa `WipeSwap` (`"bocados"` en `Cóctel` ↔ `"pasos de menú"` en `Mesa servida` y `Asado a la vista`) → cumple la regla de oro de movimiento cuando cambia la unidad del resultado.
+- Fondo con veta cálida diagonal (`radial-gradient` mezclando `--color-oro` y `--color-vino` con `color-mix`) dentro del inset del marco abierto sobre la foto `r3` oscurecida de `StageMedia` → reproduce el brillo cálido de la ref. 04 usando exclusivamente tokens de marca.
+
+
 

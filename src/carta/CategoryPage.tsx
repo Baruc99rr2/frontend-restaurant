@@ -6,6 +6,7 @@ import { Polaroid, type PuntoClic } from '@/carta/Polaroid'
 import { useWipeTransition } from '@/carta/WipeTransition'
 import { MenuButton } from '@/components/MenuButton'
 import { Picture } from '@/components/Picture'
+import { useTopeTitulo } from '@/components/useAjusteAncho'
 import { siteConfig } from '@/config/site.config'
 import { copy } from '@/content/copy.es'
 import { categoriasCarta, type PlatoCarta } from '@/content/editorial'
@@ -31,6 +32,9 @@ import { useReducedMotion } from '@/motion/useReducedMotion'
  * - Si la categoría no existe o está vacía: muestra aviso y vuelve sola a `/carta` con el barrido.
  * - Scroll suavizado con Lenis solo en esta página (se crea al montar y se destruye al desmontar).
  */
+
+/** Cuánto queda a la vista el aviso de categoría inexistente antes de volver a la carta. */
+const AVISO_SEGUNDOS = 1.8
 
 function PlatoItem({
   plato,
@@ -163,24 +167,20 @@ export function CategoryPage({ slug }: { slug: string }) {
     [local.data],
   )
 
+  // Leyenda: solo los alérgenos que aparecen en esta categoría (en el orden del catálogo de copy).
   const leyendaAlergenos = useMemo(() => {
-    const base = Object.entries(copy.alergenos).map(([clave, val]) => ({
-      clave,
-      marca: val.marca,
-      nombre: val.nombre,
-    }))
-    if (!categoria) return base
-    const vistos = new Set(base.map((b) => b.clave))
-    for (const it of categoria.items) {
-      for (const a of it.allergens) {
-        if (!vistos.has(a)) {
-          vistos.add(a)
-          base.push({ clave: a, marca: a, nombre: a })
-        }
-      }
-    }
-    return base
+    if (!categoria) return []
+    const presentes = new Set(categoria.items.flatMap((it) => it.allergens))
+    const conocidos = Object.keys(copy.alergenos).filter((clave) => presentes.has(clave))
+    const otros = [...presentes].filter((clave) => !(clave in copy.alergenos))
+    return [...conocidos, ...otros].map((clave) => {
+      const info = copy.alergenos[clave]
+      return { clave, marca: info?.marca ?? clave, nombre: info?.nombre ?? clave }
+    })
   }, [categoria])
+
+  const tituloRef = useRef<HTMLDivElement | null>(null)
+  useTopeTitulo(tituloRef, categoria && !vacia ? categoria.name : undefined)
 
   // Al montar una categoría, empezar arriba de todo.
   useLayoutEffect(() => {
@@ -212,13 +212,13 @@ export function CategoryPage({ slug }: { slug: string }) {
   // Si la categoría no existe o está vacía: muestra el aviso y vuelve sola a /carta con el barrido.
   useEffect(() => {
     if (!noExiste) return
-    const dc = gsap.delayedCall(reduced ? 0.25 : 0.7, () => {
+    const dc = gsap.delayedCall(AVISO_SEGUNDOS, () => {
       void transicion(volverALaCarta)
     })
     return () => {
       dc.kill()
     }
-  }, [noExiste, reduced, transicion])
+  }, [noExiste, transicion])
 
   const abrirFoto = useCallback(
     (platoId: string, e: MouseEvent<HTMLButtonElement>) => {
@@ -368,13 +368,15 @@ export function CategoryPage({ slug }: { slug: string }) {
                 >
                   {categoria.numero}
                 </Reveal>
-                <Reveal
-                  as="h1"
-                  mode="chars"
-                  className="mt-2 font-gigante text-display uppercase text-champan sm:text-gigante"
+                {/* El tamaño vive en el envoltorio (tope: text-gigante); el h1 lo hereda. */}
+                <div
+                  ref={tituloRef}
+                  className="relative mt-2 font-gigante text-display uppercase text-champan sm:text-gigante"
                 >
-                  {categoria.name}
-                </Reveal>
+                  <Reveal as="h1" mode="chars">
+                    {categoria.name}
+                  </Reveal>
+                </div>
               </div>
             </section>
 
@@ -436,15 +438,16 @@ export function CategoryPage({ slug }: { slug: string }) {
               )}
 
               {/* Leyenda de alérgenos al pie */}
+              {leyendaAlergenos.length > 0 ? (
               <div
                 data-leyenda-alergenos
-                className="mt-10 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-hoja pt-6 font-ui text-etiqueta tracking-normal text-ceniza"
+                className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 pt-6 font-ui text-etiqueta tracking-normal text-ceniza"
               >
                 <span className="font-semibold uppercase tracking-[0.16em] text-champan/85">
                   {copy.carta.leyendaAlergenos}:
                 </span>
                 {leyendaAlergenos.map((a) => (
-                  <span key={a.clave} className="inline-flex items-center gap-1.5">
+                  <span key={a.clave} data-leyenda-marca={a.clave} className="inline-flex items-center gap-1.5">
                     <span className="rounded-sm border border-hoja bg-tizon/45 px-1.5 py-0.5 text-[0.625rem] font-semibold uppercase text-champan/85">
                       {a.marca}
                     </span>
@@ -452,10 +455,12 @@ export function CategoryPage({ slug }: { slug: string }) {
                   </span>
                 ))}
               </div>
+              ) : null}
             </section>
 
             {/* Pie: "← Categoría anterior" / "Categoría siguiente →" grandes + Volver a la carta / Volver al inicio */}
-            <footer className="mx-auto max-w-6xl border-t border-hoja px-4 pt-10 pb-16 sm:px-8 sm:pt-14 sm:pb-24">
+            <footer className="mx-auto max-w-6xl px-4 pb-16 sm:px-8 sm:pb-24">
+              <div className="border-t border-hoja pt-10 sm:pt-14">
               {anterior && siguiente ? (
                 <nav
                   aria-label={copy.carta.listaCategorias}
@@ -519,6 +524,7 @@ export function CategoryPage({ slug }: { slug: string }) {
                 >
                   {siteConfig.botones.volverAlInicio}
                 </button>
+              </div>
               </div>
             </footer>
           </>

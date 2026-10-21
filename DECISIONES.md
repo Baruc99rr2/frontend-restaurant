@@ -322,3 +322,27 @@ Revisado en Chrome headless con `scripts/qa-browser.mjs` (la extensión no sirvi
 
 **QA**
 - Planes `f10-1-categoria-polaroid.json` (21 chequeos en desktop 1440×900) y `f10-2-categoria-mobile.json` (8 chequeos en mobile 390×844 táctil), escritos exclusivamente con `__waitUntil` y `__qa.cartaEstable()` / `__qa.estable()` (sin esperas fijas).
+
+## Revisión de F10 (2026-10-21) — `fix(web): revision de F10`
+
+Gravedad: **alta** (rompe navegación o datos) · **media** (se ve mal en un caso común) · **menor** · **cosmético**. Cada problema se reprodujo con un plan sobre el código de F10 antes de corregirlo.
+
+**Historial (`volverALaCarta` con `history.go(-pasos)`) — sin problemas**
+- Reproducidos en `f10-3-historial.json`: entrada desde otra página (link externo) a `/carta/fuegos`, recarga en una categoría a la que se llegó desde la carta, cadena larga siguiente ×4 + atrás ×2 + adelante + anterior (corta el adelante) + "← Categorías", wordmark → HOME → atrás, MENU de la categoría, y doble clic en "← Categorías" y en CERRAR. Ningún botón interno saca del sitio; "← Categorías" deja el historial limpio (atrás desde `/carta` cae en el escenario, no en la cadena). Se conserva el diseño: `pasos` se lee del `history.state` de la entrada actual en el momento de navegar (con la pantalla ya tapada), así un atrás del navegador a mitad del barrido no lo desfasa; sin carta debajo (`desde` ≠ esta carga) se reemplaza por `/carta`.
+- `qa-browser.mjs` suma el paso `{ "reload": true }` (F5 real: conserva historial y `history.state`).
+
+**Problemas encontrados**
+- **Media** — Título gigante de la portada desbordado: `text-gigante` (16vw) sacaba "FUEGOS" del margen del contenido (hasta 1420 de 1440 px) y "Del mar y la huerta" caía en 4 líneas (756 px): la portada pasaba la pantalla y el número quedaba pegado a la barra. → `useTopeTitulo` (`src/components/useAjusteAncho.ts`): el tamaño de la clase es el tope y se achica si la palabra más larga no entra o si el texto pasa de 2 líneas (mide con un clon oculto, sirve con `Reveal` partido); el tamaño va en un envoltorio y el `h1` lo hereda (un elemento, un dueño). Mobile ya entraba y sigue igual.
+- **Menor** — La leyenda de alérgenos listaba siempre los 8 del catálogo (Bodega, que solo tiene Sulfitos, mostraba Gluten, Pescado…), contra lo que decía F10. → Solo los presentes en la categoría, en el orden de `copy.alergenos`; sin alérgenos, no hay leyenda.
+- **Menor** — El contador "1 / 3" de la polaroid cambiaba de golpe (regla de oro: texto que cambia → barrido). → `WipeSwap`.
+- **Menor** — El aviso de categoría inexistente duraba 0,7 s (0,25 s con reduced motion) antes de irse: no se alcanzaba a leer. → 1,8 s en los dos casos (es tiempo de lectura, no de movimiento).
+- **Cosmético** — Doble línea entre el último plato y la leyenda; el borde del pie era más ancho que el contenido (tomaba el padding). → Una sola línea; el borde va en un bloque interno.
+- **Menor, no corregido** — Atrás del navegador con la polaroid abierta sale de la categoría en vez de cerrar la foto (la polaroid no tiene URL; ✕, `Esc` y clic afuera sí cierran). Darle URL o entrada de historial a la foto es una decisión de producto → pendiente.
+- **Cosmético, se corrige en F11** — Tamaños tipográficos sueltos fuera de la escala (`text-[0.625rem]`, `text-[0.95rem]`…) en la página de categoría y la polaroid.
+- **Documentación** — ESTADO decía cuerpo `noche` (es `monte`) y `copy.carta.agotadoHoy` (es `sinStock`); DECISIONES de F10 en párrafos en vez de una línea por decisión. Corregido en ESTADO.
+
+**Verificado sin cambios**
+- Lenis solo en la categoría (se destruye al salir), en pausa con la polaroid: la rueda y el swipe sobre el fondo no mueven la página; al cerrar, el foco vuelve al plato y el scroll queda donde estaba.
+- Sin stock (atenuado, precio tachado, "No hay hoy"), platos sin foto sin cursor ni clic, categoría inexistente con aviso, desktop 1440 y mobile 390 sin desborde, contra la ref. 11 (dos columnas, nombre + horario arriba, porción entre paréntesis).
+- Reglas aprendidas: colores solo tokens (sombra con `var(--color-noche)`), transform con un dueño (Flip en `[data-polaroid-flip]`, rotación en `[data-polaroid-marco]`), estado de listeners en `useLayoutEffect`, navegación por ruta, copy desde `copy.es.ts`, planes sin `wait`. F10 solo tocó archivos de su alcance (`src/carta/`, `router.ts`, `package.json`, planes, docs).
+- Plan nuevo `f10-4-revision.json` (títulos, leyenda, contador, línea).

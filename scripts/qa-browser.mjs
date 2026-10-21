@@ -5,6 +5,7 @@
 //   { "viewport": { "width": 1440, "height": 900, "mobile": false, "scale": 1 } }
 //   { "reducedMotion": true|false }
 //   { "nav": "http://localhost:5173/" }
+//   { "reload": true }                           (recarga como F5: conserva el historial y history.state)
 //   { "wait": 500 }                              (ms)
 //   { "eval": "expresión JS", "label": "...", "expect"?: valor }
 //        (await permitido; imprime el resultado; con `expect` compara por JSON y el plan falla si difiere)
@@ -193,6 +194,10 @@ async function run() {
     } else if (step.nav) {
       const loaded = waitEvent('Page.loadEventFired')
       await send('Page.navigate', { url: step.nav })
+      await loaded
+    } else if (step.reload) {
+      const loaded = waitEvent('Page.loadEventFired')
+      await send('Page.reload', {})
       await loaded
     } else if (step.wait) {
       await sleep(step.wait)

@@ -1,0 +1,53 @@
+{
+  "descripcion": "Revisión de F10 · título gigante de la portada dentro del contenedor (FUEGOS en 1440, 'Del mar y la huerta' en ≤ 2 líneas y la portada entra en la pantalla, mobile sin desborde), leyenda de alérgenos solo con los de la categoría (Bodega: solo SO; sin alérgenos, sin leyenda), contador de la polaroid con barrido, una sola línea antes de la leyenda.",
+  "steps": [
+    { "viewport": { "width": 1440, "height": 900 } },
+    { "nav": "http://localhost:5173/carta/fuegos" },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-categoria] h1'), (e) => !!e, 10000); await __qa.cartaEstable(); await document.fonts.ready; const h = document.querySelector('[data-categoria] h1'); await __waitUntil(() => h.children.length, (n) => n === 0, 6000); await __frames(2); const c = h.parentElement.getBoundingClientRect(); const cs = getComputedStyle(h.parentElement); const der = c.right - parseFloat(cs.paddingRight); const r = document.createRange(); r.selectNodeContents(h); const t = r.getBoundingClientRect(); return { dentro: t.right <= der + 1, grande: parseFloat(getComputedStyle(h).fontSize) >= 120 }; })()",
+      "label": "1 FUEGOS (1440): el título gigante no pasa el margen derecho del contenido y sigue siendo gigante",
+      "expect": { "dentro": true, "grande": true }
+    },
+    {
+      "eval": "(async () => { const marcas = [...document.querySelectorAll('[data-leyenda-alergenos] [data-leyenda-marca]')].map((m) => m.dataset.leyendaMarca).sort(); const usados = [...new Set([...document.querySelectorAll('[data-alergeno]')].map((a) => a.dataset.alergeno))].sort(); return { igual: JSON.stringify(marcas) === JSON.stringify(usados), marcas }; })()",
+      "label": "2 FUEGOS: la leyenda lista solo los alérgenos que aparecen en la categoría",
+      "expect": { "igual": true, "marcas": ["gluten", "huevo", "lacteos"] }
+    },
+    {
+      "eval": "(async () => { const ul = document.querySelector('[data-categoria-grupos]'); const ley = document.querySelector('[data-leyenda-alergenos]'); return getComputedStyle(ley).borderTopWidth === '0px' || ul.getBoundingClientRect().bottom + 2 >= ley.getBoundingClientRect().top; })()",
+      "label": "3 una sola línea entre el último plato y la leyenda",
+      "expect": true
+    },
+    { "eval": "(async () => { window.scrollTo({ top: 520, behavior: 'instant' }); await __frames(3); return true; })()" },
+    { "click": { "selector": "[data-plato-abrir]" } },
+    { "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-polaroid]').dataset.polaroidEstado, (e) => e === 'abierta'); return __qa.cartaEstable(); })()", "expect": true },
+    { "eval": "__qa.reloj(0.2)" },
+    { "key": "ArrowRight" },
+    {
+      "eval": "(async () => { const v = await __waitUntil(() => [...document.querySelectorAll('[data-polaroid-contador] *')].some((s) => { const c = getComputedStyle(s).clipPath; return c !== 'none' && c !== 'inset(0px)'; }), (x) => x === true, 2000); __qa.reloj(1); await __waitUntil(() => document.querySelector('[data-polaroid-contador]')?.textContent?.trim(), (t) => t === '2 / 3'); return [v, document.querySelector('[data-polaroid-contador]')?.textContent?.trim()]; })()",
+      "label": "4 el contador de la polaroid cambia con barrido (no de golpe)",
+      "expect": [true, "2 / 3"]
+    },
+    { "key": "Escape" },
+    { "eval": "__waitUntil(() => document.querySelector('[data-polaroid]').dataset.polaroidEstado, (e) => e === 'cerrada')", "expect": "cerrada" },
+    { "nav": "http://localhost:5173/carta/del-mar-y-la-huerta" },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-categoria] h1'), (e) => !!e, 10000); await __qa.cartaEstable(); await document.fonts.ready; const h = document.querySelector('[data-categoria] h1'); await __waitUntil(() => h.children.length, (n) => n === 0, 6000); await __frames(2); const lh = parseFloat(getComputedStyle(h).lineHeight); const lineas = Math.round(h.getBoundingClientRect().height / lh); const portada = document.querySelector('[data-categoria-portada]').getBoundingClientRect(); return { lineas: lineas <= 2, portadaEntra: portada.bottom <= innerHeight, ancho: document.documentElement.scrollWidth }; })()",
+      "label": "5 'Del mar y la huerta' (1440): título en ≤ 2 líneas y la portada entra en la pantalla",
+      "expect": { "lineas": true, "portadaEntra": true, "ancho": 1440 }
+    },
+    { "nav": "http://localhost:5173/carta/bodega" },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-categoria] h1'), (e) => !!e, 10000); await __qa.cartaEstable(); return [...document.querySelectorAll('[data-leyenda-alergenos] [data-leyenda-marca]')].map((m) => m.dataset.leyendaMarca); })()",
+      "label": "6 Bodega: la leyenda solo tiene Sulfitos",
+      "expect": ["sulfitos"]
+    },
+    { "viewport": { "width": 390, "height": 844, "mobile": true, "scale": 2 } },
+    { "nav": "http://localhost:5173/carta/del-mar-y-la-huerta" },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-categoria] h1'), (e) => !!e, 10000); await __qa.cartaEstable(); await document.fonts.ready; const h = document.querySelector('[data-categoria] h1'); await __waitUntil(() => h.children.length, (n) => n === 0, 6000); await __frames(2); const r = document.createRange(); r.selectNodeContents(h); const t = r.getBoundingClientRect(); return { dentro: t.left >= 15 && t.right <= 375, legible: parseFloat(getComputedStyle(h).fontSize) >= 36, ancho: document.documentElement.scrollWidth }; })()",
+      "label": "7 mobile 390: el título largo entra en el ancho y sigue legible",
+      "expect": { "dentro": true, "legible": true, "ancho": 390 }
+    }
+  ]
+}

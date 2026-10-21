@@ -296,11 +296,11 @@ export function Polaroid({
             >
               <ArrowLeft className="size-4" aria-hidden="true" />
             </button>
-            <span
-              data-polaroid-contador
-              className="min-w-12 text-center font-ui text-etiqueta font-semibold tabular-nums text-champan/85"
-            >
-              {idxSeguro + 1} / {platos.length}
+            <span data-polaroid-contador className="min-w-12 text-center">
+              <WipeSwap
+                value={`${idxSeguro + 1} / ${platos.length}`}
+                className="font-ui text-etiqueta font-semibold tabular-nums text-champan/85"
+              />
             </span>
             <button
               type="button"

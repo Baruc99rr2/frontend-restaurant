@@ -1,0 +1,644 @@
+{
+  "descripcion": "Revisión de F10 · Historial: entrada externa, recarga en una categoría, cadena larga anterior/siguiente con atrás/adelante, wordmark y doble clic. Ningún botón interno saca del sitio.",
+  "steps": [
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      }
+    },
+    {
+      "nav": "data:text/html,<h1>sitio externo</h1>"
+    },
+    {
+      "nav": "http://localhost:5173/carta/fuegos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => location.pathname, (p) => p === '/carta/fuegos', 10000); await __waitUntil(() => document.querySelector('[data-categoria] h1, [data-categoria-aviso]'), (el) => !!el, 10000); await __qa.cartaEstable(); return [location.host, location.pathname, document.querySelector('[data-categoria] h1') !== null]; })()",
+      "label": "A1 entrada externa directa a /carta/fuegos",
+      "expect": [
+        "localhost:5173",
+        "/carta/fuegos",
+        true
+      ]
+    },
+    {
+      "eval": "(async () => { window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }); await __frames(3); return true; })()"
+    },
+    {
+      "click": {
+        "selector": "[data-categoria-siguiente]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => location.pathname, (p) => p === '/carta/pastas', 10000); await __waitUntil(() => document.querySelector('[data-categoria] h1, [data-categoria-aviso]'), (el) => !!el, 10000); await __qa.cartaEstable(); return [location.host, location.pathname, document.querySelector('[data-categoria] h1') !== null]; })()",
+      "label": "A2 siguiente → pastas",
+      "expect": [
+        "localhost:5173",
+        "/carta/pastas",
+        true
+      ]
+    },
+    {
+      "eval": "(async () => { window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }); await __frames(3); return true; })()"
+    },
+    {
+      "click": {
+        "selector": "[data-categoria-siguiente]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => location.pathname, (p) => p === '/carta/del-horno', 10000); await __waitUntil(() => document.querySelector('[data-categoria] h1, [data-categoria-aviso]'), (el) => !!el, 10000); await __qa.cartaEstable(); return [location.host, location.pathname, document.querySelector('[data-categoria] h1') !== null]; })()",
+      "label": "A3 siguiente → del-horno",
+      "expect": [
+        "localhost:5173",
+        "/carta/del-horno",
+        true
+      ]
+    },
+    {
+      "click": {
+        "selector": "[data-categoria-carta]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-carta-estado]')?.dataset.cartaEstado, (e) => e === 'abierta', 15000); await __qa.cartaEstable(); await __qa.reposo(); return [location.host, location.pathname]; })()",
+      "label": "A4 \"← Categorías\" desde una entrada externa queda en el sitio (/carta)",
+      "expect": [
+        "localhost:5173",
+        "/carta"
+      ]
+    },
+    {
+      "click": {
+        "selector": "[data-menu-button]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => location.pathname, (p) => p === '/', 10000); await __qa.estable(); return [location.host, location.pathname, location.hash]; })()",
+      "label": "A5 CERRAR la carta queda en el sitio (/)",
+      "expect": [
+        "localhost:5173",
+        "/",
+        "#home"
+      ]
+    },
+    {
+      "atras": true
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => location.pathname, (p) => p === '/carta/pastas', 10000); await __waitUntil(() => document.querySelector('[data-categoria] h1, [data-categoria-aviso]'), (el) => !!el, 10000); await __qa.cartaEstable(); return [location.host, location.pathname, document.querySelector('[data-categoria] h1') !== null]; })()",
+      "label": "A6 atrás del navegador vuelve a pastas",
+      "expect": [
+        "localhost:5173",
+        "/carta/pastas",
+        true
+      ]
+    },
+    {
+      "eval": "(async () => { window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }); await __frames(3); return true; })()"
+    },
+    {
+      "click": {
+        "selector": "[data-categoria-volver-carta]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-carta-estado]')?.dataset.cartaEstado, (e) => e === 'abierta', 15000); await __qa.cartaEstable(); await __qa.reposo(); return [location.host, location.pathname]; })()",
+      "label": "A7 \"Volver a la carta\" desde pastas (entrada sin carta debajo) queda en el sitio",
+      "expect": [
+        "localhost:5173",
+        "/carta"
+      ]
+    },
+    {
+      "nav": "http://localhost:5173/#home"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '0', 15000); return __qa.reposo(); })()",
+      "expect": true
+    },
+    {
+      "click": {
+        "selector": "[data-ver-carta]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-carta-estado]')?.dataset.cartaEstado, (e) => e === 'abierta', 15000); await __qa.cartaEstable(); await __qa.reposo(); return [location.host, location.pathname]; })()",
+      "label": "carta abierta desde HOME",
+      "expect": [
+        "localhost:5173",
+        "/carta"
+      ]
+    },
+    {
+      "click": {
+        "selector": "[data-carta-card=fuegos]"
+      }
+    },
+    {
+      "eval": "__qa.reposo()",
+      "expect": true
+    },
+    {
+      "click": {
+        "selector": "[data-carta-card=fuegos]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => location.pathname, (p) => p === '/carta/fuegos', 10000); await __waitUntil(() => document.querySelector('[data-categoria] h1, [data-categoria-aviso]'), (el) => !!el, 10000); await __qa.cartaEstable(); return [location.host, location.pathname, document.querySelector('[data-categoria] h1') !== null]; })()",
+      "label": "B1 fuegos desde la carta",
+      "expect": [
+        "localhost:5173",
+        "/carta/fuegos",
+        true
+      ]
+    },
+    {
+      "eval": "(async () => { window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }); await __frames(3); return true; })()"
+    },
+    {
+      "click": {
+        "selector": "[data-categoria-siguiente]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => location.pathname, (p) => p === '/carta/pastas', 10000); await __waitUntil(() => document.querySelector('[data-categoria] h1, [data-categoria-aviso]'), (el) => !!el, 10000); await __qa.cartaEstable(); return [location.host, location.pathname, document.querySelector('[data-categoria] h1') !== null]; })()",
+      "label": "B2 siguiente → pastas",
+      "expect": [
+        "localhost:5173",
+        "/carta/pastas",
+        true
+      ]
+    },
+    {
+      "reload": true
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => location.pathname, (p) => p === '/carta/pastas', 10000); await __waitUntil(() => document.querySelector('[data-categoria] h1, [data-categoria-aviso]'), (el) => !!el, 10000); await __qa.cartaEstable(); return [location.host, location.pathname, document.querySelector('[data-categoria] h1') !== null]; })()",
+      "label": "B3 recarga en pastas",
+      "expect": [
+        "localhost:5173",
+        "/carta/pastas",
+        true
+      ]
+    },
+    {
+      "eval": "(async () => { window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }); await __frames(3); return true; })()"
+    },
+    {
+      "click": {
+        "selector": "[data-categoria-siguiente]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => location.pathname, (p) => p === '/carta/del-horno', 10000); await __waitUntil(() => document.querySelector('[data-categoria] h1, [data-categoria-aviso]'), (el) => !!el, 10000); await __qa.cartaEstable(); return [location.host, location.pathname, document.querySelector('[data-categoria] h1') !== null]; })()",
+      "label": "B4 siguiente después de recargar → del-horno",
+      "expect": [
+        "localhost:5173",
+        "/carta/del-horno",
+        true
+      ]
+    },
+    {
+      "eval": "(async () => { window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }); await __frames(3); return true; })()"
+    },
+    {
+      "click": {
+        "selector": "[data-categoria-volver-carta]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-carta-estado]')?.dataset.cartaEstado, (e) => e === 'abierta', 15000); await __qa.cartaEstable(); await __qa.reposo(); return [location.host, location.pathname]; })()",
+      "label": "B5 \"Volver a la carta\" después de recargar queda en el sitio",
+      "expect": [
+        "localhost:5173",
+        "/carta"
+      ]
+    },
+    {
+      "click": {
+        "selector": "[data-menu-button]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => location.pathname, (p) => p === '/', 10000); await __qa.estable(); return [location.host, location.pathname, location.hash]; })()",
+      "label": "B6 CERRAR queda en el sitio",
+      "expect": [
+        "localhost:5173",
+        "/",
+        "#home"
+      ]
+    },
+    {
+      "reload": true
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => location.pathname, (p) => p === '/', 10000); await __qa.estable(); return [location.host, location.pathname, location.hash]; })()",
+      "label": "B7 recarga en / sigue en el sitio",
+      "expect": [
+        "localhost:5173",
+        "/",
+        "#home"
+      ]
+    },
+    {
+      "nav": "http://localhost:5173/#home"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '0', 15000); return __qa.reposo(); })()",
+      "expect": true
+    },
+    {
+      "click": {
+        "selector": "[data-ver-carta]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-carta-estado]')?.dataset.cartaEstado, (e) => e === 'abierta', 15000); await __qa.cartaEstable(); await __qa.reposo(); return [location.host, location.pathname]; })()",
+      "label": "carta abierta desde HOME",
+      "expect": [
+        "localhost:5173",
+        "/carta"
+      ]
+    },
+    {
+      "click": {
+        "selector": "[data-carta-card=entradas]"
+      }
+    },
+    {
+      "eval": "__qa.reposo()",
+      "expect": true
+    },
+    {
+      "click": {
+        "selector": "[data-carta-card=entradas]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => location.pathname, (p) => p === '/carta/entradas', 10000); await __waitUntil(() => document.querySelector('[data-categoria] h1, [data-categoria-aviso]'), (el) => !!el, 10000); await __qa.cartaEstable(); return [location.host, location.pathname, document.querySelector('[data-categoria] h1') !== null]; })()",
+      "label": "C1 entradas desde la carta",
+      "expect": [
+        "localhost:5173",
+        "/carta/entradas",
+        true
+      ]
+    },
+    {
+      "eval": "(async () => { window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }); await __frames(3); return true; })()"
+    },
+    {
+      "click": {
+        "selector": "[data-categoria-siguiente]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => location.pathname, (p) => p === '/carta/fuegos', 10000); await __waitUntil(() => document.querySelector('[data-categoria] h1, [data-categoria-aviso]'), (el) => !!el, 10000); await __qa.cartaEstable(); return [location.host, location.pathname, document.querySelector('[data-categoria] h1') !== null]; })()",
+      "label": "C siguiente → fuegos",
+      "expect": [
+        "localhost:5173",
+        "/carta/fuegos",
+        true
+      ]
+    },
+    {
+      "eval": "(async () => { window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }); await __frames(3); return true; })()"
+    },
+    {
+      "click": {
+        "selector": "[data-categoria-siguiente]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => location.pathname, (p) => p === '/carta/pastas', 10000); await __waitUntil(() => document.querySelector('[data-categoria] h1, [data-categoria-aviso]'), (el) => !!el, 10000); await __qa.cartaEstable(); return [location.host, location.pathname, document.querySelector('[data-categoria] h1') !== null]; })()",
+      "label": "C siguiente → pastas",
+      "expect": [
+        "localhost:5173",
+        "/carta/pastas",
+        true
+      ]
+    },
+    {
+      "eval": "(async () => { window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }); await __frames(3); return true; })()"
+    },
+    {
+      "click": {
+        "selector": "[data-categoria-siguiente]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => location.pathname, (p) => p === '/carta/del-horno', 10000); await __waitUntil(() => document.querySelector('[data-categoria] h1, [data-categoria-aviso]'), (el) => !!el, 10000); await __qa.cartaEstable(); return [location.host, location.pathname, document.querySelector('[data-categoria] h1') !== null]; })()",
+      "label": "C siguiente → del-horno",
+      "expect": [
+        "localhost:5173",
+        "/carta/del-horno",
+        true
+      ]
+    },
+    {
+      "eval": "(async () => { window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }); await __frames(3); return true; })()"
+    },
+    {
+      "click": {
+        "selector": "[data-categoria-siguiente]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => location.pathname, (p) => p === '/carta/del-mar-y-la-huerta', 10000); await __waitUntil(() => document.querySelector('[data-categoria] h1, [data-categoria-aviso]'), (el) => !!el, 10000); await __qa.cartaEstable(); return [location.host, location.pathname, document.querySelector('[data-categoria] h1') !== null]; })()",
+      "label": "C siguiente → del-mar-y-la-huerta",
+      "expect": [
+        "localhost:5173",
+        "/carta/del-mar-y-la-huerta",
+        true
+      ]
+    },
+    {
+      "atras": true
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => location.pathname, (p) => p === '/carta/del-horno', 10000); await __waitUntil(() => document.querySelector('[data-categoria] h1, [data-categoria-aviso]'), (el) => !!el, 10000); await __qa.cartaEstable(); return [location.host, location.pathname, document.querySelector('[data-categoria] h1') !== null]; })()",
+      "label": "C2 atrás → del-horno",
+      "expect": [
+        "localhost:5173",
+        "/carta/del-horno",
+        true
+      ]
+    },
+    {
+      "atras": true
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => location.pathname, (p) => p === '/carta/pastas', 10000); await __waitUntil(() => document.querySelector('[data-categoria] h1, [data-categoria-aviso]'), (el) => !!el, 10000); await __qa.cartaEstable(); return [location.host, location.pathname, document.querySelector('[data-categoria] h1') !== null]; })()",
+      "label": "C3 atrás → pastas",
+      "expect": [
+        "localhost:5173",
+        "/carta/pastas",
+        true
+      ]
+    },
+    {
+      "adelante": true
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => location.pathname, (p) => p === '/carta/del-horno', 10000); await __waitUntil(() => document.querySelector('[data-categoria] h1, [data-categoria-aviso]'), (el) => !!el, 10000); await __qa.cartaEstable(); return [location.host, location.pathname, document.querySelector('[data-categoria] h1') !== null]; })()",
+      "label": "C4 adelante → del-horno",
+      "expect": [
+        "localhost:5173",
+        "/carta/del-horno",
+        true
+      ]
+    },
+    {
+      "eval": "(async () => { window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }); await __frames(3); return true; })()"
+    },
+    {
+      "click": {
+        "selector": "[data-categoria-anterior]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => location.pathname, (p) => p === '/carta/pastas', 10000); await __waitUntil(() => document.querySelector('[data-categoria] h1, [data-categoria-aviso]'), (el) => !!el, 10000); await __qa.cartaEstable(); return [location.host, location.pathname, document.querySelector('[data-categoria] h1') !== null]; })()",
+      "label": "C5 anterior → pastas (corta el adelante)",
+      "expect": [
+        "localhost:5173",
+        "/carta/pastas",
+        true
+      ]
+    },
+    {
+      "eval": "(async () => { window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }); await __frames(3); return true; })()"
+    },
+    {
+      "click": {
+        "selector": "[data-categoria-siguiente]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => location.pathname, (p) => p === '/carta/del-horno', 10000); await __waitUntil(() => document.querySelector('[data-categoria] h1, [data-categoria-aviso]'), (el) => !!el, 10000); await __qa.cartaEstable(); return [location.host, location.pathname, document.querySelector('[data-categoria] h1') !== null]; })()",
+      "label": "C6 siguiente → del-horno",
+      "expect": [
+        "localhost:5173",
+        "/carta/del-horno",
+        true
+      ]
+    },
+    {
+      "click": {
+        "selector": "[data-categoria-carta]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-carta-estado]')?.dataset.cartaEstado, (e) => e === 'abierta', 15000); await __qa.cartaEstable(); await __qa.reposo(); return [location.host, location.pathname]; })()",
+      "label": "C7 \"← Categorías\" vuelve a /carta saltando toda la cadena",
+      "expect": [
+        "localhost:5173",
+        "/carta"
+      ]
+    },
+    {
+      "atras": true
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => location.pathname, (p) => p === '/', 10000); await __qa.estable(); return [location.host, location.pathname, location.hash]; })()",
+      "label": "C8 atrás del navegador desde /carta → el escenario (la cadena no quedó debajo)",
+      "expect": [
+        "localhost:5173",
+        "/",
+        "#home"
+      ]
+    },
+    {
+      "adelante": true
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-carta-estado]')?.dataset.cartaEstado, (e) => e === 'abierta', 15000); await __qa.cartaEstable(); await __qa.reposo(); return [location.host, location.pathname]; })()",
+      "label": "C9 adelante reabre la carta",
+      "expect": [
+        "localhost:5173",
+        "/carta"
+      ]
+    },
+    {
+      "adelante": true
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => location.pathname, (p) => p === '/carta/entradas', 10000); await __waitUntil(() => document.querySelector('[data-categoria] h1, [data-categoria-aviso]'), (el) => !!el, 10000); await __qa.cartaEstable(); return [location.host, location.pathname, document.querySelector('[data-categoria] h1') !== null]; })()",
+      "label": "C10 adelante → entradas",
+      "expect": [
+        "localhost:5173",
+        "/carta/entradas",
+        true
+      ]
+    },
+    {
+      "click": {
+        "selector": "[data-categoria-carta]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-carta-estado]')?.dataset.cartaEstado, (e) => e === 'abierta', 15000); await __qa.cartaEstable(); await __qa.reposo(); return [location.host, location.pathname]; })()",
+      "label": "C11 \"← Categorías\" → /carta",
+      "expect": [
+        "localhost:5173",
+        "/carta"
+      ]
+    },
+    {
+      "click": {
+        "selector": "[data-carta-card=pastas]"
+      }
+    },
+    {
+      "eval": "__qa.reposo()",
+      "expect": true
+    },
+    {
+      "click": {
+        "selector": "[data-carta-card=pastas]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => location.pathname, (p) => p === '/carta/pastas', 10000); await __waitUntil(() => document.querySelector('[data-categoria] h1, [data-categoria-aviso]'), (el) => !!el, 10000); await __qa.cartaEstable(); return [location.host, location.pathname, document.querySelector('[data-categoria] h1') !== null]; })()",
+      "label": "D1 pastas",
+      "expect": [
+        "localhost:5173",
+        "/carta/pastas",
+        true
+      ]
+    },
+    {
+      "click": {
+        "selector": "[data-categoria-wordmark]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => location.pathname, (p) => p === '/', 10000); await __qa.estable(); return [location.host, location.pathname, location.hash]; })()",
+      "label": "D2 wordmark → HOME",
+      "expect": [
+        "localhost:5173",
+        "/",
+        "#home"
+      ]
+    },
+    {
+      "atras": true
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => location.pathname, (p) => p === '/carta/pastas', 10000); await __waitUntil(() => document.querySelector('[data-categoria] h1, [data-categoria-aviso]'), (el) => !!el, 10000); await __qa.cartaEstable(); return [location.host, location.pathname, document.querySelector('[data-categoria] h1') !== null]; })()",
+      "label": "D3 atrás → pastas",
+      "expect": [
+        "localhost:5173",
+        "/carta/pastas",
+        true
+      ]
+    },
+    {
+      "click": {
+        "selector": "[data-menu-button]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-carta-estado]')?.dataset.cartaEstado, (e) => e === 'abierta', 15000); await __qa.cartaEstable(); await __qa.reposo(); return [location.host, location.pathname]; })()",
+      "label": "D4 MENU en la categoría → /carta",
+      "expect": [
+        "localhost:5173",
+        "/carta"
+      ]
+    },
+    {
+      "atras": true
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => location.pathname, (p) => p === '/', 10000); await __qa.estable(); return [location.host, location.pathname, location.hash]; })()",
+      "label": "D5 atrás desde /carta → escenario",
+      "expect": [
+        "localhost:5173",
+        "/",
+        "#home"
+      ]
+    },
+    {
+      "nav": "data:text/html,<h1>sitio externo</h1>"
+    },
+    {
+      "nav": "http://localhost:5173/#home"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '0', 15000); return __qa.reposo(); })()",
+      "expect": true
+    },
+    {
+      "click": {
+        "selector": "[data-ver-carta]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-carta-estado]')?.dataset.cartaEstado, (e) => e === 'abierta', 15000); await __qa.cartaEstable(); await __qa.reposo(); return [location.host, location.pathname]; })()",
+      "label": "E1 carta",
+      "expect": [
+        "localhost:5173",
+        "/carta"
+      ]
+    },
+    {
+      "click": {
+        "selector": "[data-carta-card=fuegos]"
+      }
+    },
+    {
+      "eval": "__qa.reposo()",
+      "expect": true
+    },
+    {
+      "click": {
+        "selector": "[data-carta-card=fuegos]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => location.pathname, (p) => p === '/carta/fuegos', 10000); await __waitUntil(() => document.querySelector('[data-categoria] h1, [data-categoria-aviso]'), (el) => !!el, 10000); await __qa.cartaEstable(); return [location.host, location.pathname, document.querySelector('[data-categoria] h1') !== null]; })()",
+      "label": "E2 fuegos",
+      "expect": [
+        "localhost:5173",
+        "/carta/fuegos",
+        true
+      ]
+    },
+    {
+      "click": {
+        "selector": "[data-categoria-carta]"
+      }
+    },
+    {
+      "click": {
+        "selector": "[data-categoria-carta]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-carta-estado]')?.dataset.cartaEstado, (e) => e === 'abierta', 15000); await __qa.cartaEstable(); await __qa.reposo(); return [location.host, location.pathname]; })()",
+      "label": "E3 doble clic en \"← Categorías\" queda en /carta",
+      "expect": [
+        "localhost:5173",
+        "/carta"
+      ]
+    },
+    {
+      "click": {
+        "selector": "[data-menu-button]"
+      }
+    },
+    {
+      "click": {
+        "selector": "[data-menu-button]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => location.pathname, (p) => p === '/', 10000); await __sleep(900); await __qa.estable(); return [location.host, ['/', '/carta'].includes(location.pathname)]; })()",
+      "label": "E4 doble clic en CERRAR no retrocede dos entradas (sigue en el sitio: cierra, o cierra y reabre)",
+      "expect": [
+        "localhost:5173",
+        true
+      ]
+    }
+  ]
+}

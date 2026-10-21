@@ -1,0 +1,85 @@
+{
+  "descripcion": "F8 · CONTACTO en modo abierto: carga diferida de Leaflet + OSM (no carga antes de CONTACTO), filtro oscuro solo en teselas, rueda sobre el mapa no hace zoom ni rompe el paso de sección, atribución visible, datos de repo y site.config, 'Volver al inicio' lleva a HOME, y mobile con swipe sobre el mapa cambiando de sección.",
+  "steps": [
+    { "viewport": { "width": 1440, "height": 900 } },
+    { "nav": "http://localhost:5173/#preguntas" },
+    {
+      "eval": "(async () => { window.__waitUntil = async (fn, pred, timeout = 4500) => { const t0 = performance.now(); while (performance.now() - t0 < timeout) { const v = fn(); if (pred(v)) return v; await new Promise((r) => setTimeout(r, 30)); } return fn(); }; window.__contactoState = () => { const root = document.querySelector('[data-mode]'); const panel = document.querySelector('[data-open-panel=\"contacto\"]'); const mapa = panel?.querySelector('[data-contacto-mapa]'); const tilePane = panel?.querySelector('.leaflet-tile-pane'); const markerPane = panel?.querySelector('.leaflet-marker-pane'); const marcador = panel?.querySelector('[data-contacto-marcador]'); const atrib = panel?.querySelector('[data-contacto-atribucion]'); const activar = panel?.querySelector('[data-contacto-mapa-activar]'); const tarjeta = panel?.querySelector('[data-contacto-tarjeta]'); const dir = panel?.querySelector('[data-contacto-direccion]')?.textContent?.trim(); const tel = panel?.querySelector('[data-contacto-telefono]')?.getAttribute('href'); const email = panel?.querySelector('[data-contacto-email]')?.getAttribute('href'); const estado = panel?.querySelector('[data-contacto-estado]')?.textContent?.trim() ?? ''; const horario = panel?.querySelector('[data-contacto-horario]')?.textContent?.trim() ?? ''; const proximo = panel?.querySelector('[data-contacto-proximo]')?.textContent?.trim() ?? ''; const redes = panel ? panel.querySelectorAll('[data-contacto-red]').length : 0; const tileFilter = tilePane ? getComputedStyle(tilePane).filter : 'none'; const markerFilter = markerPane ? getComputedStyle(markerPane).filter : 'none'; const atribRect = atrib?.getBoundingClientRect(); const cardSettled = (tarjeta?.getBoundingClientRect().left ?? 0) > 20; return { stage: [root.dataset.mode, root.dataset.active, root.dataset.texts, location.hash], mapLoaded: Boolean(mapa && tilePane && marcador), cardSettled, interactivo: mapa?.dataset.contactoInteractivo ?? null, zoom: mapa?.dataset.contactoZoom ?? null, tileHasDarkFilter: tileFilter.includes('invert'), markerHasNoFilter: markerFilter === 'none', atribVisible: Boolean(atrib && atrib.textContent?.includes('OpenStreetMap') && atribRect && atribRect.width > 40 && atribRect.height > 10), activarTexto: activar?.textContent?.trim() ?? null, dir, tel, email, tieneEstado: estado.length > 5, tieneHorario: horario.includes('Martes a jueves'), tieneProximo: proximo.includes('23 de noviembre'), redes }; }; return await __waitUntil(() => { const r = document.querySelector('[data-mode]'); return { stage: [r?.dataset.mode, r?.dataset.active, r?.dataset.texts, location.hash], mapaAntesDeContacto: document.querySelector('[data-contacto-mapa]'), leafletAntesDeContacto: document.querySelector('.leaflet-container') }; }, (s) => s.stage[0] === 'open' && s.stage[1] === '4' && s.stage[2] === '4'); })()",
+      "label": "1 en /#preguntas el mapa de CONTACTO NO se carga todavía (carga diferida real)",
+      "expect": {
+        "stage": ["open", "4", "4", "#preguntas"],
+        "mapaAntesDeContacto": null,
+        "leafletAntesDeContacto": null
+      }
+    },
+    { "key": "ArrowDown" },
+    {
+      "eval": "(async () => { const s = await __waitUntil(__contactoState, (st) => st.stage[0] === 'open' && st.stage[1] === '5' && st.stage[2] === '5' && st.mapLoaded && st.tieneEstado && st.cardSettled); return s; })()",
+      "label": "2 al entrar a CONTACTO se monta Leaflet + OSM con filtro oscuro solo en teselas, atribución visible y datos de repo/config",
+      "expect": {
+        "stage": ["open", "5", "5", "#contacto"],
+        "mapLoaded": true,
+        "cardSettled": true,
+        "interactivo": "false",
+        "zoom": "16",
+        "tileHasDarkFilter": true,
+        "markerHasNoFilter": true,
+        "atribVisible": true,
+        "activarTexto": "Hacé clic para mover el mapa",
+        "dir": "Güemes 1150, San Salvador de Jujuy",
+        "tel": "tel:+543880000000",
+        "email": "mailto:hola@quebracho.example",
+        "tieneEstado": true,
+        "tieneHorario": true,
+        "tieneProximo": true,
+        "redes": 5
+      }
+    },
+    { "shot": "../shots/f8-contacto-inicial.png" },
+    { "wheel": { "x": 1050, "y": 450, "dy": 140, "count": 2, "interval": 30 } },
+    {
+      "eval": "(async () => { const s = await __waitUntil(__contactoState, (st) => st.zoom === '16'); await new Promise((r) => setTimeout(r, 240)); return [s.stage[1], s.zoom, s.interactivo]; })()",
+      "label": "3a rueda hacia abajo sobre el mapa no hace zoom (zoom sigue en 16)",
+      "expect": ["5", "16", "false"]
+    },
+    { "wheel": { "x": 1050, "y": 450, "dy": -140, "count": 2, "interval": 30 } },
+    {
+      "eval": "(async () => { const s = await __waitUntil(__contactoState, (st) => st.stage[0] === 'open' && st.stage[1] === '4' && st.stage[2] === '4'); return [s.stage[1], s.stage[3], s.zoom]; })()",
+      "label": "3b rueda hacia arriba sobre el mapa no hace zoom y permite volver a PREGUNTAS",
+      "expect": ["4", "#preguntas", "16"]
+    },
+    { "key": "ArrowDown" },
+    {
+      "eval": "(async () => { await __waitUntil(__contactoState, (st) => st.stage[0] === 'open' && st.stage[1] === '5' && st.stage[2] === '5'); document.querySelector('[data-contacto-mapa-activar]').click(); const s = await __waitUntil(__contactoState, (st) => st.interactivo === 'true'); return [s.stage[1], s.interactivo, s.zoom]; })()",
+      "label": "4 clic en el mapa habilita la interacción (interactivo = true) sin alterar el zoom",
+      "expect": ["5", "true", "16"]
+    },
+    {
+      "eval": "(async () => { document.querySelector('[data-contacto-inicio]').click(); return await __waitUntil(() => { const r = document.querySelector('[data-mode]'); return [r.dataset.mode, r.dataset.active, r.dataset.texts, location.hash]; }, (v) => v[0] === 'open' && v[1] === '0' && v[2] === '0' && v[3] === '#home'); })()",
+      "label": "5 botón 'Volver al inicio' lleva a HOME (#home)",
+      "expect": ["open", "0", "0", "#home"]
+    },
+    { "viewport": { "width": 390, "height": 844, "mobile": true, "scale": 2 } },
+    { "nav": "about:blank" },
+    { "nav": "http://localhost:5173/#contacto" },
+    {
+      "eval": "(async () => { const wait = async (fn, pred, timeout = 4500) => { const t0 = performance.now(); while (performance.now() - t0 < timeout) { const v = fn(); if (pred(v)) return v; await new Promise((r) => setTimeout(r, 30)); } return fn(); }; return await wait(() => { const r = document.querySelector('[data-mode]'); const mapa = document.querySelector('[data-contacto-mapa]'); const atrib = document.querySelector('[data-contacto-atribucion]'); const activar = document.querySelector('[data-contacto-mapa-activar]'); const tarjeta = document.querySelector('[data-contacto-tarjeta]'); const tiles = Array.from(document.querySelectorAll('.leaflet-tile')); const tilesReady = tiles.length > 0 && tiles.every((img) => img.complete); const cardReady = (tarjeta?.getBoundingClientRect().left ?? 0) > 10; return { stage: [r?.dataset.mode, r?.dataset.active, r?.dataset.texts, location.hash], scrollWidth: document.documentElement.scrollWidth, interactivo: mapa?.dataset.contactoInteractivo, atribVisible: Boolean(atrib && atrib.getBoundingClientRect().width > 40), activarTexto: activar?.textContent?.trim(), ready: tilesReady && cardReady }; }, (s) => s.stage[0] === 'open' && s.stage[1] === '5' && s.stage[2] === '5' && s.interactivo === 'false' && s.ready); })()",
+      "label": "6 mobile 390×844 en /#contacto: sin desborde horizontal, atribución visible y leyenda 'Tocá para mover el mapa'",
+      "expect": {
+        "stage": ["open", "5", "5", "#contacto"],
+        "scrollWidth": 390,
+        "interactivo": "false",
+        "atribVisible": true,
+        "activarTexto": "Tocá para mover el mapa",
+        "ready": true
+      }
+    },
+    { "shot": "../shots/f8-m-contacto.png" },
+    { "swipe": { "x": 195, "fromY": 115, "toY": 480, "steps": 10 } },
+    {
+      "eval": "(async () => { const wait = async (fn, pred, timeout = 4500) => { const t0 = performance.now(); while (performance.now() - t0 < timeout) { const v = fn(); if (pred(v)) return v; await new Promise((r) => setTimeout(r, 30)); } return fn(); }; return await wait(() => { const r = document.querySelector('[data-mode]'); return [r?.dataset.mode, r?.dataset.active, r?.dataset.texts, location.hash]; }, (v) => v[0] === 'open' && v[1] === '4' && v[2] === '4' && v[3] === '#preguntas'); })()",
+      "label": "7 mobile swipe sobre el mapa cambia de sección a PREGUNTAS (#preguntas)",
+      "expect": ["open", "4", "4", "#preguntas"]
+    }
+  ]
+}

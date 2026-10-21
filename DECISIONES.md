@@ -193,5 +193,16 @@ Probado en Chrome (headless por DevTools, con emulación táctil a 390 px) con `
 - En la tarjeta de `pasos` (`id: 'pasos'`), la etiqueta usa `WipeSwap` (`"bocados"` en `Cóctel` ↔ `"pasos de menú"` en `Mesa servida` y `Asado a la vista`) → cumple la regla de oro de movimiento cuando cambia la unidad del resultado.
 - Fondo con veta cálida diagonal (`radial-gradient` mezclando `--color-oro`, `--color-hoja` y `--color-monte` con `color-mix`, sin `--color-vino`) dentro del inset del marco abierto sobre la foto `r3` oscurecida de `StageMedia` → reproduce el brillo cálido de la ref. 04 usando exclusivamente tokens permitidos (§1 reserva `vino` al líquido del `MenuButton`).
 
+## F8 — PREGUNTAS y CONTACTO (2026-10-21)
+
+- En `PREGUNTAS`, el acordeón mantiene montadas las 3 filas de cada página y anima el título de cada fila con `<WipeSwap>` al paginar o filtrar → cumple §8 ("los títulos cambian con `<WipeSwap>`") sin desmontar las filas entre páginas.
+- Una sola pregunta abierta a la vez (`openQuestion` por texto de pregunta) con cuerpo medido en un contenedor interno (`innerRef.offsetHeight`) y animado con GSAP (`0 ↔ inner.offsetHeight`, `height: 'auto'` al terminar) + `ResizeObserver` mientras está abierto → nunca hay saltos de altura ni cuando se cargan las zonas de delivery de la pregunta 12 ni al redimensionar la ventana.
+- El filtro del buscador (`normalizar` de `src/content/faq.ts`) busca en `pregunta`, `respuesta` y, para la pregunta 12 (`dinamica: 'zonas-delivery'`), también en los nombres de los barrios devueltos por `useLocal()` → buscar un barrio como `"bajo la vina"` encuentra directamente `"¿Hacen delivery?"`.
+- Cuando la búsqueda no arroja resultados (`filtradas.length === 0`), la lista y el bloque de `copy.preguntas.sinResultados` se cruzan con fundido GSAP → nunca queda el panel vacío de golpe y al escribir o limpiar la paginación vuelve a `1`.
+- `ContactoMapa` se importa con `React.lazy(() => import('./ContactoMapa'))` y solo se monta a partir del momento en que `CONTACTO` está por mostrarse (`active` o `state.activeIndex === 5` / `state.transition?.to === 5` en modo abierto/abriendo) → Leaflet + su CSS salen en un chunk separado (`ContactoMapa-*.js/css`) y no descargan teselas antes de llegar a `CONTACTO`.
+- El filtro oscuro (`invert(1) hue-rotate(180deg) grayscale(0.6) brightness(0.85)`) se aplica exclusivamente sobre `.leaflet-tile-pane` con `!bg-tizon` y `[&_.leaflet-tile]:!mix-blend-normal`, y el contenedor del mapa lleva `isolate z-0` → ni el marcador SVG dorado ni la atribución/controles se invierten, las teselas no se mezclan en gris claro (`mix-blend-mode: plus-lighter` por defecto de Leaflet) y los `z-index: 200..600` internos de Leaflet no tapan la tarjeta `champan` (`z-10`).
+- Mientras el mapa no fue activado (`interactive === false`), un escudo transparente con `[touch-action:pan-y]` deja pasar la rueda normal y el swipe táctil al escenario (`useStepInput`), y activa el mapa recién al hacer clic/tap (`"Hacé clic para mover el mapa"` / `"Tocá para mover el mapa"`) o con `Ctrl + rueda` (y vuelve a bloquearse al salir de `CONTACTO`).
+
+
 
 

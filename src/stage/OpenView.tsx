@@ -10,6 +10,8 @@ import { HomePanel } from '@/sections/Home/HomePanel'
 import { LaCasaPanel } from '@/sections/LaCasa/LaCasaPanel'
 import { PlatosPanel } from '@/sections/Platos/PlatosPanel'
 import { EventosPanel } from '@/sections/Eventos/EventosPanel'
+import { PreguntasPanel } from '@/sections/Preguntas/PreguntasPanel'
+import { ContactoPanel } from '@/sections/Contacto/ContactoPanel'
 
 /**
  * Modo abierto (§5, §8): una sección por panel, apiladas encima del marco.
@@ -102,6 +104,10 @@ export function OpenView({ rootRef, textsPanel, visible, onClose, onVerCarta, on
               <PlatosPanel active={active} onVerCarta={onVerCarta} />
             ) : panel.key === 'eventos' ? (
               <EventosPanel active={active} />
+            ) : panel.key === 'preguntas' ? (
+              <PreguntasPanel active={active} />
+            ) : panel.key === 'contacto' ? (
+              <ContactoPanel active={active} onVolverAlInicio={() => onGoTo(0)} />
             ) : (
               <PanelPlaceholder panel={panel} active={active} />
             )}

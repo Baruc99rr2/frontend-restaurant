@@ -1,6 +1,6 @@
 # ESTADO
 
-Última actualización: 2026-10-21 — **F8 completa**.
+Última actualización: 2026-10-21 — **regresión estable** (revisión de F5–F8 en curso).
 Repo remoto: https://github.com/Baruc99rr2/frontend-restaurant (público).
 
 ## Sub-fases
@@ -17,6 +17,7 @@ Repo remoto: https://github.com/Baruc99rr2/frontend-restaurant (público).
 | F6 — PLATOS | ✅ hecha | `feat(web): seccion platos` |
 | F7 — EVENTOS | ✅ hecha | `feat(web): seccion eventos` · `fix(web): veta de eventos sin vino` |
 | F8 — PREGUNTAS y CONTACTO | ✅ hecha | `feat(web): preguntas y contacto con mapa` |
+| — Regresión estable (planes de F3/F4 sin esperas fijas) | ✅ hecha | `test(web): regresion estable` |
 | F9–F12 | pendiente | — |
 
 ## Qué hay hoy
@@ -40,6 +41,13 @@ Repo remoto: https://github.com/Baruc99rr2/frontend-restaurant (público).
 - **Componentes:** `Picture`, `Navbar` (links con fundido según modo, píldora ≥ 75rem, barra dorada, lámina mobile), `MenuButton`, `icons/social.tsx`.
 - **Datos y contenido:** igual que F1 (`src/data/`, `src/content/`, mock).
 - **QA:** `pnpm qa <plan.json>` y `pnpm qa:regresion` (todos los planes de `qa/plans/`, con resultados esperados). Capturas en `qa/shots/` (ignorada). Requiere `pnpm dev`.
+  - Planes sin esperas fijas: `__waitUntil` / `__frames` / `__sleep` (los inyecta `qa-browser.mjs`) y, en dev, `window.__qa` (`src/motion/qa.ts`): `reloj(escala)` enlentece GSAP para muestras a mitad de animación, `estable()` espera el escenario quieto, `reposo()` además sin animaciones (capturas). Planes nuevos: no usar `{ "wait": N }` para esperar estados.
+  - No editar archivos del proyecto mientras corre la regresión: Tailwind vigila todo el repo y Vite recarga la página a mitad del plan.
+
+## Verificación de la regresión estable
+
+- `pnpm qa:regresion` ✅ **15/15 planes tres veces seguidas** (después del arreglo de `useStepInput`; antes, una corrida falló en `f8-2` por un ↓ perdido al entrar por hash).
+- `pnpm build` ✅ (sin `__qa` en el build) · `pnpm lint` ✅.
 
 ## Verificación F8
 

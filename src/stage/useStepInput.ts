@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef } from 'react'
 import { Observer } from '@/motion/gsap'
 
 /**
@@ -110,7 +110,9 @@ export function createWheelGesture(onStep: (dir: StepDir) => void) {
 export function useStepInput({ enabled, onStep }: Options) {
   const onStepRef = useRef(onStep)
   const enabledRef = useRef(enabled)
-  useEffect(() => {
+  // En el commit (no en un efecto pasivo): si el escenario se habilita desde un tick de GSAP,
+  // un efecto pasivo puede correr después del primer input y ese paso se perdía.
+  useLayoutEffect(() => {
     onStepRef.current = onStep
     enabledRef.current = enabled
   }, [onStep, enabled])

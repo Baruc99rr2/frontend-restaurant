@@ -14,6 +14,13 @@
 //   { "swipe": { "x": 200, "fromY": 600, "toY": 300, "steps": 8 } }
 //   { "click": { "x": 100, "y": 100 } }
 //   { "move": { "x": 100, "y": 100 } }
+//
+// En cada página se inyectan ayudantes para los `eval` (así los planes no esperan con tiempos fijos):
+//   __waitUntil(fn, pred, timeout = 8000)  → repite fn() cada 30 ms hasta que pred(valor); al vencer devuelve fn()
+//   __frames(n = 2)                        → espera n frames
+//   __sleep(ms)                            → solo para simular el ritmo de un input (no para esperar estados)
+// En dev la app además expone `__qa` (src/motion/qa.ts): `reloj(escala)` enlentece GSAP para muestras
+// a mitad de animación, `estable()` espera a que el escenario quede quieto.
 
 import { spawn } from 'node:child_process'
 import { mkdtempSync, readFileSync, writeFileSync, existsSync, mkdirSync, rmSync } from 'node:fs'
@@ -114,6 +121,21 @@ const KEYS = {
   Tab: { key: 'Tab', code: 'Tab', keyCode: 9 },
 }
 
+const AYUDANTES = `
+window.__sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+window.__frames = (n = 2) => new Promise((r) => { const paso = (k) => (k <= 0 ? r() : requestAnimationFrame(() => paso(k - 1))); paso(n); });
+window.__waitUntil = async (fn, pred, timeout = 8000) => {
+  const t0 = performance.now();
+  while (performance.now() - t0 < timeout) {
+    let v;
+    try { v = await fn(); } catch { v = undefined; }
+    if (pred(v)) return v;
+    await new Promise((r) => setTimeout(r, 30));
+  }
+  return fn();
+};
+`
+
 let viewport = { width: 1440, height: 900, mobile: false, scale: 1 }
 let fallas = 0
 
@@ -141,6 +163,7 @@ async function run() {
   })
   await send('Page.enable')
   await send('Runtime.enable')
+  await send('Page.addScriptToEvaluateOnNewDocument', { source: AYUDANTES })
 
   for (const step of plan.steps) {
     if (step.viewport) {

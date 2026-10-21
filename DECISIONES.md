@@ -203,6 +203,12 @@ Probado en Chrome (headless por DevTools, con emulación táctil a 390 px) con `
 - El filtro oscuro (`invert(1) hue-rotate(180deg) grayscale(0.6) brightness(0.85)`) se aplica exclusivamente sobre `.leaflet-tile-pane` con `!bg-tizon` y `[&_.leaflet-tile]:!mix-blend-normal`, y el contenedor del mapa lleva `isolate z-0` → ni el marcador SVG dorado ni la atribución/controles se invierten, las teselas no se mezclan en gris claro (`mix-blend-mode: plus-lighter` por defecto de Leaflet) y los `z-index: 200..600` internos de Leaflet no tapan la tarjeta `champan` (`z-10`).
 - Mientras el mapa no fue activado (`interactive === false`), un escudo transparente con `[touch-action:pan-y]` deja pasar la rueda normal y el swipe táctil al escenario (`useStepInput`), y activa el mapa recién al hacer clic/tap (`"Hacé clic para mover el mapa"` / `"Tocá para mover el mapa"`) o con `Ctrl + rueda` (y vuelve a bloquearse al salir de `CONTACTO`).
 
+## Regresión estable (2026-10-21) — `test(web): regresion estable`
 
-
-
+- Los planes de F3 y F4 ya no esperan con tiempos fijos: cada estado se espera con `__waitUntil` o `__qa.estable()` → la intro tarda entre ~2,5 y ~6 s según la carga (tope de 3,5 s del loader) y los `wait` de 4500 ms fallaban cuando Vite compilaba en frío o la máquina estaba cargada.
+- `scripts/qa-browser.mjs` inyecta en cada página `__waitUntil(fn, pred, timeout)`, `__frames(n)` y `__sleep(ms)` (`Page.addScriptToEvaluateOnNewDocument`) → los planes no los redefinen; los de F5–F8 que los definen siguen andando.
+- Gancho de QA `window.__qa` (`src/motion/qa.ts`, solo en dev, fuera del build): `reloj(escala)` cambia `gsap.globalTimeline.timeScale`, `estable()` espera modo cerrado/abierto sin bloqueo y `reposo()` además sin animaciones finitas (para capturas) → la app conoce su estado; el script de QA sigue siendo genérico.
+- Muestras a mitad de animación (`f3-6` T, `f4-4` 21 y las capturas de pasos): reloj de GSAP 5–50 veces más lento y `__waitUntil` hasta que la animación esté en el tramo buscado (p. ej. opacidad entre 0,1 y 0,9) → la muestra ya no depende de cuánto tarda el protocolo de DevTools. Se enlentece en vez de congelar: con `timeScale(0)` GSAP no aplica los `set()` inmediatos (`_hasNoPausedAncestors`).
+- Los chequeos negativos ("↓ en el último no hace nada", "clic fuera no abre") esperan 3 frames y `estable()` → si el input hubiera disparado un paso, el bloqueo ya estaría marcado.
+- `useStepInput` sincroniza `enabled`/`onStep` en `useLayoutEffect` (antes `useEffect`) → al entrar por hash el escenario se habilita desde un tick de GSAP (actualización no discreta) y el efecto pasivo podía correr después del primer ↓, que se perdía (falló así una vez `f8-2` en la 3.ª corrida). Es un error de la app, no solo de la prueba.
+- Los `__sleep` que quedan en los planes solo marcan el ritmo de los eventos simulados (rueda, notches): el detector de gestos depende de ese ritmo, no de un estado.

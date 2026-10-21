@@ -1,21 +1,23 @@
 {
-  "descripcion": "F3 · Intro completa en desktop y primer paso en modo cerrado.",
+  "descripcion": "F3 · Intro completa en desktop y primer paso en modo cerrado. Sin esperas fijas: __waitUntil y __qa (reloj lento para las capturas a mitad de animación).",
   "steps": [
     { "viewport": { "width": 1440, "height": 900 } },
     { "nav": "http://localhost:5173/" },
     { "shot": "../shots/f3-intro-loader.png" },
-    { "wait": 1800 },
+    { "eval": "(async () => { const m = await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.mode, (v) => v === 'intro', 12000); __qa.reloj(0.25); await __waitUntil(() => getComputedStyle(document.querySelector('[data-frame]').parentElement).opacity, (o) => o === '1'); return m })()", "label": "intro: el marco empieza a crecer", "expect": "intro" },
     { "shot": "../shots/f3-intro-marco.png" },
-    { "wait": 2700 },
-    { "eval": "(() => { const root=document.querySelector('[data-mode]'); const v=document.querySelector('video'); window.__log=[]; new MutationObserver(()=>{ const e=[root.dataset.active, root.dataset.mode]; const l=__log[__log.length-1]; if(!l||l.join()!==e.join()) __log.push(e) }).observe(root,{attributes:true,attributeFilter:['data-active','data-mode']}); window.__take=()=>__log.splice(0); window.__st=()=>[root.dataset.mode, root.dataset.active, root.dataset.texts ?? '-', location.hash, v.paused ? 'pausa' : 'play']; return root.dataset.mode })()", "label": "intro termina en modo cerrado", "expect": "closed" },
+    { "eval": "(async () => { __qa.reloj(1); const root = await __waitUntil(() => document.querySelector('[data-mode]'), (r) => r?.dataset.mode === 'closed', 15000); const v=document.querySelector('video'); window.__log=[]; new MutationObserver(()=>{ const e=[root.dataset.active, root.dataset.mode]; const l=__log[__log.length-1]; if(!l||l.join()!==e.join()) __log.push(e) }).observe(root,{attributes:true,attributeFilter:['data-active','data-mode']}); window.__take=()=>__log.splice(0); window.__st=()=>[root.dataset.mode, root.dataset.active, root.dataset.texts ?? '-', location.hash, v.paused ? 'pausa' : 'play']; return root.dataset.mode })()", "label": "intro termina en modo cerrado", "expect": "closed" },
     { "eval": "document.querySelector('[aria-live=polite].sr-only').textContent", "label": "panel anunciado", "expect": "Panel 1 de 6: HOME" },
     { "eval": "__st()", "label": "cerrado: video pausado, URL limpia", "expect": ["closed", "0", "-", "", "pausa"] },
+    { "eval": "__qa.reposo()", "expect": true },
     { "shot": "../shots/f3-cerrado-home.png" },
+    { "eval": "__qa.reloj(0.15)" },
     { "wheel": { "dy": 100, "count": 1 } },
-    { "wait": 450 },
+    { "eval": "(async () => { const y = await __waitUntil(() => __qa.gsap.getProperty(document.querySelector('[data-panel=la-casa]'), 'yPercent'), (v) => v > 25 && v < 70); return y > 25 && y < 70 })()", "label": "a mitad del paso", "expect": true },
     { "shot": "../shots/f3-paso-cerrado.png" },
-    { "wait": 1300 },
+    { "eval": "(__qa.reloj(1), __qa.estable())", "expect": true },
     { "eval": "__take()", "label": "wheel → un paso", "expect": [["1", "closed"]] },
+    { "eval": "__qa.reposo()", "expect": true },
     { "shot": "../shots/f3-cerrado-lacasa.png" }
   ]
 }

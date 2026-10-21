@@ -2,6 +2,7 @@
 // Lo que es dato del local (precios, horarios, dirección, carta) NO va acá: sale del backend.
 // Botones repetidos: site.config.ts → botones.
 
+import type { RedSocial } from '@/config/site.config'
 import type { PanelKey } from './editorial'
 
 export type Panel = {
@@ -92,8 +93,15 @@ export const copy = {
     telefono: 'Pedidos por teléfono',
     horario: 'Horario',
     proximoDistinto: 'Próximo día distinto',
-    atribucionMapa: '© OpenStreetMap',
-    zoomMapa: 'Hacé clic para mover el mapa',
+    atribucionMapa: '© colaboradores de OpenStreetMap',
+    moverMapa: { clic: 'Hacé clic para mover el mapa', tocar: 'Tocá para mover el mapa' },
+    redes: {
+      instagram: 'Instagram',
+      facebook: 'Facebook',
+      tiktok: 'TikTok',
+      youtube: 'YouTube',
+      whatsapp: 'WhatsApp',
+    } satisfies Record<RedSocial, string>,
   },
 
   carta: {

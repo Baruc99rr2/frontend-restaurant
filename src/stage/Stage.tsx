@@ -266,6 +266,7 @@ function StageInner() {
             videoRef={videoRef}
             videoPlaying={videoPlaying}
             initialIndex={entrada.index}
+            abierto={abierto}
           />
         </Frame>
       </div>

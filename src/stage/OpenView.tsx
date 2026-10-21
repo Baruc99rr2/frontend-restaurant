@@ -2,6 +2,7 @@ import { useLayoutEffect, useRef, type RefObject } from 'react'
 import { Frame as FrameIcon } from 'lucide-react'
 import { siteConfig } from '@/config/site.config'
 import { copy, paneles, type Panel } from '@/content/copy.es'
+import type { PanelKey } from '@/content/editorial'
 import { gsap, useGSAP } from '@/motion/gsap'
 import { Reveal } from '@/motion/primitives'
 import { motionDuration, motionEase } from '@/motion/tokens'
@@ -24,12 +25,18 @@ type Props = {
   rootRef: RefObject<HTMLDivElement | null>
   /** Panel cuyos textos se muestran (null = ninguno). */
   textsPanel: number | null
-  /** Abriendo o abierto: velo y "Vista general" visibles. */
+  /** Abriendo o abierto: "Vista general" visible (el velo y los fondos van en `StageMedia`). */
   visible: boolean
   onClose: () => void
   onVerCarta: () => void
   onGoTo: (index: number) => void
 }
+
+/**
+ * Secciones cuyo fondo (en la capa del escenario, debajo) se usa con el mouse: la sección
+ * deja pasar los clics y solo sus bloques los toman (`pointer-events-auto`). CONTACTO → mapa.
+ */
+const FONDO_INTERACTIVO: readonly PanelKey[] = ['contacto']
 
 /** Placeholder simple para los paneles que llegan en F5–F8. */
 function PanelPlaceholder({ panel, active }: { panel: Panel; active: boolean }) {
@@ -55,15 +62,13 @@ function PanelPlaceholder({ panel, active }: { panel: Panel; active: boolean }) 
 }
 
 export function OpenView({ rootRef, textsPanel, visible, onClose, onVerCarta, onGoTo }: Props) {
-  const veloRef = useRef<HTMLDivElement | null>(null)
   const closeRef = useRef<HTMLButtonElement | null>(null)
   const reduced = useReducedMotion()
 
-  // Velo y botón "Vista general": fundido al abrir/cerrar.
+  // Botón "Vista general": fundido al abrir/cerrar (mismo ritmo que el velo de `StageMedia`).
   useGSAP(
     () => {
-      const targets = [veloRef.current, closeRef.current]
-      gsap.to(targets, {
+      gsap.to(closeRef.current, {
         autoAlpha: visible ? 1 : 0,
         duration: reduced ? motionDuration.reduced : motionDuration.stage.open.velo,
         delay: visible && !reduced ? 0.3 : 0,
@@ -83,8 +88,6 @@ export function OpenView({ rootRef, textsPanel, visible, onClose, onVerCarta, on
 
   return (
     <div ref={rootRef} className="pointer-events-none absolute inset-0 z-20">
-      <div ref={veloRef} className="velo invisible absolute inset-0 opacity-0" />
-
       {paneles.map((panel, i) => {
         const active = textsPanel === i
         return (
@@ -94,7 +97,7 @@ export function OpenView({ rootRef, textsPanel, visible, onClose, onVerCarta, on
             aria-label={panel.navbar ?? panel.titulo}
             aria-hidden={!active}
             inert={!active}
-            className={`absolute inset-0 ${active ? 'pointer-events-auto' : ''}`}
+            className={`absolute inset-0 ${active && !FONDO_INTERACTIVO.includes(panel.key) ? 'pointer-events-auto' : ''}`}
           >
             {panel.key === 'home' ? (
               <HomePanel active={active} onVerCarta={onVerCarta} onConocerLaCasa={() => onGoTo(1)} />

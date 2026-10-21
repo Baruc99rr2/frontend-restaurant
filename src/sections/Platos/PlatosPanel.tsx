@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ArrowLeft, ArrowRight, Flame } from 'lucide-react'
 import { siteConfig } from '@/config/site.config'
 import { copy, paneles } from '@/content/copy.es'
-import { editorial, imagen, platosInsignia, type PlatoInsignia } from '@/content/editorial'
+import { editorial, imagen, platosInsignia } from '@/content/editorial'
 import { formatPrecio } from '@/data/format'
 import { useLocal } from '@/data/useLocal'
 import { gsap, useGSAP } from '@/motion/gsap'
@@ -33,36 +33,20 @@ const AUTOPLAY_SECONDS = 7
 const RING_RADIUS = 21
 const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS
 
-/** Respaldo editorial instantáneo mientras el repositorio termina su carga inicial (150 ms). */
-const FALLBACK_PLATOS: PlatoInsignia[] = editorial.insignia.map((ins, i) => {
-  const e = editorial.platos[ins.plato]
-  return {
-    id: ins.plato,
-    name: copy.platos.titulo,
-    description: '',
-    price_cents: 0,
-    available: true,
-    allergens: [],
-    foto: imagen(e?.foto) ?? imagen(editorial.medios.platosFranja),
-    porcion: e?.porcion ?? null,
-    origen: ins.origen,
-    region: ins.region,
-    categoria: `0${i + 1}`,
-  }
-})
+/** Foto mientras llegan los datos: la de la franja (después cambia con `BlurSwapImage`). */
+const FOTO_ESPERA = imagen(editorial.medios.platosFranja)
 
 export function PlatosPanel({ active, onVerCarta }: Props) {
   const { state } = useStage()
   const localState = useLocal()
   const reduced = useReducedMotion()
 
-  const platos = useMemo(() => {
-    if (localState.status === 'ready') {
-      const lista = platosInsignia(localState.data.menu)
-      if (lista.length > 0) return lista
-    }
-    return FALLBACK_PLATOS
-  }, [localState])
+  // Unión editorial + repositorio en un solo lugar (`platosInsignia`). Mientras carga (o si
+  // falla) la lista está vacía: los textos quedan vacíos y entran con su barrido al llegar.
+  const platos = useMemo(
+    () => (localState.status === 'ready' ? platosInsignia(localState.data.menu) : []),
+    [localState],
+  )
 
   const total = platos.length
   const [selectedIndex, setSelectedIndex] = useState(0)
@@ -78,7 +62,7 @@ export function PlatosPanel({ active, onVerCarta }: Props) {
   const progressObjRef = useRef({ value: 0 })
 
   const safeIndex = total > 0 ? selectedIndex % total : 0
-  const actual = platos[safeIndex] ?? platos[0]!
+  const actual = platos[safeIndex] ?? null
 
   // Saber si PLATOS es la sección activa leyendo el estado del escenario.
   const isStagePlatosOpen =
@@ -159,16 +143,15 @@ export function PlatosPanel({ active, onVerCarta }: Props) {
     tween.paused(isPaused)
   }, [isPaused])
 
-  const fotoShape = actual.foto?.paisaje ?? imagen(editorial.medios.platosFranja)?.paisaje
+  const fotoShape = actual?.foto?.paisaje ?? FOTO_ESPERA?.paisaje
   const fotoSrc = fotoShape?.lg.webp ?? ''
   const fotoPlaceholder = fotoShape?.placeholder
 
-  const metaLinea =
-    localState.status === 'ready'
-      ? `${actual.categoria} · ${formatPrecio(actual.price_cents)}${
-          actual.porcion ? ` · ${actual.porcion}` : ''
-        }${!actual.available ? ` · ${copy.carta.sinStock}` : ''}`
-      : actual.categoria
+  const metaLinea = actual
+    ? `${actual.categoria} · ${formatPrecio(actual.price_cents)}${
+        actual.porcion ? ` · ${actual.porcion}` : ''
+      }${!actual.available ? ` · ${copy.carta.sinStock}` : ''}`
+    : ''
 
   return (
     <div
@@ -241,7 +224,7 @@ export function PlatosPanel({ active, onVerCarta }: Props) {
                 <BlurSwapImage
                   src={fotoSrc}
                   placeholder={fotoPlaceholder}
-                  alt={actual.name}
+                  alt={actual?.name ?? ''}
                   className="size-full"
                 />
               </div>
@@ -261,14 +244,14 @@ export function PlatosPanel({ active, onVerCarta }: Props) {
                 />
                 <div data-platos-origen>
                   <WipeSwap
-                    value={actual.origen}
+                    value={actual?.origen ?? ''}
                     as="p"
                     className="block font-serif text-subtitulo leading-tight text-champan landscape:lg:text-titulo"
                   />
                 </div>
                 <div data-platos-region className="mt-1.5 landscape:lg:mt-2.5">
                   <WipeSwap
-                    value={actual.region}
+                    value={actual?.region ?? ''}
                     as="p"
                     className="block font-ui text-etiqueta font-semibold uppercase tracking-[0.16em] text-oro"
                   />
@@ -284,11 +267,13 @@ export function PlatosPanel({ active, onVerCarta }: Props) {
                 data-platos-derecha
                 className="flex size-full flex-col justify-between gap-4 border border-ceniza/20 bg-tizon p-4 sm:p-5 landscape:lg:p-7"
               >
-                {/* Puntos / guía del carrusel (activo oro, ancho mayor) */}
+                {/* Puntos / guía del carrusel (activo oro, ancho mayor). Botones simples con
+                    `aria-current`: no hay panel por punto, así que no son pestañas. El área de
+                    toque (24 px de alto) es más grande que el punto. */}
                 <div
-                  role="tablist"
+                  role="group"
                   aria-label={copy.platos.titulo}
-                  className="flex items-center gap-2"
+                  className="flex min-h-6 items-center gap-2"
                 >
                   {platos.map((p, i) => {
                     const isAct = i === safeIndex
@@ -296,17 +281,19 @@ export function PlatosPanel({ active, onVerCarta }: Props) {
                       <button
                         key={p.id}
                         type="button"
-                        role="tab"
-                        aria-selected={isAct}
+                        aria-current={isAct ? 'true' : undefined}
                         aria-label={`${i + 1}: ${p.name}`}
                         data-platos-dot={i}
                         onClick={() => setSelectedIndex(i)}
-                        className={`h-2 cursor-pointer rounded-full transition-all duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro ${
-                          isAct
-                            ? 'w-9 bg-oro'
-                            : 'w-4 bg-ceniza/35 hover:bg-ceniza/65'
-                        }`}
-                      />
+                        className="group/dot grid h-6 cursor-pointer place-items-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro"
+                      >
+                        <span
+                          aria-hidden="true"
+                          className={`block h-2 rounded-full transition-all duration-300 ${
+                            isAct ? 'w-9 bg-oro' : 'w-4 bg-ceniza/35 group-hover/dot:bg-ceniza/65'
+                          }`}
+                        />
+                      </button>
                     )
                   })}
                 </div>
@@ -314,7 +301,7 @@ export function PlatosPanel({ active, onVerCarta }: Props) {
                 {/* Descripción del plato en cursiva */}
                 <div data-platos-descripcion className="my-auto py-1">
                   <WipeSwap
-                    value={actual.description ?? ''}
+                    value={actual?.description ?? ''}
                     as="p"
                     className="block font-serif text-cuerpo italic text-champan/90 landscape:lg:text-subtitulo"
                   />
@@ -325,7 +312,7 @@ export function PlatosPanel({ active, onVerCarta }: Props) {
                   <div className="min-w-0">
                     <div data-platos-nombre>
                       <WipeSwap
-                        value={actual.name}
+                        value={actual?.name ?? ''}
                         as="h3"
                         className="block font-serif text-subtitulo font-bold text-oro"
                       />

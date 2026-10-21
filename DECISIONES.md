@@ -212,3 +212,48 @@ Probado en Chrome (headless por DevTools, con emulación táctil a 390 px) con `
 - Los chequeos negativos ("↓ en el último no hace nada", "clic fuera no abre") esperan 3 frames y `estable()` → si el input hubiera disparado un paso, el bloqueo ya estaría marcado.
 - `useStepInput` sincroniza `enabled`/`onStep` en `useLayoutEffect` (antes `useEffect`) → al entrar por hash el escenario se habilita desde un tick de GSAP (actualización no discreta) y el efecto pasivo podía correr después del primer ↓, que se perdía (falló así una vez `f8-2` en la 3.ª corrida). Es un error de la app, no solo de la prueba.
 - Los `__sleep` que quedan en los planes solo marcan el ritmo de los eventos simulados (rueda, notches): el detector de gestos depende de ese ritmo, no de un estado.
+
+## Revisión de F5 a F8 (2026-10-21) — `fix(web): revision de F5 a F8`
+
+Revisado en Chrome headless con `scripts/qa-browser.mjs` (la extensión no sirvió: ver QA al final), desktop 1440×900 y mobile 390×844 táctil, contra las refs. 02, 03, 04, 05 y 10 y §8. Gravedad entre corchetes.
+
+**Transiciones (§5)**
+- [alta] LA CASA, EVENTOS, PREGUNTAS y CONTACTO tenían su fondo dentro de `[data-open-text]`: en el paso entre secciones el fondo se desvanecía con los textos y lo que subía o entraba desde abajo era la foto del modo cerrado (que en modo abierto no se ve); el fondo nuevo aparecía recién a 1,8 s con un fundido. HOME y PLATOS (fondo = su media) sí respetaban §5. Unificado: cada sección exporta su fondo (`LaCasaFondo`, `EventosFondo`, `PreguntasFondo`, `ContactoFondo`) y `StageMedia` lo monta en la capa del panel, encima de la foto, junto con el velo. Motivo: la capa es lo que el escenario mueve (sube 30 % oscureciéndose / entra desde abajo), así el fondo hace exactamente el mismo recorrido en las 6 secciones sin tocar los timelines de `Stage.tsx`.
+- El velo del modo abierto pasa de `OpenView` a cada capa (debajo del fondo de sección) → si quedaba arriba, oscurecía los fondos; con el fondo arriba del velo los colores son los mismos que antes. Fundido al abrir/cerrar con los mismos tiempos (`stage.open.velo`, demora 0,3 s).
+- Los fondos quedan a pantalla completa y los recorta el marco (`clip-path`) → durante el paso, con el marco a inset 0, el fondo llena la pantalla igual que una foto (antes quedaba encerrado en el inset).
+- CONTACTO: la sección deja pasar los clics (`FONDO_INTERACTIVO` en `OpenView`) y solo sus bloques los toman → el mapa, ahora debajo, en la capa, sigue respondiendo.
+
+**src/stage**
+- Solo habían cambiado las ramas de `OpenView` (verificado con `git diff 9e8b2f9 b2d96a1 -- src/stage`). Cambios de esta revisión en `src/stage`: `StageMedia` (velo + fondos), `OpenView` (sin velo, `FONDO_INTERACTIVO`), `Stage` (pasa `abierto`) y `useStepInput` (`data-stage-gestos-propios`).
+- Tokens: sin colores fuera de marca salvo sombras `rgb(0 0 0 / …)` en LA CASA y `rgba(0,0,0,.75)` en el marcador del mapa → [baja] pasadas a `var(--color-noche)` con `color-mix`. `vino` solo aparece en `MenuButton` (y en las páginas de dev). Primitivas: ninguna versión paralela; las secciones usan `Reveal`, `SlideIn`, `WipeSwap`, `BlurSwapImage` y `CountUp`.
+
+**PLATOS**
+- [media] `FALLBACK_PLATOS` repetía la unión editorial + repositorio de `platosInsignia` con datos inventados (nombre = título de la sección, categoría "01"). Eliminado: mientras carga la lista está vacía, la foto es la de la franja y los textos entran con su `WipeSwap` al llegar los datos. Motivo: una sola unión (`platosInsignia`) y nada inventado en pantalla.
+- [baja] Los puntos eran `role="tab"` sin panel → botones con `aria-current` y área de toque de 24 px (el punto sigue de 8 px).
+
+**CONTACTO**
+- [alta] Con el mapa activo, el swipe vertical para moverlo también pasaba de sección (Leaflet no frena la propagación del toque y el `Observer` escucha en `window`). Nuevo atributo `data-stage-gestos-propios`: `useStepInput` ignora rueda y swipe que empiezan ahí; el mapa lo lleva solo mientras está activo.
+- [media] `Ctrl + rueda` hacía zoom en el mapa **y** en la página: el `onWheel` de React es pasivo y su `preventDefault` no tiene efecto. Ahora es un listener nativo `{ passive: false }` sobre el escudo.
+- [media] Carga diferida: el mapa se montaba recién al ir a CONTACTO, así que el panel entraba sin teselas. Ahora se descarga al acercarse (modo abierto en PREGUNTAS o yendo a CONTACTO), como dice §8 ("al acercarse a la sección"); desde dos secciones o más no se carga. Fundido de teselas de Leaflet activado (antes aparecían de golpe).
+- [baja] Atribución: "© OpenStreetMap" → "© colaboradores de OpenStreetMap" (forma pedida por la OSMF); en mobile quedaba pegada al aviso "Tocá para mover el mapa" → va debajo del aviso.
+- [baja] El aviso táctil se armaba con `replace('Hacé clic', 'Tocá')` sobre el copy → dos textos en `copy.contacto.moverMapa`. Las redes se anunciaban como "instagram" → nombres en `copy.contacto.redes`.
+- Verificado y sin cambios: rueda sin Ctrl sobre el mapa bloqueado pasa de sección y no hace zoom; clic/toque activa; al salir de CONTACTO se vuelve a bloquear; `map.remove()` en el desmontaje (con StrictMode hay un solo `.leaflet-container`); filtro oscuro solo en `.leaflet-tile-pane`; ninguna capa del mapa tapa la tarjeta ni los botones (`elementFromPoint` en el plan).
+- [media] La tarjeta tapaba el marcador: el mapa centraba la coordenada en el medio de la pantalla, justo detrás de la tarjeta (en desktop y en mobile). Ahora se encuadra con el marcador en la zona libre (72 % del ancho en horizontal; arriba a la izquierda en vertical) y vuelve a ese encuadre al bloquearse.
+- [baja] En la tarjeta, dirección y horarios usaban `text-etiqueta` + `sm:text-ui`: el tamaño cambiaba pero quedaba el `letter-spacing` de etiqueta (0,18 em) y "Martes a jueves" se partía en dos renglones → `tracking-normal` y días sin cortar.
+
+**PREGUNTAS (ref. 10)**
+- [baja] Con `justify-between` + `my-auto` quedaba un hueco grande entre la cabecera y el acordeón (la ref. los tiene juntos) → el contenido arranca arriba (`justify-start`, `gap-8`). Arriba y no centrado: al abrir una respuesta la cabecera no se mueve.
+
+**WipeSwap**
+- [baja] Al ocultar la capa saliente se vacía (`innerHTML = ''`) → el `textContent` del contenedor es solo el valor actual.
+
+**Accesibilidad**
+- [media] EVENTOS: los chips eran `role="radio"` sin teclado de radio; ↑/↓ sobre un chip pasaba de sección (reproducido: ↓ sobre "Día de la Madre" llevaba a PREGUNTAS). Ahora foco itinerante (`tabIndex` 0 solo el elegido) y flechas/Inicio/Fin eligen y mueven el foco sin pasar de sección (`src/components/roving.ts`, compartido con LA CASA).
+- [baja] LA CASA: pestañas sin foco itinerante (Tab recorría las 6) → solo la elegida es tabulable.
+- [baja] PREGUNTAS: el botón de cada pregunta no apuntaba a su respuesta → `aria-controls` + `role="region"` con `aria-labelledby`; "Q:" oculto para lectores.
+- Foco visible: todos los controles de las 4 secciones tienen `focus-visible:outline-oro` (los links de teléfono y mail de la tarjeta usan el contorno del navegador, visible sobre `champan`).
+
+**QA**
+- `f8-2-contacto.json` reescrito para la nueva estructura (el mapa se busca en la capa `[data-panel=contacto]`) y con chequeos nuevos: no carga desde dos secciones, se precarga desde PREGUNTAS, entra desde abajo con su panel a mitad del paso, `elementFromPoint` sobre tarjeta/botones/atribución, un solo `.leaflet-container`, Ctrl+rueda con `defaultPrevented`, rueda con el mapa activo, swipe con el mapa activo y bloqueado. `f6-1-platos.json`: los puntos se leen por `aria-current`.
+- Los dos errores de CONTACTO (Ctrl+rueda y swipe con el mapa activo) se reprodujeron sobre el código anterior antes de corregirlos.
+- La extensión de Chrome conectó pero la ventana estaba tapada y Chrome le daba ~2 frames por segundo (capturas a mitad de animación y un timeout): la revisión visual se hizo con el Chrome headless de `scripts/qa-browser.mjs`.

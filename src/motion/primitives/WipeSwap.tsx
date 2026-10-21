@@ -77,6 +77,14 @@ export function WipeSwap({
 
       prevHtmlRef.current = incoming.innerHTML
 
+      // La capa saliente oculta queda vacía: el `textContent` del contenedor (y lo que lea un
+      // lector de pantalla o un test) es solo el valor actual.
+      const ocultarSaliente = () => {
+        outgoing.style.display = 'none'
+        outgoing.style.clipPath = ''
+        outgoing.innerHTML = ''
+      }
+
       const tl = gsap.timeline()
       tlRef.current = tl
 
@@ -90,7 +98,7 @@ export function WipeSwap({
           duration: motionDuration.reduced * 0.5,
           ease: motionEase.ui,
         })
-        tl.set(outgoing, { display: 'none' })
+        tl.call(ocultarSaliente)
         tl.call(() => {
           phaseRef.current = 'in'
         })
@@ -120,10 +128,7 @@ export function WipeSwap({
           ease: motionEase.exit,
         })
 
-        tl.set(outgoing, {
-          display: 'none',
-          clipPath: 'inset(0 0% 0 0%)',
-        })
+        tl.call(ocultarSaliente)
 
         tl.call(() => {
           phaseRef.current = 'in'

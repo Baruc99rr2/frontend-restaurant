@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Flame, Sprout, Users, UtensilsCrossed, Wheat, Wine, type LucideIcon } from 'lucide-react'
 import { Picture } from '@/components/Picture'
+import { teclaRoving } from '@/components/roving'
 import { copy } from '@/content/copy.es'
 import { editorial, imagen } from '@/content/editorial'
 import { gsap, useGSAP } from '@/motion/gsap'
@@ -18,7 +19,15 @@ import { useReducedMotion } from '@/motion/useReducedMotion'
  * - Der.: cita arriba ("Cocinar es saber esperar.") y panel con título + texto que cambian
  *   con `WipeSwap` (soporta cambios rápidos e interrupción a mitad sin mezclar texto).
  * Cada bloque visible lleva `[data-open-text]` para que el escenario lo desvanezca al salir.
+ * El fondo (`LaCasaFondo`) lo monta el escenario en la capa del panel: entra y sale con él.
  */
+
+/** Fondo de LA CASA en modo abierto: gradiente radial `hoja` → `monte` → `noche`. */
+export function LaCasaFondo() {
+  return (
+    <div className="absolute inset-0 [background:radial-gradient(ellipse_at_50%_48%,var(--color-hoja)_0%,var(--color-monte)_54%,var(--color-noche)_100%)]" />
+  )
+}
 
 type Props = {
   active: boolean
@@ -43,10 +52,8 @@ export function LaCasaPanel({ active }: Props) {
   const reduced = useReducedMotion()
 
   const sectionRef = useRef<HTMLDivElement | null>(null)
-  const bgRef = useRef<HTMLDivElement | null>(null)
   const frameCardRef = useRef<HTMLDivElement | null>(null)
   const parallaxRef = useRef<HTMLDivElement | null>(null)
-  const tabRefs = useRef<(HTMLButtonElement | null)[]>([])
   const hoverTimerRef = useRef<number | null>(null)
   const quickXRef = useRef<gsap.QuickToFunc | null>(null)
   const quickYRef = useRef<gsap.QuickToFunc | null>(null)
@@ -66,26 +73,19 @@ export function LaCasaPanel({ active }: Props) {
     }
   }, [])
 
-  // Entrada del fondo radial y del marco inclinado central cuando el panel activa sus textos.
+  // Entrada del marco inclinado central cuando el panel activa sus textos.
   useGSAP(
     () => {
-      const bg = bgRef.current
       const card = frameCardRef.current
-      if (!bg || !card) return
+      if (!card) return
 
-      gsap.killTweensOf([bg, card])
+      gsap.killTweensOf(card)
 
       if (!active) {
-        gsap.set([bg, card], { opacity: 0 })
+        gsap.set(card, { opacity: 0 })
         return
       }
 
-      const d = reduced ? motionDuration.reduced : 0.75
-      gsap.fromTo(
-        bg,
-        { opacity: 0 },
-        { opacity: 1, duration: d, ease: motionEase.ui },
-      )
       gsap.fromTo(
         card,
         { opacity: 0, scale: reduced ? 1 : 0.92 },
@@ -149,28 +149,6 @@ export function LaCasaPanel({ active }: Props) {
     }, HOVER_INTENT_MS)
   }
 
-  const handleTabKeyDown = (e: ReactKeyboardEvent<HTMLDivElement>) => {
-    const total = ITEMS.length
-    let next: number | null = null
-
-    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
-      next = (selectedIndex + 1) % total
-    } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
-      next = (selectedIndex - 1 + total) % total
-    } else if (e.key === 'Home') {
-      next = 0
-    } else if (e.key === 'End') {
-      next = total - 1
-    }
-
-    if (next !== null) {
-      e.preventDefault()
-      e.stopPropagation()
-      selectItem(next)
-      tabRefs.current[next]?.focus()
-    }
-  }
-
   const actual = ITEMS[selectedIndex] ?? ITEMS[0]!
 
   return (
@@ -180,19 +158,6 @@ export function LaCasaPanel({ active }: Props) {
       onPointerLeave={handlePointerLeave}
       className="absolute inset-0"
     >
-      {/* Fondo: gradiente radial hoja → monte → noche dentro del inset del marco abierto */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-[clamp(12px,1.6vw,28px)] overflow-hidden"
-      >
-        <div data-open-text className="absolute -inset-6">
-          <div
-            ref={bgRef}
-            className="size-full opacity-0 [background:radial-gradient(ellipse_at_50%_48%,var(--color-hoja)_0%,var(--color-monte)_54%,var(--color-noche)_100%)]"
-          />
-        </div>
-      </div>
-
       <div
         data-stage-scroller
         className="absolute inset-0 overflow-x-hidden overflow-y-auto overscroll-contain [touch-action:pan-y]"
@@ -202,7 +167,7 @@ export function LaCasaPanel({ active }: Props) {
           <div
             role="tablist"
             aria-label="Sobre nosotros"
-            onKeyDown={handleTabKeyDown}
+            onKeyDown={(e) => teclaRoving(e, selectedIndex, ITEMS.length, selectItem)}
             className="grid grid-cols-3 gap-1.5 sm:grid-cols-3 landscape:lg:flex landscape:lg:flex-col landscape:lg:items-start landscape:lg:gap-2.5"
           >
             {ITEMS.map((it, i) => {
@@ -212,13 +177,11 @@ export function LaCasaPanel({ active }: Props) {
                 <div key={it.item} data-open-text>
                   <SlideIn from="left" active={active} delay={0.04 + i * 0.055}>
                     <button
-                      ref={(el) => {
-                        tabRefs.current[i] = el
-                      }}
                       type="button"
                       role="tab"
                       id={`la-casa-tab-${i}`}
                       aria-selected={isSelected}
+                      tabIndex={isSelected ? 0 : -1}
                       aria-controls="la-casa-tabpanel"
                       data-casa-item={it.item}
                       onClick={() => selectItem(i)}
@@ -261,7 +224,7 @@ export function LaCasaPanel({ active }: Props) {
               <div ref={parallaxRef} className="will-change-transform">
                 <div
                   data-casa-marco
-                  className="relative aspect-[4/5] w-[clamp(8.5rem,31vw,11.5rem)] rotate-(--marco-rotacion) overflow-hidden border-[6px] border-noche bg-tizon shadow-[0_24px_60px_rgb(0_0_0/0.65),0_0_0_1px_var(--color-oro)] landscape:lg:w-[clamp(14rem,20vw,19.5rem)] landscape:lg:border-[10px]"
+                  className="relative aspect-[4/5] w-[clamp(8.5rem,31vw,11.5rem)] rotate-(--marco-rotacion) overflow-hidden border-[6px] border-noche bg-tizon shadow-[0_24px_60px_color-mix(in_srgb,var(--color-noche)_65%,transparent),0_0_0_1px_var(--color-oro)] landscape:lg:w-[clamp(14rem,20vw,19.5rem)] landscape:lg:border-[10px]"
                 >
                   {FOTO_CASA ? (
                     <Picture
@@ -290,7 +253,7 @@ export function LaCasaPanel({ active }: Props) {
           >
             <div data-open-text className="self-end">
               <SlideIn from="right" active={active} delay={0.18}>
-                <div className="bg-champan px-4 py-2.5 text-noche shadow-[0_16px_40px_rgb(0_0_0/0.35)] landscape:lg:px-6 landscape:lg:py-4">
+                <div className="bg-champan px-4 py-2.5 text-noche shadow-[0_16px_40px_color-mix(in_srgb,var(--color-noche)_35%,transparent)] landscape:lg:px-6 landscape:lg:py-4">
                   <Reveal
                     as="p"
                     mode="words"
@@ -306,7 +269,7 @@ export function LaCasaPanel({ active }: Props) {
 
             <div data-open-text className="w-full">
               <SlideIn from="right" active={active} delay={0.3}>
-                <div className="bg-champan p-5 text-noche shadow-[0_20px_50px_rgb(0_0_0/0.4)] sm:p-6 landscape:lg:p-8">
+                <div className="bg-champan p-5 text-noche shadow-[0_20px_50px_color-mix(in_srgb,var(--color-noche)_40%,transparent)] sm:p-6 landscape:lg:p-8">
                   <div data-casa-titulo>
                     <WipeSwap
                       value={actual.titulo}

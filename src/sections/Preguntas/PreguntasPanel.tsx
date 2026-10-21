@@ -21,7 +21,15 @@ import { useReducedMotion } from '@/motion/useReducedMotion'
  * - Acordeón: una abierta a la vez, chevron que rota, altura animada sin saltos.
  * - 3 por página, paginación "1 / 4" con botones circulares.
  * - Pregunta 12 (`dinamica: 'zonas-delivery'`): completa la respuesta con los barrios del backend.
+ * El fondo (`PreguntasFondo`) lo monta el escenario en la capa del panel: entra y sale con él.
  */
+
+/** Fondo de PREGUNTAS en modo abierto: diagonales `monte` → `noche` (ref. 10). */
+export function PreguntasFondo() {
+  return (
+    <div className="absolute inset-0 [background:linear-gradient(128deg,var(--color-monte)_0%,color-mix(in_srgb,var(--color-monte)_78%,var(--color-noche))_42%,var(--color-noche)_88%),linear-gradient(218deg,color-mix(in_srgb,var(--color-hoja)_34%,transparent)_0%,transparent_52%)]" />
+  )
+}
 
 type Props = {
   active: boolean
@@ -177,13 +185,15 @@ function AccordionRow({ slotIndex, item, isOpen, onToggle, zonas, reduced }: Acc
       <h3>
         <button
           type="button"
+          id={`preguntas-btn-${slotIndex}`}
           data-preguntas-btn={slotIndex}
           aria-expanded={isOpen}
+          aria-controls={`preguntas-respuesta-${slotIndex}`}
           onClick={onToggle}
           className="group flex w-full cursor-pointer items-center justify-between gap-4 py-4 text-left font-ui text-cuerpo font-semibold text-champan transition-colors duration-200 hover:text-oro focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro sm:py-5 landscape:lg:text-subtitulo"
         >
           <span className="flex min-w-0 items-baseline gap-3">
-            <span className="shrink-0 font-ui text-ui font-bold text-oro">Q:</span>
+            <span aria-hidden="true" className="shrink-0 font-ui text-ui font-bold text-oro">Q:</span>
             <span data-preguntas-titulo={slotIndex} className="min-w-0">
               <WipeSwap value={item.pregunta} className="block" />
             </span>
@@ -200,6 +210,9 @@ function AccordionRow({ slotIndex, item, isOpen, onToggle, zonas, reduced }: Acc
 
       <div
         ref={bodyRef}
+        id={`preguntas-respuesta-${slotIndex}`}
+        role="region"
+        aria-labelledby={`preguntas-btn-${slotIndex}`}
         data-preguntas-respuesta={slotIndex}
         style={{ display: 'none', height: 0, opacity: 0 }}
         className="overflow-hidden"
@@ -240,7 +253,6 @@ export function PreguntasPanel({ active }: Props) {
   const localState = useLocal()
   const reduced = useReducedMotion()
 
-  const bgRef = useRef<HTMLDivElement | null>(null)
   const inputRef = useRef<HTMLInputElement | null>(null)
   const listWrapRef = useRef<HTMLDivElement | null>(null)
   const emptyWrapRef = useRef<HTMLDivElement | null>(null)
@@ -277,21 +289,6 @@ export function PreguntasPanel({ active }: Props) {
   const paginaTexto = copy.preguntas.pagina
     .replace('{actual}', String(sinResultados ? 0 : safePage + 1))
     .replace('{total}', String(sinResultados ? 0 : totalPages))
-
-  // Fundido del fondo diagonal monte → noche al entrar/salir.
-  useGSAP(
-    () => {
-      const bg = bgRef.current
-      if (!bg) return
-      gsap.killTweensOf(bg)
-      gsap.to(bg, {
-        opacity: active ? 1 : 0,
-        duration: reduced ? motionDuration.reduced : 0.75,
-        ease: motionEase.ui,
-      })
-    },
-    { dependencies: [active, reduced] },
-  )
 
   // Transición suave entre lista con resultados y mensaje de "sin resultados" (nunca vacío de golpe).
   useGSAP(
@@ -352,24 +349,11 @@ export function PreguntasPanel({ active }: Props) {
 
   return (
     <div className="absolute inset-0">
-      {/* Fondo: diagonales monte → noche dentro del inset del marco abierto (ref. 10) */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-[clamp(12px,1.6vw,28px)] overflow-hidden"
-      >
-        <div data-open-text className="absolute -inset-6">
-          <div
-            ref={bgRef}
-            className="size-full opacity-0 [background:linear-gradient(128deg,var(--color-monte)_0%,color-mix(in_srgb,var(--color-monte)_78%,var(--color-noche))_42%,var(--color-noche)_88%),linear-gradient(218deg,color-mix(in_srgb,var(--color-hoja)_34%,transparent)_0%,transparent_52%)]"
-          />
-        </div>
-      </div>
-
       <div
         data-stage-scroller
         className="absolute inset-0 overflow-x-hidden overflow-y-auto overscroll-contain [touch-action:pan-y]"
       >
-        <div className="relative z-10 mx-auto flex min-h-full max-w-5xl flex-col justify-between gap-6 px-[clamp(1.25rem,3.5vw,3.5rem)] pt-22 pb-22 landscape:lg:pt-26 landscape:lg:pb-20">
+        <div className="relative z-10 mx-auto flex min-h-full max-w-5xl flex-col justify-start gap-8 px-[clamp(1.25rem,3.5vw,3.5rem)] pt-22 pb-22 landscape:lg:pt-26 landscape:lg:pb-20">
           {/* Cabecera: título + bajada con links reales a la izq., buscador en píldora a la der. */}
           <div className="flex flex-col gap-5 landscape:lg:flex-row landscape:lg:items-start landscape:lg:justify-between landscape:lg:gap-8">
             <div className="max-w-xl">
@@ -431,7 +415,7 @@ export function PreguntasPanel({ active }: Props) {
           </div>
 
           {/* Cuerpo: acordeón de 3 preguntas por página o mensaje de sin resultados con fundido */}
-          <div data-open-text className="my-auto py-2">
+          <div data-open-text className="py-2">
             <SlideIn from="left" active={active} delay={0.24}>
               <div className="relative min-h-[14rem]">
                 <div ref={listWrapRef} data-preguntas-lista>

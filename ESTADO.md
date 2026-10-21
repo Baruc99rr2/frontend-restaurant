@@ -1,6 +1,6 @@
 # ESTADO
 
-Última actualización: 2026-10-21 — **regresión estable** (revisión de F5–F8 en curso).
+Última actualización: 2026-10-21 — **revisión de F5–F8 hecha**. Próxima: F9.
 Repo remoto: https://github.com/Baruc99rr2/frontend-restaurant (público).
 
 ## Sub-fases
@@ -18,6 +18,7 @@ Repo remoto: https://github.com/Baruc99rr2/frontend-restaurant (público).
 | F7 — EVENTOS | ✅ hecha | `feat(web): seccion eventos` · `fix(web): veta de eventos sin vino` |
 | F8 — PREGUNTAS y CONTACTO | ✅ hecha | `feat(web): preguntas y contacto con mapa` |
 | — Regresión estable (planes de F3/F4 sin esperas fijas) | ✅ hecha | `test(web): regresion estable` |
+| — Revisión de F5–F8 (fondos en la capa del panel, CONTACTO, PLATOS, accesibilidad) | ✅ hecha | `fix(web): revision de F5 a F8` |
 | F9–F12 | pendiente | — |
 
 ## Qué hay hoy
@@ -27,22 +28,32 @@ Repo remoto: https://github.com/Baruc99rr2/frontend-restaurant (público).
 - **Escenario (`src/stage/`):**
   - `stageMachine.ts` (reducer: `loading → intro → closed ⇄ opening/closing → open`, `lock`, cola de 1; pasos en modo cerrado y abierto) + `StageProvider.tsx`.
   - `geometry.ts` + `frameController.ts` (tween de los 8 números, seguro ante resize) + `Frame.tsx` (clip-path, clic/Enter para abrir).
-  - `useStepInput.ts` (Observer: wheel con un paso por gesto e inercia filtrada, swipe > 50 px, ↓/↑, PageDown/PageUp, Espacio; respeta scrollers internos).
-  - `Intro.tsx`, `ClosedView.tsx`, `StageMedia.tsx` (video de HOME + 5 fotos), `OpenView.tsx` (secciones del modo abierto, velo, "Vista general"), `Stage.tsx` (orquesta los timelines: paso cerrado, paso abierto, abrir, cerrar).
+  - `useStepInput.ts` (Observer: wheel con un paso por gesto e inercia filtrada, swipe > 50 px, ↓/↑, PageDown/PageUp, Espacio; respeta scrollers internos; ignora los gestos que empiezan en `data-stage-gestos-propios`, p. ej. el mapa activo).
+  - `Intro.tsx`, `ClosedView.tsx`, `StageMedia.tsx` (video de HOME + 5 fotos; en modo abierto cada capa suma velo + fondo propio de la sección, así el fondo entra y sale con su panel), `OpenView.tsx` (secciones del modo abierto, "Vista general"; CONTACTO deja pasar los clics a su mapa), `Stage.tsx` (orquesta los timelines: paso cerrado, paso abierto, abrir, cerrar).
   - Hash: `/#eventos` entra directo abierto; abrir y cada paso abierto escriben el hash; cerrar lo limpia; hash inválido → intro normal.
 - **Secciones (`src/sections/`):**
   - `Home/HomePanel.tsx` (bloques, subtítulo, Ver la carta / Reservar mesa, Conocer la casa, columna de datos con CountUp).
-  - `LaCasa/LaCasaPanel.tsx` (fondo radial `hoja → monte → noche`, 6 ítems con íconos lucide y activo `champan` por clic, hover-intent 200 ms o teclado, foto `r2` fija en el marco inclinado con parallax leve, cita con `Reveal` y panel de título + texto con `WipeSwap`).
+  - `LaCasa/LaCasaPanel.tsx` (fondo radial `hoja → monte → noche` en `LaCasaFondo`, 6 ítems con íconos lucide y activo `champan` por clic, hover-intent 200 ms o teclado, foto `r2` fija en el marco inclinado con parallax leve, cita con `Reveal` y panel de título + texto con `WipeSwap`).
   - `Platos/PlatosPanel.tsx` (franja superior sobre la foto `f8` oscurecida del escenario con título y "Ver la carta completa"; fila inferior de 3 paneles: foto en marco 1px `champan` con `BlurSwapImage`, panel `monte` con origen en Caslon + región en `WipeSwap`, panel `tizon` con puntos de guía, descripción en cursiva, nombre en `oro`, categoría + precio del repositorio + porción en `WipeSwap`, y botones atrás/adelante con anillo SVG de 7 s que avanza solo y se pausa con hover/focus, pestaña oculta, reduced motion o fuera de `PLATOS`).
   - `Eventos/EventosPanel.tsx` (calculadora de catering sobre la foto `r3` oscurecida con veta cálida `oro` + `hoja` + `monte`: stepper de invitados 10–200 paso 5 inicial 40, chips de ocasión y formato, 6 tarjetas `champan` con `CountUp` en `monte` y etiquetas con `WipeSwap`, nota orientativa y CTA WhatsApp `wa.me` + alternativa `mailto:` desde `src/content/eventos.ts`).
   - `Preguntas/PreguntasPanel.tsx` (fondo diagonal `monte → noche`, título con `Reveal`, bajada con links reales `mailto:`/`tel:`/WhatsApp desde `site.config.ts`, buscador en píldora sin acentos/mayúsculas con reseteo de paginación a 1 y mensaje `sinResultados` con fundido, acordeón de 3 preguntas por página con paginación `1 / 4`, títulos con `WipeSwap`, una sola abierta a la vez con altura animada en GSAP, pregunta 12 con zonas de delivery del repositorio y scroll interno `data-stage-scroller`).
   - `Contacto/ContactoPanel.tsx` + `Contacto/ContactoMapa.tsx` (mapa Leaflet + OpenStreetMap en chunk diferido que solo carga cuando `CONTACTO` está por mostrarse, filtro oscuro exclusivo en `.leaflet-tile-pane`, marcador SVG dorado con la forma del marco inclinado `--marco-rotacion`, zoom con rueda deshabilitado hasta clic o `Ctrl + rueda`, arrastre táctil deshabilitado hasta tocar `"Tocá para mover el mapa"` para que el swipe cambie de sección, atribución OSM visible, etiqueta `"Te esperamos. Desde 2011."`, tarjeta `champan` con datos de `site.config.ts` y horarios/estado/cocina/próximo día distinto del repositorio, redes con `src/components/icons/social.tsx` y botón `"Volver al inicio"` → `HOME`).
+- **Fondos de sección:** `LaCasaFondo`, `EventosFondo`, `PreguntasFondo`, `ContactoFondo` (mapa) se exportan desde cada sección y los monta `StageMedia`. Sección nueva con fondo propio → exportar `XFondo` y sumarlo a `FONDOS` en `StageMedia`, nunca dentro de `[data-open-text]`.
+- **Accesibilidad:** foco itinerante compartido en `src/components/roving.ts` (pestañas de LA CASA, chips de EVENTOS).
 - **Movimiento (`src/motion/`):** `gsap.ts`, `tokens.ts` (intro, paso cerrado, paso abierto, abrir/cerrar), `useReducedMotion` (+ snapshot), primitivas `Reveal` (entrada y salida), `SlideIn`, `WipeSwap`, `BlurSwapImage`, `CountUp`.
 - **Componentes:** `Picture`, `Navbar` (links con fundido según modo, píldora ≥ 75rem, barra dorada, lámina mobile), `MenuButton`, `icons/social.tsx`.
 - **Datos y contenido:** igual que F1 (`src/data/`, `src/content/`, mock).
 - **QA:** `pnpm qa <plan.json>` y `pnpm qa:regresion` (todos los planes de `qa/plans/`, con resultados esperados). Capturas en `qa/shots/` (ignorada). Requiere `pnpm dev`.
   - Planes sin esperas fijas: `__waitUntil` / `__frames` / `__sleep` (los inyecta `qa-browser.mjs`) y, en dev, `window.__qa` (`src/motion/qa.ts`): `reloj(escala)` enlentece GSAP para muestras a mitad de animación, `estable()` espera el escenario quieto, `reposo()` además sin animaciones (capturas). Planes nuevos: no usar `{ "wait": N }` para esperar estados.
   - No editar archivos del proyecto mientras corre la regresión: Tailwind vigila todo el repo y Vite recarga la página a mitad del plan.
+
+## Verificación de la revisión de F5–F8
+
+- `pnpm build` ✅ · `pnpm lint` ✅ · `pnpm check:content` ✅.
+- `pnpm qa:regresion` ✅ **15/15 planes tres veces seguidas** (`f8-2-contacto.json` reescrito y ampliado; `f6-1-platos.json` ajustado a `aria-current`).
+- Capturas de las 5 secciones en 1440×900 y 390×844 y de cada paso abierto a mitad (reloj de GSAP lento): el fondo de cada sección entra desde abajo con su panel.
+- Reproducidos en el código anterior y corregidos: Ctrl+rueda sin `preventDefault` (zoom de página), swipe con el mapa activo que pasaba de sección, ↓ sobre un chip de EVENTOS que pasaba de sección.
+- Detalle y gravedad de cada problema: `DECISIONES.md` → "Revisión de F5 a F8".
 
 ## Verificación de la regresión estable
 
@@ -110,5 +121,7 @@ Repo remoto: https://github.com/Baruc99rr2/frontend-restaurant (público).
 - **Pedir al backend:** teléfono y email, slug y orden de categorías, coordenadas, horario de cocina, porción, foto por ítem/categoría, etiquetas dietarias, catálogo de alérgenos.
 - Probar en un trackpad y un teléfono reales (inercia y touch están simulados).
 - `useGSAP` con dependencias acumula animaciones en su contexto hasta desmontar (menor).
-- `WipeSwap` (`src/motion/primitives/WipeSwap.tsx`): al ocultar la capa saliente (`display: 'none'`) conserva `outgoing.innerHTML`; vaciarlo al ocultar evitaría que `.textContent` del contenedor incluya el texto anterior oculto (menor).
+- **Mapa en producción:** las teselas salen de `tile.openstreetmap.org`, cuya política no admite uso comercial intensivo; antes de publicar un cliente, pasar a un proveedor de teselas (con su atribución).
+- Probar CONTACTO en un teléfono real: arrastre del mapa activo y swipe con el mapa bloqueado (en QA el toque está emulado).
+- La extensión de Chrome conecta pero, con la ventana tapada, Chrome le da ~2 frames por segundo: para revisar movimiento usar `pnpm qa`.
 - Subir TypeScript a 7 cuando `typescript-eslint` lo soporte.

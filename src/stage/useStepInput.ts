@@ -12,6 +12,9 @@ import { Observer } from '@/motion/gsap'
  *
  * Paneles con scroller interno (`data-stage-scroller`): el paso solo se dispara cuando
  * ese scroller está en el borde, y el gesto que lo scrolleó no cuenta.
+ *
+ * Zonas con gestos propios (`data-stage-gestos-propios`, p. ej. el mapa de CONTACTO activo):
+ * la rueda y el swipe que empiezan ahí son de esa zona, no pasos de sección.
  */
 
 export type StepDir = 1 | -1
@@ -26,6 +29,10 @@ export const SWIPE_UMBRAL = 50
 const PAUSA_GESTO_MS = 200
 
 const SCROLLER = '[data-stage-scroller]'
+const GESTOS_PROPIOS = '[data-stage-gestos-propios]'
+
+const tieneGestosPropios = (target: EventTarget | null) =>
+  target instanceof Element && target.closest(GESTOS_PROPIOS) !== null
 
 function puedeScrollear(target: EventTarget | null, dir: StepDir): boolean {
   if (!(target instanceof Element)) return false
@@ -123,6 +130,7 @@ export function useStepInput({ enabled, onStep }: Options) {
     }
     const wheel = createWheelGesture(emit)
     let touchScroll = { down: false, up: false }
+    let touchPropio = false
 
     const observer = Observer.create({
       target: window,
@@ -131,6 +139,7 @@ export function useStepInput({ enabled, onStep }: Options) {
       onWheel: (self) => {
         const e = self.event as WheelEvent
         if (e.ctrlKey) return // pinch-zoom del trackpad
+        if (tieneGestosPropios(e.target)) return
         const delta = normalizarDelta(e)
         if (delta === 0) return
         const dir: StepDir = delta > 0 ? 1 : -1
@@ -141,8 +150,10 @@ export function useStepInput({ enabled, onStep }: Options) {
         // dirección, el gesto es para scrollearlo aunque al soltar ya esté en el borde.
         const target = self.event.target
         touchScroll = { down: puedeScrollear(target, 1), up: puedeScrollear(target, -1) }
+        touchPropio = tieneGestosPropios(target)
       },
       onRelease: (self) => {
+        if (touchPropio) return
         const dy = (self.y ?? 0) - (self.startY ?? 0)
         const dx = (self.x ?? 0) - (self.startX ?? 0)
         if (Math.abs(dy) < SWIPE_UMBRAL || Math.abs(dy) < Math.abs(dx)) return

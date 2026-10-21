@@ -1,17 +1,40 @@
-import { lazy, Suspense, useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useState } from 'react'
 import { ArrowUp, Clock, Mail, MapPin, Navigation, Phone } from 'lucide-react'
 import { SocialIcon } from '@/components/icons/social'
 import { googleMapsUrl, siteConfig } from '@/config/site.config'
-import { copy } from '@/content/copy.es'
+import { copy, paneles } from '@/content/copy.es'
 import { describirDiaDistinto, estadoCocina, estadoLocal, resumirHorario } from '@/data/estado'
 import { useLocal } from '@/data/useLocal'
-import { gsap, useGSAP } from '@/motion/gsap'
-import { motionDuration, motionEase } from '@/motion/tokens'
 import { Reveal, SlideIn } from '@/motion/primitives'
-import { useReducedMotion } from '@/motion/useReducedMotion'
 import { useStage } from '@/stage/StageProvider'
 
 const LazyContactoMapa = lazy(() => import('./ContactoMapa'))
+
+const CONTACTO_INDEX = paneles.findIndex((p) => p.key === 'contacto')
+
+/**
+ * Fondo de CONTACTO (lo monta el escenario en la capa del panel, recortado por el marco):
+ * mapa Leaflet diferido. Se descarga al acercarse a la sección (modo abierto en PREGUNTAS o
+ * yendo a CONTACTO), así cuando el panel entra desde abajo el mapa ya tiene teselas.
+ */
+export function ContactoFondo() {
+  const { state } = useStage()
+  const destino = state.transition?.to ?? state.activeIndex
+  const abierto = state.mode === 'open' || state.mode === 'opening'
+  const cerca = abierto && Math.abs(destino - CONTACTO_INDEX) <= 1
+  const active = state.mode === 'open' && state.transition === null && state.activeIndex === CONTACTO_INDEX
+
+  // Una vez cargado queda montado: no vuelve a pedir el chunk ni las teselas.
+  const [cargar, setCargar] = useState(cerca)
+  if (cerca && !cargar) setCargar(true)
+
+  if (!cargar) return null
+  return (
+    <Suspense fallback={<div className="size-full bg-tizon" />}>
+      <LazyContactoMapa active={active} />
+    </Suspense>
+  )
+}
 
 /**
  * 05 CONTACTO (§8, ref. 05).
@@ -19,8 +42,8 @@ const LazyContactoMapa = lazy(() => import('./ContactoMapa'))
  * - Tarjeta `champan`: nombre y bajada; dirección, teléfono ("Pedidos por teléfono"), email y
  *   botón "Cómo llegar" (Google Maps con coordenadas de `site.config.ts`); horario semanal,
  *   próximo día distinto, estado en vivo y estado de cocina desde el endpoint.
- * - Fondo completo dentro del marco: mapa Leaflet con carga diferida (solo cuando CONTACTO está
- *   por mostrarse), teselas OSM oscuras, marcador SVG dorado con forma del marco inclinado y
+ * - Fondo: mapa Leaflet (`ContactoFondo`, en la capa del panel del escenario) con carga diferida al
+ *   acercarse a CONTACTO, teselas OSM oscuras, marcador SVG dorado con forma del marco inclinado y
  *   atribución OSM visible.
  * - Abajo izq.: redes en círculos (`siteConfig.redes`) y "Volver al inicio" (va al panel 00 HOME).
  */
@@ -30,42 +53,9 @@ type Props = {
   onVolverAlInicio: () => void
 }
 
-const CONTACTO_INDEX = 5
 
 export function ContactoPanel({ active, onVolverAlInicio }: Props) {
-  const { state } = useStage()
   const localState = useLocal()
-  const reduced = useReducedMotion()
-  const mapWrapRef = useRef<HTMLDivElement | null>(null)
-
-  const porMostrarse =
-    active ||
-    ((state.mode === 'open' || state.mode === 'opening') &&
-      (state.activeIndex === CONTACTO_INDEX || state.transition?.to === CONTACTO_INDEX))
-
-  const [shouldLoadMap, setShouldLoadMap] = useState(porMostrarse)
-
-  useEffect(() => {
-    if (porMostrarse && !shouldLoadMap) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setShouldLoadMap(true)
-    }
-  }, [porMostrarse, shouldLoadMap])
-
-  // Fundido del contenedor del mapa al entrar/salir de CONTACTO.
-  useGSAP(
-    () => {
-      const wrap = mapWrapRef.current
-      if (!wrap) return
-      gsap.killTweensOf(wrap)
-      gsap.to(wrap, {
-        opacity: active ? 1 : 0,
-        duration: reduced ? motionDuration.reduced : 0.75,
-        ease: motionEase.ui,
-      })
-    },
-    { dependencies: [active, shouldLoadMap, reduced] },
-  )
 
   const ready = localState.status === 'ready' ? localState.data : null
   const local = ready?.local ?? null
@@ -82,18 +72,8 @@ export function ContactoPanel({ active, onVolverAlInicio }: Props) {
 
   return (
     <div className="absolute inset-0">
-      {/* Mapa Leaflet diferido ocupando todo el fondo dentro del inset del marco abierto */}
-      <div className="pointer-events-auto absolute inset-[clamp(12px,1.6vw,28px)] isolate z-0 overflow-hidden">
-        <div ref={mapWrapRef} data-open-text className="isolate size-full opacity-0">
-          {shouldLoadMap ? (
-            <Suspense fallback={<div className="size-full bg-tizon" />}>
-              <LazyContactoMapa active={active} />
-            </Suspense>
-          ) : null}
-        </div>
-      </div>
-
-      {/* Contenido superpuesto a la izquierda (pointer-events-none en el contenedor para no tapar el mapa) */}
+      {/* Contenido superpuesto a la izquierda. La sección deja pasar los clics al mapa (fondo,
+          en la capa del escenario): solo los bloques los toman. */}
       <div
         data-stage-scroller
         className="pointer-events-none absolute inset-0 z-10 overflow-x-hidden overflow-y-auto overscroll-contain [touch-action:pan-y]"
@@ -134,7 +114,7 @@ export function ContactoPanel({ active, onVolverAlInicio }: Props) {
                         {siteConfig.marca.bajada}
                       </p>
 
-                      <ul className="mt-3 space-y-2 font-ui text-etiqueta text-noche/90 sm:mt-4 sm:text-ui">
+                      <ul className="mt-3 space-y-2 font-ui text-[0.75rem] tracking-normal text-noche/90 sm:mt-4 sm:text-ui">
                         {direccion && (
                           <li className="flex items-start gap-2.5">
                             <MapPin
@@ -224,11 +204,11 @@ export function ContactoPanel({ active, onVolverAlInicio }: Props) {
 
                       <dl
                         data-contacto-horario
-                        className="mt-2.5 space-y-1 font-ui text-[0.75rem] text-noche/90 sm:text-etiqueta"
+                        className="mt-2.5 space-y-1 font-ui text-[0.75rem] tracking-normal text-noche/90 sm:text-[0.8125rem]"
                       >
                         {filasHorario.map((fila) => (
                           <div key={fila.dias} className="flex justify-between gap-2">
-                            <dt className="font-semibold text-noche/75">{fila.dias}</dt>
+                            <dt className="font-semibold whitespace-nowrap text-noche/75">{fila.dias}</dt>
                             <dd className="text-right tabular-nums">{fila.franjas}</dd>
                           </div>
                         ))}
@@ -264,7 +244,7 @@ export function ContactoPanel({ active, onVolverAlInicio }: Props) {
                         href={item.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        aria-label={item.red}
+                        aria-label={copy.contacto.redes[item.red]}
                         className="grid size-10 cursor-pointer place-items-center rounded-full border border-champan/25 bg-tizon/85 text-champan backdrop-blur-md transition-colors duration-200 hover:border-oro hover:bg-oro hover:text-noche focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro"
                       >
                         <SocialIcon red={item.red} className="size-4" />

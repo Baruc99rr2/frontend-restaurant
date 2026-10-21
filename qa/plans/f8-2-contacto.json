@@ -1,21 +1,31 @@
 {
-  "descripcion": "F8 · CONTACTO en modo abierto: carga diferida de Leaflet + OSM (no carga antes de CONTACTO), filtro oscuro solo en teselas, rueda sobre el mapa no hace zoom ni rompe el paso de sección, atribución visible, datos de repo y site.config, 'Volver al inicio' lleva a HOME, y mobile con swipe sobre el mapa cambiando de sección.",
+  "descripcion": "F8 · CONTACTO en modo abierto: mapa de fondo en la capa del panel (entra y sale con él), carga diferida al acercarse (desde PREGUNTAS, no antes), filtro oscuro solo en teselas, rueda sobre el mapa sin zoom ni robo del paso, Ctrl+rueda activa y hace zoom sin zoom de página, ninguna capa del mapa tapa la tarjeta, un solo contenedor Leaflet, 'Volver al inicio' y mobile (swipe sobre el mapa bloqueado cambia de sección; activo, no).",
   "steps": [
     { "viewport": { "width": 1440, "height": 900 } },
-    { "nav": "http://localhost:5173/#preguntas" },
+    { "nav": "http://localhost:5173/#eventos" },
     {
-      "eval": "(async () => { window.__waitUntil = async (fn, pred, timeout = 4500) => { const t0 = performance.now(); while (performance.now() - t0 < timeout) { const v = fn(); if (pred(v)) return v; await new Promise((r) => setTimeout(r, 30)); } return fn(); }; window.__contactoState = () => { const root = document.querySelector('[data-mode]'); const panel = document.querySelector('[data-open-panel=\"contacto\"]'); const mapa = panel?.querySelector('[data-contacto-mapa]'); const tilePane = panel?.querySelector('.leaflet-tile-pane'); const markerPane = panel?.querySelector('.leaflet-marker-pane'); const marcador = panel?.querySelector('[data-contacto-marcador]'); const atrib = panel?.querySelector('[data-contacto-atribucion]'); const activar = panel?.querySelector('[data-contacto-mapa-activar]'); const tarjeta = panel?.querySelector('[data-contacto-tarjeta]'); const dir = panel?.querySelector('[data-contacto-direccion]')?.textContent?.trim(); const tel = panel?.querySelector('[data-contacto-telefono]')?.getAttribute('href'); const email = panel?.querySelector('[data-contacto-email]')?.getAttribute('href'); const estado = panel?.querySelector('[data-contacto-estado]')?.textContent?.trim() ?? ''; const horario = panel?.querySelector('[data-contacto-horario]')?.textContent?.trim() ?? ''; const proximo = panel?.querySelector('[data-contacto-proximo]')?.textContent?.trim() ?? ''; const redes = panel ? panel.querySelectorAll('[data-contacto-red]').length : 0; const tileFilter = tilePane ? getComputedStyle(tilePane).filter : 'none'; const markerFilter = markerPane ? getComputedStyle(markerPane).filter : 'none'; const atribRect = atrib?.getBoundingClientRect(); const cardSettled = (tarjeta?.getBoundingClientRect().left ?? 0) > 20; return { stage: [root.dataset.mode, root.dataset.active, root.dataset.texts, location.hash], mapLoaded: Boolean(mapa && tilePane && marcador), cardSettled, interactivo: mapa?.dataset.contactoInteractivo ?? null, zoom: mapa?.dataset.contactoZoom ?? null, tileHasDarkFilter: tileFilter.includes('invert'), markerHasNoFilter: markerFilter === 'none', atribVisible: Boolean(atrib && atrib.textContent?.includes('OpenStreetMap') && atribRect && atribRect.width > 40 && atribRect.height > 10), activarTexto: activar?.textContent?.trim() ?? null, dir, tel, email, tieneEstado: estado.length > 5, tieneHorario: horario.includes('Martes a jueves'), tieneProximo: proximo.includes('23 de noviembre'), redes }; }; return await __waitUntil(() => { const r = document.querySelector('[data-mode]'); return { stage: [r?.dataset.mode, r?.dataset.active, r?.dataset.texts, location.hash], mapaAntesDeContacto: document.querySelector('[data-contacto-mapa]'), leafletAntesDeContacto: document.querySelector('.leaflet-container') }; }, (s) => s.stage[0] === 'open' && s.stage[1] === '4' && s.stage[2] === '4'); })()",
-      "label": "1 en /#preguntas el mapa de CONTACTO NO se carga todavía (carga diferida real)",
-      "expect": {
-        "stage": ["open", "4", "4", "#preguntas"],
-        "mapaAntesDeContacto": null,
-        "leafletAntesDeContacto": null
-      }
+      "eval": "(async () => { window.__contactoState = () => { const root = document.querySelector('[data-mode]'); const panel = document.querySelector('[data-open-panel=\"contacto\"]'); const capa = document.querySelector('[data-panel=\"contacto\"]'); const mapa = capa?.querySelector('[data-contacto-mapa]'); const tilePane = capa?.querySelector('.leaflet-tile-pane'); const markerPane = capa?.querySelector('.leaflet-marker-pane'); const marcador = capa?.querySelector('[data-contacto-marcador]'); const atrib = capa?.querySelector('[data-contacto-atribucion]'); const activar = capa?.querySelector('[data-contacto-mapa-activar]'); const tarjeta = panel?.querySelector('[data-contacto-tarjeta]'); const dir = panel?.querySelector('[data-contacto-direccion]')?.textContent?.trim(); const tel = panel?.querySelector('[data-contacto-telefono]')?.getAttribute('href'); const email = panel?.querySelector('[data-contacto-email]')?.getAttribute('href'); const estado = panel?.querySelector('[data-contacto-estado]')?.textContent?.trim() ?? ''; const horario = panel?.querySelector('[data-contacto-horario]')?.textContent?.trim() ?? ''; const proximo = panel?.querySelector('[data-contacto-proximo]')?.textContent?.trim() ?? ''; const redes = panel ? panel.querySelectorAll('[data-contacto-red]').length : 0; const tileFilter = tilePane ? getComputedStyle(tilePane).filter : 'none'; const markerFilter = markerPane ? getComputedStyle(markerPane).filter : 'none'; const atribRect = atrib?.getBoundingClientRect(); const cardSettled = (tarjeta?.getBoundingClientRect().left ?? 0) > 20; return { stage: [root.dataset.mode, root.dataset.active, root.dataset.texts, location.hash], mapLoaded: Boolean(mapa && tilePane && marcador), cardSettled, interactivo: mapa?.dataset.contactoInteractivo ?? null, zoom: mapa?.dataset.contactoZoom ?? null, tileHasDarkFilter: tileFilter.includes('invert'), markerHasNoFilter: markerFilter === 'none', atribVisible: Boolean(atrib && atrib.textContent?.includes('OpenStreetMap') && atribRect && atribRect.width > 40 && atribRect.height > 10), activarTexto: activar?.textContent?.trim() ?? null, dir, tel, email, tieneEstado: estado.length > 5, tieneHorario: horario.includes('Martes a jueves'), tieneProximo: proximo.includes('23 de noviembre'), redes }; }; const s = await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '3', 12000); return [s, document.querySelector('[data-contacto-mapa]'), document.querySelector('.leaflet-container')]; })()",
+      "label": "1 en /#eventos (a dos secciones) el mapa de CONTACTO no se carga",
+      "expect": ["3", null, null]
     },
     { "key": "ArrowDown" },
     {
+      "eval": "(async () => { await __qa.estable(); const s = await __waitUntil(__contactoState, (st) => st.mapLoaded); return [s.stage[1], s.mapLoaded, getComputedStyle(document.querySelector('[data-panel=\"contacto\"]')).visibility]; })()",
+      "label": "1b en PREGUNTAS (al lado) el mapa se precarga en la capa oculta de CONTACTO",
+      "expect": ["4", true, "hidden"]
+    },
+    { "eval": "__qa.reloj(0.2)" },
+    { "key": "ArrowDown" },
+    {
+      "eval": "(async () => { const capa = document.querySelector('[data-panel=\"contacto\"]'); const y = await __waitUntil(() => __qa.gsap.getProperty(capa, 'yPercent'), (v) => v > 25 && v < 75); const mapa = capa.querySelector('[data-contacto-mapa]'); return [y > 25 && y < 75, capa.contains(mapa), getComputedStyle(capa.querySelector('[data-open-capa]')).opacity === '1']; })()",
+      "label": "1c a mitad del paso el mapa entra desde abajo con su panel (es parte de la capa, no del texto)",
+      "expect": [true, true, true]
+    },
+    { "shot": "../shots/f8-contacto-entrando.png" },
+    { "eval": "(__qa.reloj(1), __qa.estable())", "expect": true },
+    {
       "eval": "(async () => { const s = await __waitUntil(__contactoState, (st) => st.stage[0] === 'open' && st.stage[1] === '5' && st.stage[2] === '5' && st.mapLoaded && st.tieneEstado && st.cardSettled); return s; })()",
-      "label": "2 al entrar a CONTACTO se monta Leaflet + OSM con filtro oscuro solo en teselas, atribución visible y datos de repo/config",
+      "label": "2 en CONTACTO: Leaflet + OSM con filtro oscuro solo en teselas, atribución visible y datos de repo/config",
       "expect": {
         "stage": ["open", "5", "5", "#contacto"],
         "mapLoaded": true,
@@ -35,36 +45,47 @@
         "redes": 5
       }
     },
+    {
+      "eval": "(async () => { await __qa.reposo(); const panel = document.querySelector('[data-open-panel=\"contacto\"]'); const sel = ['[data-contacto-tarjeta]', '[data-contacto-inicio]', '[data-contacto-red=\"instagram\"]', '[data-contacto-como-llegar]']; const tapa = sel.map((q) => { const el = panel.querySelector(q); const r = el.getBoundingClientRect(); const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return el.contains(hit); }); const atrib = document.querySelector('[data-contacto-atribucion]'); const ra = atrib.getBoundingClientRect(); const hitA = document.elementFromPoint(ra.left + ra.width / 2, ra.top + ra.height / 2); return [tapa, atrib.contains(hitA), document.querySelectorAll('.leaflet-container').length]; })()",
+      "label": "2b ninguna capa del mapa tapa la tarjeta ni los botones; la atribución no queda tapada; un solo contenedor Leaflet (StrictMode desmonta y vuelve a montar sin duplicar)",
+      "expect": [[true, true, true, true], true, 1]
+    },
     { "shot": "../shots/f8-contacto-inicial.png" },
     { "wheel": { "x": 1050, "y": 450, "dy": 140, "count": 2, "interval": 30 } },
     {
-      "eval": "(async () => { const s = await __waitUntil(__contactoState, (st) => st.zoom === '16'); await new Promise((r) => setTimeout(r, 240)); return [s.stage[1], s.zoom, s.interactivo]; })()",
+      "eval": "(async () => { await __frames(3); await __qa.estable(); await __sleep(250); const s = __contactoState(); return [s.stage[1], s.zoom, s.interactivo]; })()",
       "label": "3a rueda hacia abajo sobre el mapa no hace zoom (zoom sigue en 16)",
       "expect": ["5", "16", "false"]
     },
     { "wheel": { "x": 1050, "y": 450, "dy": -140, "count": 2, "interval": 30 } },
     {
-      "eval": "(async () => { const s = await __waitUntil(__contactoState, (st) => st.stage[0] === 'open' && st.stage[1] === '4' && st.stage[2] === '4'); return [s.stage[1], s.stage[3], s.zoom]; })()",
+      "eval": "(async () => { await __qa.estable(); const s = __contactoState(); return [s.stage[1], s.stage[3], s.zoom]; })()",
       "label": "3b rueda hacia arriba sobre el mapa no hace zoom y permite volver a PREGUNTAS",
       "expect": ["4", "#preguntas", "16"]
     },
     { "key": "ArrowDown" },
     {
-      "eval": "(async () => { await __waitUntil(__contactoState, (st) => st.stage[0] === 'open' && st.stage[1] === '5' && st.stage[2] === '5'); document.querySelector('[data-contacto-mapa-activar]').click(); const s = await __waitUntil(__contactoState, (st) => st.interactivo === 'true'); return [s.stage[1], s.interactivo, s.zoom]; })()",
-      "label": "4 clic en el mapa habilita la interacción (interactivo = true) sin alterar el zoom",
-      "expect": ["5", "true", "16"]
+      "eval": "(async () => { await __qa.estable(); const escudo = document.querySelector('[data-contacto-mapa-escudo]'); const ev = new WheelEvent('wheel', { deltaY: -100, ctrlKey: true, bubbles: true, cancelable: true }); escudo.dispatchEvent(ev); const s = await __waitUntil(__contactoState, (st) => st.interactivo === 'true' && st.zoom === '17'); await __frames(3); return [ev.defaultPrevented, s.stage[1], s.interactivo, s.zoom, document.querySelector('[data-mode]').dataset.active]; })()",
+      "label": "4 Ctrl+rueda sobre el mapa: frena el zoom de la página (preventDefault no pasivo), activa el mapa y acerca un nivel, sin cambiar de sección",
+      "expect": [true, "5", "true", "17", "5"]
+    },
+    { "wheel": { "x": 1050, "y": 450, "dy": 140, "count": 2, "interval": 30 } },
+    {
+      "eval": "(async () => { const s = await __waitUntil(__contactoState, (st) => st.zoom === '16', 3000); await __frames(3); await __qa.estable(); return [s.stage[1], s.zoom]; })()",
+      "label": "4b con el mapa activo la rueda es del mapa (aleja) y no pasa de sección",
+      "expect": ["5", "16"]
     },
     {
-      "eval": "(async () => { document.querySelector('[data-contacto-inicio]').click(); return await __waitUntil(() => { const r = document.querySelector('[data-mode]'); return [r.dataset.mode, r.dataset.active, r.dataset.texts, location.hash]; }, (v) => v[0] === 'open' && v[1] === '0' && v[2] === '0' && v[3] === '#home'); })()",
-      "label": "5 botón 'Volver al inicio' lleva a HOME (#home)",
-      "expect": ["open", "0", "0", "#home"]
+      "eval": "(async () => { document.querySelector('[data-contacto-inicio]').click(); await __qa.estable(); const r = document.querySelector('[data-mode]'); const s = await __waitUntil(__contactoState, (st) => st.interactivo === 'false', 3000); return [r.dataset.mode, r.dataset.active, r.dataset.texts, location.hash, s.interactivo]; })()",
+      "label": "5 'Volver al inicio' lleva a HOME (#home) y el mapa vuelve a quedar bloqueado",
+      "expect": ["open", "0", "0", "#home", "false"]
     },
     { "viewport": { "width": 390, "height": 844, "mobile": true, "scale": 2 } },
     { "nav": "about:blank" },
     { "nav": "http://localhost:5173/#contacto" },
     {
-      "eval": "(async () => { const wait = async (fn, pred, timeout = 4500) => { const t0 = performance.now(); while (performance.now() - t0 < timeout) { const v = fn(); if (pred(v)) return v; await new Promise((r) => setTimeout(r, 30)); } return fn(); }; return await wait(() => { const r = document.querySelector('[data-mode]'); const mapa = document.querySelector('[data-contacto-mapa]'); const atrib = document.querySelector('[data-contacto-atribucion]'); const activar = document.querySelector('[data-contacto-mapa-activar]'); const tarjeta = document.querySelector('[data-contacto-tarjeta]'); const tiles = Array.from(document.querySelectorAll('.leaflet-tile')); const tilesReady = tiles.length > 0 && tiles.every((img) => img.complete); const cardReady = (tarjeta?.getBoundingClientRect().left ?? 0) > 10; return { stage: [r?.dataset.mode, r?.dataset.active, r?.dataset.texts, location.hash], scrollWidth: document.documentElement.scrollWidth, interactivo: mapa?.dataset.contactoInteractivo, atribVisible: Boolean(atrib && atrib.getBoundingClientRect().width > 40), activarTexto: activar?.textContent?.trim(), ready: tilesReady && cardReady }; }, (s) => s.stage[0] === 'open' && s.stage[1] === '5' && s.stage[2] === '5' && s.interactivo === 'false' && s.ready); })()",
-      "label": "6 mobile 390×844 en /#contacto: sin desborde horizontal, atribución visible y leyenda 'Tocá para mover el mapa'",
+      "eval": "(async () => { return await __waitUntil(() => { const r = document.querySelector('[data-mode]'); const mapa = document.querySelector('[data-contacto-mapa]'); const atrib = document.querySelector('[data-contacto-atribucion]'); const activar = document.querySelector('[data-contacto-mapa-activar]'); const tarjeta = document.querySelector('[data-contacto-tarjeta]'); const tiles = Array.from(document.querySelectorAll('.leaflet-tile')); const tilesReady = tiles.length > 0 && tiles.every((img) => img.complete); const cardReady = (tarjeta?.getBoundingClientRect().left ?? 0) > 10; const ra = atrib?.getBoundingClientRect(); const libre = ra ? atrib.contains(document.elementFromPoint(ra.left + ra.width / 2, ra.top + ra.height / 2)) : false; return { stage: [r?.dataset.mode, r?.dataset.active, r?.dataset.texts, location.hash], scrollWidth: document.documentElement.scrollWidth, interactivo: mapa?.dataset.contactoInteractivo, atribVisible: Boolean(atrib && ra.width > 40 && libre), activarTexto: activar?.textContent?.trim(), ready: tilesReady && cardReady }; }, (s) => s.stage[0] === 'open' && s.stage[1] === '5' && s.stage[2] === '5' && s.interactivo === 'false' && s.ready && s.atribVisible, 12000); })()",
+      "label": "6 mobile 390×844 en /#contacto: sin desborde horizontal, atribución visible (sin tapar) y leyenda 'Tocá para mover el mapa'",
       "expect": {
         "stage": ["open", "5", "5", "#contacto"],
         "scrollWidth": 390,
@@ -74,11 +95,30 @@
         "ready": true
       }
     },
+    { "eval": "__qa.reposo()", "expect": true },
     { "shot": "../shots/f8-m-contacto.png" },
-    { "swipe": { "x": 195, "fromY": 115, "toY": 480, "steps": 10 } },
     {
-      "eval": "(async () => { const wait = async (fn, pred, timeout = 4500) => { const t0 = performance.now(); while (performance.now() - t0 < timeout) { const v = fn(); if (pred(v)) return v; await new Promise((r) => setTimeout(r, 30)); } return fn(); }; return await wait(() => { const r = document.querySelector('[data-mode]'); return [r?.dataset.mode, r?.dataset.active, r?.dataset.texts, location.hash]; }, (v) => v[0] === 'open' && v[1] === '4' && v[2] === '4' && v[3] === '#preguntas'); })()",
-      "label": "7 mobile swipe sobre el mapa cambia de sección a PREGUNTAS (#preguntas)",
+      "eval": "(async () => { document.querySelector('[data-contacto-mapa-activar]').click(); const m = await __waitUntil(() => document.querySelector('[data-contacto-mapa]').dataset.contactoInteractivo, (v) => v === 'true'); return [m, document.querySelector('[data-contacto-mapa]').hasAttribute('data-stage-gestos-propios')]; })()",
+      "label": "7a mobile: tocar el aviso activa el mapa (se queda con sus gestos)",
+      "expect": ["true", true]
+    },
+    { "swipe": { "x": 90, "fromY": 165, "toY": 400, "steps": 10 } },
+    {
+      "eval": "(async () => { await __frames(3); await __qa.estable(); const r = document.querySelector('[data-mode]'); return [r.dataset.active, location.hash]; })()",
+      "label": "7b mobile: con el mapa activo, el swipe sobre el mapa lo mueve y no cambia de sección",
+      "expect": ["5", "#contacto"]
+    },
+    { "nav": "about:blank" },
+    { "nav": "http://localhost:5173/#contacto" },
+    {
+      "eval": "__waitUntil(() => [document.querySelector('[data-mode]')?.dataset.texts, document.querySelector('[data-contacto-mapa]')?.dataset.contactoInteractivo], (v) => v[0] === '5' && v[1] === 'false', 12000)",
+      "label": "8 recarga en /#contacto: mapa bloqueado",
+      "expect": ["5", "false"]
+    },
+    { "swipe": { "x": 90, "fromY": 165, "toY": 400, "steps": 10 } },
+    {
+      "eval": "(async () => { await __frames(3); await __qa.estable(); const r = document.querySelector('[data-mode]'); return [r.dataset.mode, r.dataset.active, r.dataset.texts, location.hash]; })()",
+      "label": "8b mobile: con el mapa bloqueado, el swipe sobre el mapa cambia de sección a PREGUNTAS",
       "expect": ["open", "4", "4", "#preguntas"]
     }
   ]

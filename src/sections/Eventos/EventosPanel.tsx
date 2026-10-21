@@ -1,5 +1,6 @@
-import { useMemo, useRef, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Mail, Minus, Plus } from 'lucide-react'
+import { teclaRoving } from '@/components/roving'
 import { siteConfig } from '@/config/site.config'
 import { copy } from '@/content/copy.es'
 import {
@@ -16,10 +17,7 @@ import {
   type Seleccion,
 } from '@/content/eventos'
 import { formatPrecio } from '@/data/format'
-import { gsap, useGSAP } from '@/motion/gsap'
-import { motionDuration, motionEase } from '@/motion/tokens'
 import { CountUp, Reveal, SlideIn, WipeSwap } from '@/motion/primitives'
-import { useReducedMotion } from '@/motion/useReducedMotion'
 
 /**
  * 03 EVENTOS — Nuestros servicios (§8, ref. 04).
@@ -33,7 +31,16 @@ import { useReducedMotion } from '@/motion/useReducedMotion'
  * - Der., 6 tarjetas `champan` con número en `monte` (`CountUp`) y etiqueta (`WipeSwap`).
  * - Nota orientativa y botón "Pedir presupuesto" que abre `wa.me` con el resumen URL-encoded
  *   (más alternativa `mailto:`).
+ * La veta (`EventosFondo`) la monta el escenario en la capa del panel, sobre la foto: entra y
+ * sale con ella.
  */
+
+/** Fondo de EVENTOS en modo abierto: veta cálida diagonal sobre la foto r3 oscurecida (ref. 04). */
+export function EventosFondo() {
+  return (
+    <div className="absolute inset-0 [background:radial-gradient(ellipse_75%_55%_at_62%_38%,color-mix(in_srgb,var(--color-oro)_26%,transparent)_0%,color-mix(in_srgb,var(--color-oro)_14%,var(--color-hoja)_22%)_48%,color-mix(in_srgb,var(--color-monte)_30%,transparent)_80%)]" />
+  )
+}
 
 type Props = {
   active: boolean
@@ -47,9 +54,6 @@ const formatNumeroCard = (n: number) =>
   })
 
 export function EventosPanel({ active }: Props) {
-  const reduced = useReducedMotion()
-  const glowRef = useRef<HTMLDivElement | null>(null)
-
   const [cantidad, setCantidad] = useState<number>(invitados.inicial)
   const [ocasion, setOcasion] = useState<OcasionId>(ocasiones[0].id)
   const [formato, setFormato] = useState<FormatoId>(formatos[0].id)
@@ -62,21 +66,6 @@ export function EventosPanel({ active }: Props) {
   const resultados = useMemo(() => calcularEvento(seleccion), [seleccion])
   const waHref = useMemo(() => whatsappEventoUrl(seleccion), [seleccion])
   const mailHref = useMemo(() => mailtoEventoUrl(seleccion), [seleccion])
-
-  // Fundido de la veta cálida sobre la foto r3 del escenario al entrar/salir.
-  useGSAP(
-    () => {
-      const glow = glowRef.current
-      if (!glow) return
-      gsap.killTweensOf(glow)
-      gsap.to(glow, {
-        opacity: active ? 1 : 0,
-        duration: reduced ? motionDuration.reduced : 0.75,
-        ease: motionEase.ui,
-      })
-    },
-    { dependencies: [active, reduced] },
-  )
 
   const restarInvitados = () => {
     setCantidad((prev) => clampInvitados(prev - invitados.paso))
@@ -91,19 +80,6 @@ export function EventosPanel({ active }: Props) {
 
   return (
     <div className="absolute inset-0">
-      {/* Veta cálida diagonal sobre la foto r3 oscurecida del escenario (ref. 04) */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-[clamp(12px,1.6vw,28px)] overflow-hidden"
-      >
-        <div data-open-text className="absolute inset-0">
-          <div
-            ref={glowRef}
-            className="size-full opacity-0 [background:radial-gradient(ellipse_75%_55%_at_62%_38%,color-mix(in_srgb,var(--color-oro)_26%,transparent)_0%,color-mix(in_srgb,var(--color-oro)_14%,var(--color-hoja)_22%)_48%,color-mix(in_srgb,var(--color-monte)_30%,transparent)_80%)]"
-          />
-        </div>
-      </div>
-
       <div
         data-stage-scroller
         className="absolute inset-0 overflow-x-hidden overflow-y-auto overscroll-contain [touch-action:pan-y]"
@@ -180,6 +156,14 @@ export function EventosPanel({ active }: Props) {
                   <div
                     role="radiogroup"
                     aria-label={copy.eventos.etiquetas.ocasion}
+                    onKeyDown={(e) =>
+                      teclaRoving(
+                        e,
+                        ocasiones.findIndex((o) => o.id === ocasion),
+                        ocasiones.length,
+                        (i) => setOcasion(ocasiones[i]?.id ?? ocasion),
+                      )
+                    }
                     className="flex flex-wrap gap-1.5 sm:gap-2"
                   >
                     {ocasiones.map((o) => {
@@ -190,6 +174,7 @@ export function EventosPanel({ active }: Props) {
                           type="button"
                           role="radio"
                           aria-checked={isSelected}
+                          tabIndex={isSelected ? 0 : -1}
                           data-eventos-ocasion={o.id}
                           onClick={() => setOcasion(o.id)}
                           className={`cursor-pointer rounded-full border px-3 py-1.5 font-ui text-etiqueta font-semibold uppercase tracking-[0.1em] transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro sm:px-3.5 sm:py-2 ${
@@ -217,6 +202,14 @@ export function EventosPanel({ active }: Props) {
                   <div
                     role="radiogroup"
                     aria-label={copy.eventos.etiquetas.formato}
+                    onKeyDown={(e) =>
+                      teclaRoving(
+                        e,
+                        formatos.findIndex((f) => f.id === formato),
+                        formatos.length,
+                        (i) => setFormato(formatos[i]?.id ?? formato),
+                      )
+                    }
                     className="flex flex-wrap gap-1.5 sm:gap-2"
                   >
                     {formatos.map((f) => {
@@ -227,6 +220,7 @@ export function EventosPanel({ active }: Props) {
                           type="button"
                           role="radio"
                           aria-checked={isSelected}
+                          tabIndex={isSelected ? 0 : -1}
                           data-eventos-formato={f.id}
                           onClick={() => setFormato(f.id)}
                           className={`cursor-pointer rounded-full border px-3.5 py-1.5 font-ui text-etiqueta font-semibold uppercase tracking-[0.1em] transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro sm:px-4 sm:py-2 ${

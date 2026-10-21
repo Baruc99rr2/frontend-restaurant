@@ -93,3 +93,17 @@ Una línea por decisión + motivo. Lo más nuevo abajo.
 | f9 | food9 | 853×1280 | Pollo al horno con salsa | Pollo de campo al horno · insignia (Entre Ríos) |
 | f10 | food10 | 495×619 | Carne en fetas sobre crema, cherrys | Matambrito a la brasa · portada de Entradas |
 | video | video.mp4 | 852×480, 31 s | — | HOME (escenario e intro) |
+
+## F2 — Primitivas de movimiento, Navbar y botón MENU (2026-10-21)
+
+- Las "6 primitivas" de §6 son los 5 componentes (`Reveal`, `SlideIn`, `WipeSwap`, `BlurSwapImage`, `CountUp`) + el hook `useReducedMotion` (los 6 ítems listados en §6) → se re-exportan todos desde `src/motion/primitives/index.ts` y `src/motion/index.ts`.
+- `useReducedMotion` implementado con `useSyncExternalStore` + `setReducedMotionOverride()` → evita `setState` en `useEffect` (reglas de React 19) y permite que el switch de `/dev` fuerce u omita reduced motion en tiempo real sobre toda la app sin recargar.
+- `Reveal` con `SplitText` de GSAP 3.15 usando `mask: mode` nativo y `type: 'words,chars'` cuando `mode === 'chars'` → evita que una palabra se corte a mitad de renglón al envolver líneas.
+- `WipeSwap` con doble capa en grilla (`inline-grid`, `outgoing` + `incoming` en la misma celda) controlada por GSAP sin `setState` intermedio → el contenedor mantiene su tamaño natural sin colapsar y, si se interrumpe a mitad en ráfaga, retoma desde el `clip-path` actual sin parpadeo ni apilar timelines.
+- `BlurSwapImage` asigna `img.src` recién cuando terminan en paralelo el desenfoque de salida (`blur(14px)` + `scale(1.08)`) y `new Image().decode()`, con contador de petición (`reqId`) → evita que React pise el `src` antes de desenfocar y descarta precargas viejas si se interrumpe.
+- `CountUp` interpola sobre un objeto mutable en ref y escribe `textContent` en `onUpdate` → si se interrumpe a mitad, el nuevo tween arranca exactamente desde el número intermedio alcanzado.
+- Píldora de vidrio del `Navbar` con `bg-champan/10 border-champan/15 backdrop-blur-md` en lugar de `rgba(255,255,255,.08)` → los colores por defecto de Tailwind (`white`) están desactivados en `tokens.css` y la regla exige usar únicamente tokens de marca (`--brand-*`).
+- Cuando el panel activo es `platos` (`navbar: null` en `copy.es.ts`), la barra dorada del `Navbar` se desvanece (`opacity: 0`) y reaparece deslizándose al volver a cualquiera de los 5 paneles con link.
+- `MenuButton` mueve el nivel vertical del líquido con `yPercent` (`106` vacío → `82` hover ~15% → `0` lleno) y dos SVG de `width="200%"` con período exacto de 100 unidades que ciclan a `xPercent: -50` en sentidos/velocidades desfasadas (`fill-vino` y `fill-vino-luz`) → loop horizontal continuo sin costuras y subida/bajada interrumpible sin saltos.
+- `/dev` se mantiene junto a `/dev/datos` (ambas con `import.meta.env.DEV ? lazy(...) : null`, fuera del bundle de producción) y enlaza a `/` y `/dev/datos` en su cabecera.
+

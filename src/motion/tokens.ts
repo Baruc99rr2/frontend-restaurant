@@ -10,6 +10,11 @@ export const motionEase = {
   scene: 'power4.inOut',
   /** Interacciones de UI (barra activa del navbar, acordeón, controles). */
   ui: 'power2.out',
+  /**
+   * Corte horizontal del media dentro del marco cerrado (ref. 07). Más suave en el medio
+   * que `scene`: el media recorre toda la pantalla y el marco ve solo el tramo central.
+   */
+  slide: 'power2.inOut',
   /** Ondas continuas del líquido del botón MENU. */
   linear: 'none',
 } as const
@@ -23,6 +28,8 @@ export const motionDuration = {
     chars: 0.7,
     words: 0.75,
     lines: 0.85,
+    /** Salida hacia abajo (mismo stagger que la entrada). */
+    exit: 0.42,
     stagger: {
       chars: 0.018,
       words: 0.035,
@@ -48,10 +55,34 @@ export const motionDuration = {
   menuFill: 0.9,
   menuWaveLoop: 2.4,
 
-  /** Escenario (§5, listo para F3–F4) */
+  /** Escenario (§5) */
   stage: {
+    intro: {
+      /** Tope de espera del loader (póster + fuentes + canplay). */
+      loaderMax: 3.5,
+      /** Anillo que completa lo que falte al estar listo. */
+      ringFinish: 0.35,
+      loaderOut: 0.45,
+      /** El marco crece de escala 0.25 a la forma cerrada. */
+      frameGrow: 1.6,
+      /** Zoom del media durante el crecimiento (1.15 → 1). */
+      mediaZoom: 1.15,
+      /** Momento del crecimiento (0–1) en que entran título, etiquetas y wordmark. */
+      textsAt: 0.72,
+      chromeFade: 0.6,
+    },
     closedStep: 1.1,
+    closed: {
+      /** Demora de la entrada del título nuevo (sale el viejo primero). */
+      titleInDelay: 0.38,
+      labelsRoll: 0.85,
+      labelsStagger: 0.07,
+      /** Expandir/colapsar la lista de números laterales. */
+      indexExpand: 0.4,
+    },
     openClose: 1.4,
+    /** Textos del modo cerrado al abrir/cerrar. */
+    openCloseTexts: 0.4,
     openStepLock: 2.0,
     openStep: {
       textOut: 0.45,

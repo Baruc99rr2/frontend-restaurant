@@ -8,10 +8,15 @@ export type RevealMode = 'chars' | 'words' | 'lines'
 export type RevealProps = {
   children: ReactNode
   mode?: RevealMode
-  /** Cuando es `false`, el texto permanece oculto; al pasar a `true` ejecuta el reveal. */
+  /**
+   * `true` → entra (desde abajo, con máscara). Si pasa a `false` después de haberse
+   * mostrado, sale hacia abajo con la misma máscara (nada desaparece de golpe).
+   * Montado con `false`, queda oculto sin animar.
+   */
   active?: boolean
-  /** Cambiá esta clave para reiniciar la animación (interrumpe el timeline activo y lo recrea). */
+  /** Cambiá esta clave para reiniciar la entrada (interrumpe el timeline activo y lo recrea). */
   triggerKey?: string | number
+  /** Demora de la entrada (la salida arranca en el momento). */
   delay?: number
   duration?: number
   stagger?: number
@@ -21,9 +26,10 @@ export type RevealProps = {
 
 /**
  * `<Reveal mode="chars|words|lines">`:
- * SplitText con máscara y entrada desde abajo (`expo.out`).
- * Soporta interrupción a mitad (mata el timeline y revierte el split antes de recrearlo)
- * y degrada a un fade de 200 ms con `prefers-reduced-motion`.
+ * SplitText con máscara; entrada desde abajo (`expo.out`) y salida hacia abajo.
+ * Interrumpible en cualquier momento: si cambia `active` a mitad, las piezas siguen
+ * desde donde están (no se re-parte el texto ni salta). Con `prefers-reduced-motion`
+ * degrada a un fade de 200 ms.
  */
 export function Reveal({
   children,
@@ -39,6 +45,8 @@ export function Reveal({
   const rootRef = useRef<HTMLElement | null>(null)
   const tlRef = useRef<gsap.core.Timeline | null>(null)
   const splitRef = useRef<SplitText | null>(null)
+  /** Si el texto está visible o entrando (para saber si `active=false` es una salida). */
+  const shownRef = useRef(false)
   const reduced = useReducedMotion()
   const contentKey =
     typeof children === 'string' || typeof children === 'number' ? String(children) : undefined
@@ -50,76 +58,88 @@ export function Reveal({
 
       tlRef.current?.kill()
       tlRef.current = null
-      splitRef.current?.revert()
-      splitRef.current = null
 
+      const wasShown = shownRef.current
+      shownRef.current = active
+
+      const revertSplit = () => {
+        splitRef.current?.revert()
+        splitRef.current = null
+      }
+      const targetsOf = (split: SplitText) =>
+        mode === 'chars' ? split.chars : mode === 'words' ? split.words : split.lines
+      const ensureSplit = () => {
+        if (splitRef.current) return splitRef.current
+        const split = SplitText.create(el, {
+          type: mode === 'chars' ? 'words,chars' : mode,
+          mask: mode,
+        })
+        splitRef.current = split
+        return split
+      }
+      // Al terminar se revierte el split: el texto vuelve a ser texto plano y re-fluye
+      // si cambia el ancho (las líneas enmascaradas quedaban fijas y se recortaban).
+      const finish = (split: SplitText, hide: boolean) => () => {
+        if (hide) gsap.set(el, { opacity: 0 })
+        if (splitRef.current === split) revertSplit()
+      }
+
+      const stag = stagger ?? motionDuration.reveal.stagger[mode]
+
+      // ---- Salida u oculto ----------------------------------------------------
       if (!active) {
-        gsap.set(el, { opacity: 0 })
+        if (!wasShown) {
+          revertSplit()
+          gsap.set(el, { opacity: 0 })
+          return
+        }
+        if (reduced) {
+          revertSplit()
+          tlRef.current = gsap.timeline().to(el, {
+            opacity: 0,
+            duration: motionDuration.reduced,
+            ease: motionEase.ui,
+          })
+          return
+        }
+        const split = ensureSplit()
+        gsap.set(el, { opacity: 1 })
+        const tl = gsap.timeline({ onComplete: finish(split, true) })
+        tl.to(targetsOf(split), {
+          yPercent: 115,
+          duration: motionDuration.reveal.exit,
+          stagger: stag,
+          ease: motionEase.exit,
+        })
+        tlRef.current = tl
         return
       }
 
+      // ---- Entrada ------------------------------------------------------------
       if (reduced) {
+        revertSplit()
         gsap.set(el, { clearProps: 'transform' })
-        const tl = gsap.timeline()
-        tl.fromTo(
+        tlRef.current = gsap.timeline().fromTo(
           el,
-          { opacity: 0 },
-          {
-            opacity: 1,
-            duration: motionDuration.reduced,
-            delay,
-            ease: motionEase.ui,
-          },
+          { opacity: wasShown ? 0 : Number(gsap.getProperty(el, 'opacity')) || 0 },
+          { opacity: 1, duration: motionDuration.reduced, delay, ease: motionEase.ui },
         )
-        tlRef.current = tl
-        return () => {
-          tl.kill()
-        }
+        return
       }
 
+      // Ya visible (replay por triggerKey/duración/modo) → se re-parte y arranca de cero.
+      // Volviendo de una salida a mitad → las piezas suben desde donde quedaron.
+      const resume = !wasShown && splitRef.current !== null
+      if (!resume) revertSplit()
+      const split = ensureSplit()
       gsap.set(el, { opacity: 1 })
-      const splitType = mode === 'chars' ? 'words,chars' : mode
-      const split = SplitText.create(el, {
-        type: splitType,
-        mask: mode,
-      })
-      splitRef.current = split
-
-      const targets =
-        mode === 'chars' ? split.chars : mode === 'words' ? split.words : split.lines
-
+      const targets = targetsOf(split)
       const dur = duration ?? motionDuration.reveal[mode]
-      const stag = stagger ?? motionDuration.reveal.stagger[mode]
-
-      // Al terminar se revierte el split: el texto vuelve a ser texto plano y,
-      // si la ventana cambia de ancho, re-fluye normal (las líneas enmascaradas
-      // quedaban fijas y se recortaban).
-      const tl = gsap.timeline({
-        onComplete: () => {
-          if (splitRef.current === split) {
-            split.revert()
-            splitRef.current = null
-          }
-        },
-      })
-      tl.fromTo(
-        targets,
-        { yPercent: 115, opacity: 0 },
-        {
-          yPercent: 0,
-          opacity: 1,
-          duration: dur,
-          stagger: stag,
-          delay,
-          ease: motionEase.enter,
-        },
-      )
+      const tl = gsap.timeline({ onComplete: finish(split, false) })
+      const to = { yPercent: 0, opacity: 1, duration: dur, stagger: stag, delay, ease: motionEase.enter }
+      if (resume) tl.to(targets, to)
+      else tl.fromTo(targets, { yPercent: 115, opacity: 0 }, to)
       tlRef.current = tl
-
-      return () => {
-        tl.kill()
-        split.revert()
-      }
     },
     {
       // `children` no va como dependencia: un JSX nuevo en cada render del padre

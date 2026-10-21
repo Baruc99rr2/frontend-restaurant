@@ -31,6 +31,19 @@ export const copy = {
     cargando: 'Prendiendo el fuego',
   },
 
+  /** Escenario (modo cerrado/abierto). {panel}, {n}, {total} se reemplazan. */
+  escenario: {
+    abrir: 'Entrar a {panel}',
+    irA: 'Ir a {panel}',
+    posicion: 'Panel {n} de {total}: {panel}',
+    paneles: 'Paneles',
+    indice: 'Índice',
+    total: 'Total',
+    /** Placeholder del modo abierto hasta F4–F8. */
+    enPreparacion: 'Este panel se está armando.',
+    salir: 'Esc para volver',
+  },
+
   home: {
     bloques: ['FUEGO LENTO,', 'MESA LARGA.'],
     subtitulo: 'Cocina a la brasa de quebracho, pastas amasadas cada mañana y una bodega de 140 etiquetas argentinas.',
@@ -123,10 +136,5 @@ export const copy = {
   reservar: {
     /** Mensaje prearmado de WhatsApp para "Reservar mesa". */
     mensaje: 'Hola, quiero reservar una mesa.',
-  },
-
-  escenario: {
-    indice: 'Índice',
-    total: 'Total',
   },
 } as const

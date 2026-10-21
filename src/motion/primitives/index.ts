@@ -7,4 +7,5 @@ export {
   useReducedMotion,
   setReducedMotionOverride,
   getReducedMotionOverride,
+  getReducedMotionSnapshot,
 } from '@/motion/useReducedMotion'

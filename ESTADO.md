@@ -1,6 +1,6 @@
 # ESTADO
 
-Última actualización: 2026-10-21 — **F2 completa**.
+Última actualización: 2026-10-21 — **F3 completa**.
 Repo remoto: https://github.com/Baruc99rr2/frontend-restaurant (público).
 
 ## Sub-fases
@@ -10,40 +10,47 @@ Repo remoto: https://github.com/Baruc99rr2/frontend-restaurant (público).
 | F0 — Andamiaje y documentación | ✅ hecha | `feat(web): andamiaje y tokens` |
 | — Mantenimiento (repo remoto, .gitignore, ROADMAP) | ✅ hecha | `chore(web): repo remoto y ajustes de roadmap` |
 | F1 — Assets, contrato y contenido | ✅ hecha | `feat(web): medios, contrato y contenido` |
-| F2 — Primitivas de movimiento, Navbar y botón MENU | ✅ hecha | `feat(web): primitivas de movimiento, navbar y botón menu` |
-| F3 — Escenario I: intro y modo cerrado | ⏭ siguiente | — |
-| F4–F12 | pendiente | — |
+| F2 — Primitivas de movimiento, Navbar y botón MENU | ✅ hecha (Gemini) + revisión | `feat(web): primitivas de movimiento, navbar y botón menu` · `fix(web): revision de F2` |
+| F3 — Escenario I: intro y modo cerrado | ✅ hecha | `feat(web): escenario, intro y modo cerrado` |
+| F4 — Escenario II: modo abierto, transiciones y HOME | ⏭ siguiente | — |
+| F5–F12 | pendiente | — |
 
 ## Qué hay hoy
 
 - **Stack:** Vite 8 + React 19 + TS 6 strict + Tailwind v4 + ESLint 10 + GSAP 3.15 (`@gsap/react`) + `lucide-react`. Alias `@/`.
-- **Tokens:** `src/styles/tokens.css`. `site.config.ts` → `applyBrandTheme()` escribe las `--brand-*` al arrancar.
-- **Movimiento (`src/motion/`):** `gsap.ts` (registro centralizado de `useGSAP`, `SplitText`, `Observer`, `Flip`, `CustomEase`), `tokens.ts` (duraciones y easings), `useReducedMotion` (con override en runtime para QA) y las primitivas `Reveal`, `SlideIn`, `WipeSwap`, `BlurSwapImage` y `CountUp` (soportan interrupción a mitad matando y recreando el timeline sin apilar, y degradan a fades de 200 ms con reduced motion).
-- **Datos (`src/data/`):** `types.ts` (forma exacta de los 3 endpoints públicos), `PublicLocalRepository` + `MockPublicRepository` (lee `mocks/public-local.json`), `repository.ts`, `useLocal()` (cacheado), `format.ts` (precios, horas en zona del local), `estado.ts` ("Abierto ahora, cierra a las 00:30", horario agrupado, día distinto, cocina).
-- **Mock:** 6 categorías con 31 platos (4–6 c/u) + 2 sin categoría, 4 sin stock, menú del día, promoción, 2 días distintos, 6 zonas de delivery.
-- **Contenido (`src/content/`):** `editorial.json` (+ `editorial.ts` con uniones), `copy.es.ts`, `faq.ts`, `eventos.ts`, `media.generated.ts`, `media.types.ts`.
-- **Medios:** `pnpm media` → 15 fotos × 3 formas × 2 tamaños × AVIF/WebP + video (2 versiones + póster). Idempotente. Total ~14 MB en `public/media/` (ignorada).
-- **Chequeos:** `pnpm check:content` (ids editorial ↔ mock ↔ medios) y `pnpm api:check` (tipos propios = contrato).
-- **QA:** `/` muestras de tokens · `/dev` primitivas de movimiento, Navbar, botón MENU y switch de reduced motion (solo dev) · `/dev/datos` datos + editorial + medios (solo dev).
-- **Componentes:** `Picture` (AVIF + WebP + placeholder), `Navbar` (wordmark Caslon, píldora de vidrio con barra dorada deslizante y lámina mobile), `MenuButton` (píldora `oro` con dos ondas SVG desfasadas en `vino` y `vino-luz` + `WipeSwap`).
+- **Rutas:** `/` escenario · solo en dev: `/dev` (primitivas, navbar, MENU, reduced motion), `/dev/datos` (datos + editorial + medios), `/dev/tokens` (muestras).
+- **Escenario (`src/stage/`):**
+  - `stageMachine.ts` (reducer: `loading → intro → closed ⇄ opening/closing → open`, `lock`, cola de 1) + `StageProvider.tsx`.
+  - `geometry.ts` (polígono por forma y viewport) + `frameController.ts` (tween de los 8 números, seguro ante resize) + `Frame.tsx` (clip-path, clic/Enter para abrir).
+  - `useStepInput.ts` (Observer: wheel con un paso por gesto e inercia filtrada, swipe > 50 px, ↓/↑, PageDown/PageUp, Espacio; soporte de scroller interno).
+  - `Intro.tsx` (loader con anillo dorado → marco a escala 0.25 que crece → textos), `ClosedView.tsx` (título gigante ajustado al ancho, etiquetas que ruedan, números laterales desplegables, "Hacé clic / Tocá para entrar"), `StageMedia.tsx` (video de HOME + 5 fotos), `OpenPlaceholder.tsx` (modo abierto provisorio con "Vista general" y Esc), `Stage.tsx` (orquesta los timelines).
+  - Hash: `/#eventos` entra directo abierto; abrir escribe el hash, cerrar lo limpia.
+- **Movimiento (`src/motion/`):** `gsap.ts`, `tokens.ts` (incluye intro y paso cerrado), `useReducedMotion` (+ `getReducedMotionSnapshot`), primitivas `Reveal` (entrada y salida enmascaradas), `SlideIn`, `WipeSwap`, `BlurSwapImage`, `CountUp`.
+- **Componentes:** `Picture` (AVIF + WebP + placeholder, `fetchPriority`), `Navbar` (píldora por container query ≥ 75rem, barra dorada deslizante, lámina mobile), `MenuButton` (líquido con doble ola).
+- **Datos y contenido:** igual que F1 (`src/data/`, `src/content/`, mock). `copy.es.ts` suma `escenario` (textos accesibles y del placeholder).
+- **QA:** `pnpm qa <plan.json>` (`scripts/qa-browser.mjs`): Chrome headless por DevTools con emulación táctil, reduced motion, wheel/teclado/swipe y capturas.
 
-## Verificación F2
+## Verificación F3
 
 - `pnpm build` ✅ · `pnpm lint` ✅ · `pnpm check:content` ✅.
-- `/dev` (solo en desarrollo) prueba las 5 primitivas de componente + `useReducedMotion`, `Navbar` (modo abierto/cerrado, 5 links + panel sin link `platos`, lámina mobile) y `MenuButton` (hover ~15%, llenado/vaciado ~0,9 s con doble ola SVG, interrupción en ráfaga y modo reduced motion).
-
-## Verificación F1
-
-- `pnpm media` ✅ genera todo; la 2.ª corrida no re-codifica nada (~3 s).
-- `pnpm build` ✅ · `pnpm lint` ✅ · `pnpm check:content` ✅ · `pnpm api:check` ✅.
-- Pruebas negativas: renombrar un campo en el mock rompe `tsc`; cambiar un tipo en `types.ts` rompe `api:check`.
-- Capturas con Chrome headless (la extensión no estaba conectada): tokens y `/dev/datos` en desktop. Mobile no se pudo (headless no baja de ~500px).
+- Probado en Chrome (desktop 1440×900 y mobile 390×844 táctil):
+  - Intro completa: loader → marco crece → HOME + etiquetas + wordmark/MENU → modo cerrado.
+  - Wheel: 6 notches seguidos → 1 paso; trackpad con inercia → 1 paso; 2.º swipe sobre la inercia → encolado (2 pasos); 3 notches durante una transición → 2 pasos (cola de 1).
+  - Teclado: 3× ↓ rápido → 2 pasos; PageUp/Espacio ok; Enter abre; Esc cierra.
+  - Swipe 240 px → paso; 20 px → nada; hacia abajo → panel anterior; tap en el marco → abre.
+  - Clic fuera del polígono no abre; clic en un número lateral salta directo.
+  - Resize a mitad de paso y después: el polígono queda centrado y con la forma del nuevo tamaño.
+  - `/#eventos` → abierto en EVENTOS; Esc → cerrado y URL limpia.
+  - Reduced motion: intro con fades, paso con fundido de 200 ms sin desplazamiento, video pausado.
+- `/dev` (revisión de F2): barra del navbar se desliza, líquido parejo, táctil sin vino trabado, Reveal sale y re-entra a mitad sin saltos.
 
 ## Pendientes / para la próxima sesión
 
-- **Licencias:** confirmar si las fotos y el video son de licencia libre → recién ahí versionar `public/media/`. Ojo: `restaurant5` muestra el nombre "Gustav" en una vidriera, el póster del video un cartel de otro negocio y `food2` una botella de Guinness.
-- **Medios en baja resolución:** fuentes de 495–1280 px y video 852×480; para un sitio a pantalla completa hacen falta fotos ≥ 1920 px y video 1080p.
-- **Sin fotos de postres:** la categoría Postres no está en la demo.
-- **Pedir al backend** (en el endpoint público): teléfono y email del local, slug y orden de categorías, coordenadas, horario de la cocina, porción por plato, foto/portada (o URL) por ítem y categoría, etiquetas dietarias (vegetariano, sin TACC), catálogo cerrado de alérgenos.
-- F3: escenario I (`StageProvider`, `useStepInput`, `Frame`, `Intro`, `ClosedView`).
+- **F4:** `OpenView` real (apertura con textos de panel, paso entre secciones abiertas, links del navbar, "Vista general" definitivo), panel HOME completo.
+- **Licencias:** confirmar si fotos y video son de licencia libre → recién ahí versionar `public/media/`. Ojo: el video (HOME) muestra el cartel de otro negocio ("Historia… Turkish cuisine"), `restaurant5` el nombre "Gustav", `food2` una botella de Guinness.
+- **Medios en baja resolución:** fuentes de 495–1280 px y video 852×480; a pantalla completa se notan.
+- **Sin fotos de postres.**
+- **Pedir al backend:** teléfono y email, slug y orden de categorías, coordenadas, horario de cocina, porción, foto por ítem/categoría, etiquetas dietarias, catálogo de alérgenos.
+- Probar en un trackpad y un teléfono reales (las pruebas de inercia y touch son simuladas).
+- `useGSAP` con dependencias acumula animaciones en su contexto hasta desmontar (menor).
 - Subir TypeScript a 7 cuando `typescript-eslint` lo soporte.

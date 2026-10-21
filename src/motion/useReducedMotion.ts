@@ -53,6 +53,11 @@ export function setReducedMotionOverride(value: boolean | null): void {
   emit()
 }
 
+/** Valor actual sin suscribirse (para timelines que se arman una sola vez, como la intro). */
+export function getReducedMotionSnapshot(): boolean {
+  return getSnapshot()
+}
+
 export function getReducedMotionOverride(): boolean | null {
   return overrideValue
 }

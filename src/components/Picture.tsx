@@ -8,10 +8,21 @@ type Props = {
   sizes?: string
   className?: string
   loading?: 'lazy' | 'eager'
+  fetchPriority?: 'high' | 'low' | 'auto'
+  onLoad?: () => void
 }
 
 /** <picture> AVIF + WebP con placeholder borroso de fondo mientras carga. */
-export function Picture({ image, shape, alt, sizes = '100vw', className = '', loading = 'lazy' }: Props) {
+export function Picture({
+  image,
+  shape,
+  alt,
+  sizes = '100vw',
+  className = '',
+  loading = 'lazy',
+  fetchPriority = 'auto',
+  onLoad,
+}: Props) {
   const s = image[shape]
   const variantes = s.sm.width === s.lg.width ? [s.lg] : [s.sm, s.lg]
   const srcset = (fmt: 'avif' | 'webp') => variantes.map((v) => `${v[fmt]} ${v.width}w`).join(', ')
@@ -27,6 +38,8 @@ export function Picture({ image, shape, alt, sizes = '100vw', className = '', lo
         height={s.lg.height}
         alt={alt}
         loading={loading}
+        fetchPriority={fetchPriority}
+        onLoad={onLoad}
         decoding="async"
         className={`bg-cover bg-center ${className}`}
         style={{ backgroundImage: `url(${s.placeholder})` }}

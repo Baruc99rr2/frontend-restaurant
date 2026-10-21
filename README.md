@@ -16,7 +16,8 @@ pnpm dev          # http://localhost:5173
 
 | Comando | Qué hace |
 |---|---|
-| `pnpm dev` | Servidor de desarrollo. `/` = muestras de tokens · `/dev/datos` = QA de datos y medios (solo en dev) |
+| `pnpm dev` | Servidor de desarrollo. `/` = escenario · solo en dev: `/dev` primitivas y navbar, `/dev/datos` datos y medios, `/dev/tokens` muestras |
+| `pnpm qa <plan.json>` | QA en Chrome headless por DevTools (viewport/táctil, reduced motion, wheel, teclado, capturas). Ver `scripts/qa-browser.mjs` |
 | `pnpm build` | Typecheck + build de producción |
 | `pnpm lint` | ESLint |
 | `pnpm media` | Procesa `content/` → `public/media/` y `src/content/media.generated.ts` |

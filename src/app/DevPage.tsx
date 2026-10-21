@@ -171,7 +171,11 @@ export default function DevPage() {
             </h1>
             <nav className="flex items-center gap-3 font-ui text-etiqueta uppercase text-ceniza">
               <a href="/" className="hover:text-oro">
-                Tokens (/)
+                Escenario (/)
+              </a>
+              <span>·</span>
+              <a href="/dev/tokens" className="hover:text-oro">
+                Tokens (/dev/tokens)
               </a>
               <span>·</span>
               <a href="/dev/datos" className="hover:text-oro">

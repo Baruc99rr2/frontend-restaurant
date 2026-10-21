@@ -127,3 +127,28 @@ Probado en Chrome (headless por DevTools, con emulación táctil a 390 px) con `
 - `/dev`: la caja del navbar ocupa casi todo el ancho (como el navbar real) para que se vea la píldora.
 - `scripts/qa-browser.mjs`: QA con Chrome por el protocolo de DevTools sin dependencias (viewport/táctil, reduced motion, wheel, teclado, swipe, capturas). Motivo: la extensión de Chrome no conecta y el headless común no baja de ~500 px.
 - Pendiente menor (sin cambiar): `useGSAP` con dependencias acumula en su contexto las animaciones de cada disparo hasta el desmontaje; no se nota en una sesión normal.
+
+## F3 — Escenario I: intro y modo cerrado (2026-10-21)
+
+- `/` pasa a ser el escenario; las muestras de tokens se mudan a `/dev/tokens` (solo dev, como `/dev` y `/dev/datos`).
+- Máquina de estados en `stage/stageMachine.ts` (reducer puro) y `StageProvider` (contexto). La cola de 1 vive en el reducer: lo que llega con `lock` se encola una sola vez, contando desde el destino de la transición en curso. Motivo: un solo lugar decide; el input solo emite pasos.
+- Marco (`stage/frameController.ts`): GSAP tween de un progreso 0 → 1 y en cada `onUpdate` se mezclan las 8 coordenadas de partida con las de destino recalculadas con el tamaño de ese momento. Motivo: un resize a mitad de animación converge a la forma correcta sin matar el timeline; sin animación se recalcula sin animar.
+- Geometría (`stage/geometry.ts`): desktop 34vw × 72vh (limitado a que el cuadrilátero rotado ocupe ≤ 86% del alto), centro al 48%; vertical (ancho < alto) alto 54% y ancho mín(64vw, 0,62 × alto), centro al 47%. Ángulo = `--marco-rotacion` (leído de CSS, white-label) + variación por panel `[0, 1.6, -1.4, 2, -1.8, 1.1]°`.
+- El tamaño del escenario se mide del elemento (`100svh`), no de `innerHeight`. Motivo: en mobile la barra del navegador cambia `innerHeight` y no el escenario.
+- Paso cerrado (ref. 07): media a pantalla completa con `yPercent ±100` y ease `slide` (`power2.inOut`, token nuevo). Motivo: el marco ve solo el tramo central del recorrido; con `power4.inOut` el corte cruzaba el marco en ~0,3 s.
+- Wheel: un paso por gesto (umbral acumulado 50). Gesto nuevo = pausa > 200 ms o re-aceleración después de haber decaído (swipe nuevo sobre la inercia). Probado con secuencias simuladas: 6 notches → 1 paso; trackpad con inercia → 1 paso; segundo swipe sobre la inercia → se encola.
+- Swipe: `Observer` (touch) al soltar, |dy| > 50 y dominante sobre dx. Espacio sobre un botón/link conserva su acción nativa. Hay soporte para `data-stage-scroller` (paso solo en el borde) para F4+.
+- Títulos gigantes: los 6 apilados, cada uno un `Reveal`. `Reveal` (F2) se extendió con la salida: `active` true → false anima las letras hacia abajo con la misma máscara, y volver a `true` a mitad retoma desde donde están. Motivo: "no crear versiones paralelas" de las primitivas.
+- Tamaño del título: se mide a 100px y se escala para entrar en el ancho, con tope mín(16vw, 25% del alto) en desktop y 24vw en vertical. Motivo: con `text-gigante` fijo "PREGUNTAS" no entraba.
+- Etiquetas que ruedan: pila con `overflow:hidden` desplazada con `yPercent` (slot 0 vacío para "rodar hacia adentro" en la intro). No es una primitiva nueva: es específico del modo cerrado.
+- "Clic en los números laterales": el índice izquierdo rueda y, con hover o foco (o un toque en táctil), se despliega la lista 01–06 sin mover el número actual (en vertical se despliega hacia abajo). Interpretación propia: las refs muestran un solo número.
+- Mobile: la fila de etiquetas no entra (índice + 2 frases + total ≈ 410 px). Arriba quedan índice, frase izquierda y total; debajo del marco, "Tocá para entrar" a la izquierda y la frase derecha a la derecha.
+- Indicación "Hacé clic para entrar": en desktop junto a la esquina inferior derecha del marco (al lado del borde derecho chocaba con la etiqueta derecha).
+- Intro: espera fuentes (`document.fonts.load` de las 3 familias), póster (o la foto de la capa de entrada) y `loadeddata` del video, con tope 3,5 s. Motivo: con `preload="metadata"` `canplay` puede no llegar nunca; `loadeddata` ya garantiza el primer frame, que es lo que se ve.
+- Hash: `/#clave` → loader → modo abierto directo. Al abrir se escribe `#clave` (`replaceState`); al cerrar se limpia. Motivo: en modo cerrado la URL queda limpia y recargar vuelve a mostrar la intro.
+- Abrir en F3 es provisorio (`OpenPlaceholder`): el marco se expande al rectángulo con inset, título + frases + "Vista general" y `Esc`. El navbar sigue sin links (los links en modo abierto llegan en F4 con sus transiciones).
+- Video: corre solo con HOME abriendo/abierto (pestaña visible, sin reduced motion); en modo cerrado queda pausado.
+- Escenario: `html { overflow: hidden; overscroll-behavior: none }` mientras está montado y `touch-action: pinch-zoom` (sin pan nativo, con zoom). El wrapper del navbar no captura clics salvo en sus botones (el marco llega hasta arriba).
+- Velo `noche/25` sobre el media del escenario y `velo` en el placeholder abierto. Motivo: legibilidad de etiquetas y texto sobre fotos claras.
+- `Picture` suma `fetchPriority` y `onLoad`: la foto del panel de entrada carga con prioridad alta y el resto con baja, todas `eager` (en capas ocultas `lazy` no cargaba hasta mostrarse).
+- `getReducedMotionSnapshot()` para la intro (timeline que se arma una sola vez por montaje).

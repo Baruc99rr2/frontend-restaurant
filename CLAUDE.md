@@ -40,7 +40,9 @@ Motivo visual único: el **marco inclinado** (cuadrilátero rotado ~-16°, token
 - `pnpm media` — procesa `content/` → `public/media/` + `src/content/media.generated.ts`
 - `pnpm check:content` — ids de `editorial.json` ↔ mock ↔ medios
 - `pnpm api:check` — genera tipos desde `api/openapi.json` y verifica que `src/data/types.ts` sea idéntico (solo local)
-- QA de datos: `pnpm dev` → http://localhost:5173/dev/datos
+- Rutas: `/` escenario · solo dev: `/dev` (primitivas, navbar, MENU), `/dev/datos` (datos y medios), `/dev/tokens` (muestras).
+- Escenario (`src/stage/`): estado en `stageMachine.ts` (reducer puro); los timelines viven en `Stage.tsx`/`Intro.tsx`
+  y al terminar despachan el evento siguiente. Movimiento nuevo → usar/extender las primitivas de `src/motion/`, no duplicarlas.
 - Capturas y QA de movimiento: si la extensión de Chrome no está conectada, `pnpm qa <plan.json>`
   (`scripts/qa-browser.mjs`: Chrome headless por DevTools, sin dependencias). El plan (JSON, fuera del repo)
   admite viewport con emulación táctil (sirve para mobile real a 390 px), reduced motion, wheel, teclado,

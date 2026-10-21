@@ -17,7 +17,7 @@ const CARGA = Math.random().toString(36).slice(2)
 /** Cómo estaba el escenario debajo de la carta (para volver a montarlo igual). */
 export type EscenarioDebajo = { index: number; abierto: boolean }
 
-type EstadoHistorial = { carta?: string; debajo?: EscenarioDebajo; desde?: string }
+type EstadoHistorial = { carta?: string; debajo?: EscenarioDebajo; desde?: string; pasos?: number }
 
 const estado = (): EstadoHistorial => (history.state as EstadoHistorial | null) ?? {}
 
@@ -43,16 +43,27 @@ export function escenarioDebajoDeLaCarta(): EscenarioDebajo {
   return d && Number.isInteger(d.index) ? { index: d.index, abierto: !!d.abierto } : { index: 0, abierto: true }
 }
 
-/** Entrada a una categoría desde la carta (la usa el barrido). */
+/** Entrada a una categoría desde la carta o desde otra categoría (la usa el barrido). */
 export function navegarACategoria(slug: string) {
-  navegar(`/carta/${encodeURIComponent(slug)}`, { state: { desde: CARGA } satisfies EstadoHistorial })
+  const actual = estado()
+  const ruta = rutaActual().nombre
+  const desdeCarta = ruta === 'carta' || actual.desde === CARGA
+  const pasos = ruta === 'carta' ? 1 : (actual.pasos ?? 0) + 1
+  navegar(`/carta/${encodeURIComponent(slug)}`, {
+    state: (desdeCarta ? { desde: CARGA, pasos, debajo: actual.debajo } : {}) satisfies EstadoHistorial,
+  })
 }
 
 /**
  * Desde una categoría, volver a la carta: atrás si se llegó desde la carta en esta carga
- * (historial limpio); si no, se abre la carta como entrada nueva (con HOME abierto abajo).
+ * (tantos pasos como categorías se hayan recorrido, así el historial vuelve limpio a `/carta`);
+ * si no, reemplaza la entrada actual por `/carta` (con HOME abierto abajo).
  */
 export function volverALaCarta(): void | Promise<void> {
-  if (estado().desde === CARGA) return atras()
-  navegar('/carta', { state: { carta: 'externa', debajo: { index: 0, abierto: true } } satisfies EstadoHistorial })
+  const actual = estado()
+  if (actual.desde === CARGA) return atras(actual.pasos ?? 1)
+  navegar('/carta', {
+    replace: true,
+    state: { carta: 'externa', debajo: { index: 0, abierto: true } } satisfies EstadoHistorial,
+  })
 }

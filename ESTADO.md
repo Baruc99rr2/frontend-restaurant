@@ -1,6 +1,6 @@
 # ESTADO
 
-Última actualización: 2026-10-21 — **F9 hecha (overlay de la carta)**. Próxima: F10.
+Última actualización: 2026-10-21 — **F10 hecha (página de categoría y polaroid)**. Próxima: F11.
 Repo remoto: https://github.com/Baruc99rr2/frontend-restaurant (público).
 
 ## Sub-fases
@@ -20,18 +20,20 @@ Repo remoto: https://github.com/Baruc99rr2/frontend-restaurant (público).
 | — Regresión estable (planes de F3/F4 sin esperas fijas) | ✅ hecha | `test(web): regresion estable` |
 | — Revisión de F5–F8 (fondos en la capa del panel, CONTACTO, PLATOS, accesibilidad) | ✅ hecha | `fix(web): revision de F5 a F8` |
 | F9 — Overlay de la carta (+ "Reglas aprendidas" en CLAUDE.md) | ✅ hecha | `feat(web): overlay de carta` |
-| F10–F12 | pendiente | — |
+| F10 — Página de categoría y polaroid | ✅ hecha | `feat(web): categoria y polaroid` |
+| F11–F12 | pendiente | — |
 
 ## Qué hay hoy
 
-- **Stack:** Vite 8 + React 19 + TS 6 strict + Tailwind v4 + ESLint 10 + GSAP 3.15 (`@gsap/react`) + `leaflet` 1.9 + `lucide-react`. Alias `@/`.
-- **Rutas** (`src/app/router.ts`, router propio con `popstate`): `/` escenario · `/carta` escenario + overlay de la carta (mismo `<Stage>`, no se desmonta) · `/carta/:slug` página de categoría (placeholder hasta F10) · solo en dev: `/dev` (primitivas, navbar, MENU, reduced motion), `/dev/datos` (datos + editorial + medios), `/dev/tokens` (muestras).
+- **Stack:** Vite 8 + React 19 + TS 6 strict + Tailwind v4 + ESLint 10 + GSAP 3.15 (`@gsap/react`) + `lenis` 1.3 + `leaflet` 1.9 + `lucide-react`. Alias `@/`.
+- **Rutas** (`src/app/router.ts`, router propio con `popstate`): `/` escenario · `/carta` escenario + overlay de la carta (mismo `<Stage>`, no se desmonta) · `/carta/:slug` página de categoría · solo en dev: `/dev` (primitivas, navbar, MENU, reduced motion), `/dev/datos` (datos + editorial + medios), `/dev/tokens` (muestras).
 - **Carta (`src/carta/`):**
-  - `navegacion.ts`: abrir/cerrar la carta es navegar (`pushState('/carta')` / `history.back()` o `replaceState('/')`); guarda en el historial el escenario de abajo (`{ index, abierto }`). MENU, "Ver la carta", "Ver la carta completa", Esc, CERRAR, atrás y adelante comparten ese estado.
+  - `navegacion.ts`: abrir/cerrar la carta es navegar (`pushState('/carta')` / `history.back()` o `replaceState('/')`); guarda en el historial el escenario de abajo (`{ index, abierto }`) y la profundidad de pasos en categorías (`pasos` desde `/carta`) para que "← Categorías" y "Volver a la carta" regresen directo a `/carta` con `history.go(-pasos)` aunque se haya navegado entre varias categorías con anterior/siguiente (y con `replace: true` si se entró directo por URL).
   - `CartaOverlay.tsx`: diálogo modal `tizon` dentro del escenario (debajo del navbar: CERRAR es el mismo `MenuButton`); "Hoy: {plato} — {precio}" de `daily_menu` del repositorio con `Reveal`; 6 cartelitos de `categoriasCarta()` que caen en cascada y se van hacia abajo al cerrar; flip de a uno; pie con dirección/teléfono, "Reservar mesa", rubro/email; nombre gigante ajustado al ancho (`useAjusteAncho`). Mobile: carrusel con snap. Foco atrapado (`focusTrap.ts`) y cartelitos con `roving.ts`. Estado en `data-carta-estado`.
   - `CartaCard.tsx`: un botón por cartelito (frente número + nombre; dorso portada + "Ver categoría"); rotación y desplazamiento fijos por índice.
   - `WipeTransition.tsx`: barrido negro reutilizable `useWipeTransition().transicion(cambio)` (cubre desde abajo → `cambio()` → sigue subiendo). Estado en `data-barrido`.
-  - `CategoryPage.tsx`: placeholder de `/carta/:slug` con "← Categorías" y "Volver al inicio" por el barrido.
+  - `CategoryPage.tsx`: página de `/carta/:slug` con scroll suave de `Lenis` (se crea al montar y se destruye al desmontar, en pausa mientras la polaroid está abierta). Barra superior en píldora (`"← Categorías"` → `/carta`, wordmark en Caslon → `/#home`, `MenuButton` → `/carta`); portada ~60vh con `Picture` (`shape="banda"`), `velo`, número editorial y título gigante con `Reveal`; cuerpo `noche` con nombre en cursiva y horario semanal (`resumirHorario(local.weekly)`), grilla de 2 columnas en desktop y 1 en mobile (si la categoría tiene múltiples grupos como `Bodega`, cada grupo es una columna; si tiene 1 grupo, se reparten los platos en 2 columnas equilibradas), platos con nombre (botón si tiene foto, `<span>` sin cursor si no tiene), porción opcional (`(500 g)`), precio en `oro` con `formatPrecio(price_cents)`, plato sin stock hoy (`available: false`) atenuado (`opacity-60`, precio tachado, `"No hay hoy"` visible), marcas de alérgenos y leyenda al pie (`copy.alergenos`); navegación `"← Categoría anterior"` / `"Categoría siguiente →"`, `"Volver a la carta"` y `"Volver al inicio"` todo con `useWipeTransition()`. Si la categoría no existe o está vacía, muestra aviso (`copy.carta.noExiste`) y vuelve sola a `/carta` con el barrido.
+  - `Polaroid.tsx`: modal de foto de plato tipo polaroid (`bg-champan text-noche`, bordes superiores/laterales de 14 px y pie ≥ 56 px con nombre en Caslon y precio con `WipeSwap`, foto con `BlurSwapImage`), que se abre con `Flip` de GSAP desde un ancla en las coordenadas del clic y se cierra hacia la misma ancla; rotación leve fija por plato (`[-2.5, 2, -1.5, 3, -2, 2.5]°` en capa interna separada de `Flip`); flechas `←` `→` y botones anterior/siguiente que recorren los platos con foto de la categoría (con vuelta), cierre con `✕`, clic afuera y `Esc`, foco atrapado (`focusTrap.ts`) y devuelto al botón del nombre del plato que la abrió.
   - Con la carta abierta el escenario queda quieto: input suspendido, video en pausa, `inert`, no escribe hash.
 - **Escenario (`src/stage/`):**
   - `stageMachine.ts` (reducer: `loading → intro → closed ⇄ opening/closing → open`, `lock`, cola de 1; pasos en modo cerrado y abierto) + `StageProvider.tsx`.
@@ -55,6 +57,14 @@ Repo remoto: https://github.com/Baruc99rr2/frontend-restaurant (público).
   - Planes sin esperas fijas: `__waitUntil` / `__frames` / `__sleep` (los inyecta `qa-browser.mjs`) y, en dev, `window.__qa` (`src/motion/qa.ts`): `reloj(escala)` enlentece GSAP para muestras a mitad de animación, `estable()` espera el escenario quieto (también carta y barrido), `reposo()` además sin animaciones (capturas), `cartaEstable()` carta y barrido quietos sin mirar el escenario (página de categoría). Planes nuevos: no usar `{ "wait": N }` para esperar estados.
   - Pasos del plan: además de los anteriores, teclas ←/→/Inicio/Fin y `"shift": true`, `{ "atras": true }` / `{ "adelante": true }` (botones del navegador) y `{ "click": { "selector": "…" } }`; en viewport mobile el `click` es un toque.
   - No editar archivos del proyecto mientras corre la regresión: Tailwind vigila todo el repo y Vite recarga la página a mitad del plan.
+
+## Verificación F10
+
+- `pnpm build` ✅ (sin `__qa` en el build; aviso de chunk > 500 kB, ver pendientes) · `pnpm lint` ✅ · `pnpm check:content` ✅.
+- `pnpm qa:regresion` ✅ **21/21 planes en corrida completa de punta a punta** (F3–F9 sin cambios + 2 planes nuevos de F10, sin fallos intermitentes).
+  - `f10-1-categoria-polaroid.json` (1440×900): entrada desde `/carta` con el barrido hacia `/carta/fuegos`; `Lenis` montado (`data-lenis-activo="true"`), portada `f6` (`shape="banda"`) con número `02` y título gigante con `Reveal`, horario semanal del repositorio (`resumirHorario`), 2 columnas en desktop, porción `(500 g)` solo cuando existe, precio formateado desde centavos (`$ 32.000`), plato sin stock hoy (`Vacío al gancho`, `available: false`) atenuado (`opacity: 0.6`), precio tachado y `"No hay hoy"` visible, alérgenos (`G`, `L`, `H`) con leyenda al pie; plato sin foto (`Asado de tira`) en `<span>` sin cursor de link y clic no abre nada; clic en `"Bife de chorizo grueso"` abre la polaroid con `Flip` desde el punto del clic (verificado en estado `"abriendo"` y luego `"abierta"`), rotación fija `-1.5°`, bordes de 14 px, pie ≥ 56 px con nombre en Caslon y precio, contador `1 / 3`, foco en cerrar y `Lenis` en pausa; `Tab` y `Shift+Tab` atrapados en la polaroid; `→` y `←` recorren los 3 platos con foto de `Fuegos` con vuelta (`Bife de chorizo grueso` `-1.5°` → `Ojo de bife` `3°` → `Hamburguesa de la casa` `-2°` → `Bife`); cierre con `Esc`, con botón `✕` y con clic afuera devolviendo siempre el foco al nombre del plato que la abrió y reanudando `Lenis`; rueda con `Lenis` desplaza suavemente; `"Categoría siguiente →"` lleva con barrido a `/carta/pastas` arriba de todo (`scrollY === 0`); `"← Categoría anterior"` vuelve a `/carta/fuegos`; atrás del navegador vuelve a `/carta/pastas`; `"Volver a la carta"` regresa directo a `/carta` (saltando el historial de categorías) y destruye `Lenis` al desmontar; `/carta/bodega` muestra sus 3 grupos editoriales (`Tintos`, `Blancos y rosados`, `Tu botella`), `Pinot Noir` sin stock y 0 platos clickeables; `"← Categorías"` vuelve a `/carta`; wordmark lleva a `HOME` abierto (`/#home`) con barrido y sin `Lenis`; `/carta/no-existe` muestra el aviso y vuelve sola a `/carta` con el barrido.
+  - `f10-2-categoria-mobile.json` (390×844 táctil): `/carta/entradas` sin desborde horizontal (`scrollWidth === 390`), 1 columna, `Mollejas al limón` sin stock con `"No hay hoy"`; toque en `"Matambrito a la brasa"` abre la polaroid sin desborde en 390 px; toque en `✕` cierra y devuelve el foco; toque en `"Categoría siguiente →"` lleva a `/carta/fuegos` con el barrido; toque en flecha siguiente de la polaroid pasa a `"Ojo de bife"` (`2 / 3`); toque afuera cierra y devuelve el foco; atrás del navegador vuelve a `/carta/entradas`; toque en `"Volver al inicio"` del pie lleva a `HOME` abierto con el barrido.
+- Capturas en `qa/shots/f10-*.png` (categoría fuegos, polaroid abriendo, polaroid abierta, mobile entradas, mobile polaroid).
 
 ## Verificación F9
 
@@ -132,12 +142,11 @@ Repo remoto: https://github.com/Baruc99rr2/frontend-restaurant (público).
 
 ## Pendientes / para la próxima sesión
 
-- **Sub-fases restantes:** F10, F11, F12.
-- **Para F10 (de F9):** `/carta/:slug` es un placeholder; categoría inexistente hoy muestra aviso (falta volver a la carta sola); decidir si el escenario sigue desmontado debajo de la categoría (hoy se re-monta al volver, en el mismo estado pero el video arranca de cero); la barra superior de la categoría (← Categorías, wordmark, MENU) usa `volverALaCarta()` y el barrido ya existentes.
+- **Sub-fases restantes:** F11, F12.
 - **Producción:** el hosting tiene que servir `index.html` para `/carta` y `/carta/:slug` (fallback de SPA); en dev lo hace Vite. Va con F11.
 - **Menú del día:** si el backend manda más de un plato del día, hoy se muestra el primero disponible.
-- **Bundle:** el chunk principal pasó de 486 kB a 503 kB con F9 y `vite build` avisa (> 500 kB). Lo grueso son los placeholders de `media.generated.ts` y GSAP; dividir en F11 (rendimiento).
-- Probar en un teléfono real el carrusel con snap y el flip 3D de los cartelitos (en QA el toque está emulado).
+- **Bundle:** el chunk principal pasó de 503 kB a ~565 kB con F10 (`lenis` + `Flip` de GSAP) y `vite build` avisa (> 500 kB). Lo grueso son los placeholders de `media.generated.ts` y GSAP; dividir en F11 (rendimiento).
+- Probar en un teléfono real el carrusel con snap, el flip 3D de los cartelitos y la polaroid (en QA el toque está emulado).
 - **Licencias:** confirmar si fotos y video son de licencia libre → recién ahí versionar `public/media/`. Ojo: el video (HOME, ahora a pantalla completa) muestra el cartel de otro negocio ("Historia Meze & Grill"), `restaurant5` el nombre "Gustav", `food2` una botella de Guinness.
 - **Medios en baja resolución:** fuentes de 495–1280 px y video 852×480; a pantalla completa se notan.
 - **Datos de HOME** (140 etiquetas, 12 h, 38 cubiertos, 4,8) son placeholder en `site.config.ts → home`.

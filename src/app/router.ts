@@ -60,10 +60,10 @@ export function navegar(path: string, { replace = false, state = null as unknown
 }
 
 /**
- * Atrás del historial. La promesa se resuelve cuando la ruta ya cambió (o a los 800 ms
- * si no había entrada a la que volver, para no colgar a quien espera).
+ * Atrás del historial (`pasos` entradas). La promesa se resuelve cuando la ruta ya cambió
+ * (o a los 800 ms si no había entrada a la que volver, para no colgar a quien espera).
  */
-export function atras(): Promise<void> {
+export function atras(pasos = 1): Promise<void> {
   return new Promise((resolve) => {
     volviendo = true
     let hecho = false
@@ -73,7 +73,8 @@ export function atras(): Promise<void> {
       resolve()
     }
     esperas.push(fin)
-    history.back()
+    if (pasos === 1) history.back()
+    else history.go(-pasos)
     setTimeout(() => {
       volviendo = false
       fin()

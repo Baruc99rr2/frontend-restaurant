@@ -1,0 +1,198 @@
+{
+  "descripcion": "F10 · Página de categoría /carta/:slug y Polaroid en desktop (1440×900): entrada desde la carta con barrido; Lenis activo solo en esta página; portada, horario del repositorio, platos en 2 columnas, porción solo si existe, plato sin stock atenuado con 'No hay hoy', alérgenos y leyenda al pie; nombres sin foto no clickeables; Polaroid con Flip desde el punto del clic, rotación fija por plato, recorrido con ← →, foco atrapado y devuelto al plato al cerrar (Esc, ✕ y clic afuera); navegación anterior/siguiente, atrás del navegador, '← Categorías', 'Volver a la carta', wordmark y 'Volver al inicio'; categoría inexistente muestra aviso y vuelve sola a /carta con el barrido.",
+  "steps": [
+    { "viewport": { "width": 1440, "height": 900 } },
+    { "nav": "http://localhost:5173/#home" },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '0', 15000); return __qa.reposo(); })()",
+      "expect": true
+    },
+    { "click": { "selector": "[data-ver-carta]" } },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-carta-estado]')?.dataset.cartaEstado, (e) => e === 'abierta', 10000); return __qa.reposo(); })()",
+      "expect": true
+    },
+    { "click": { "selector": "[data-carta-card=fuegos]" } },
+    { "eval": "__qa.reposo()", "expect": true },
+    { "click": { "selector": "[data-carta-card=fuegos]" } },
+    {
+      "eval": "(async () => { await __waitUntil(() => location.pathname, (p) => p === '/carta/fuegos', 10000); await __qa.cartaEstable(); await __waitUntil(() => document.querySelectorAll('[data-plato]').length, (n) => n === 6); const g = document.querySelector('[data-categoria-grupos]'); const bife = document.querySelector('[data-plato=\"d1500000-0000-4000-8000-000000000201\"]'); const asado = document.querySelector('[data-plato=\"d1500000-0000-4000-8000-000000000203\"]'); const vacio = document.querySelector('[data-plato=\"d1500000-0000-4000-8000-000000000204\"]'); const hamb = document.querySelector('[data-plato=\"d1500000-0000-4000-8000-000000000206\"]'); const botonBife = bife.querySelector('[data-plato-abrir]'); const spanAsado = asado.querySelector('[data-plato-nombre]'); return { ruta: location.pathname, lenis: document.documentElement.classList.contains('lenis'), h1: document.querySelector('[data-categoria] h1')?.textContent, subtitulo: document.querySelector('[data-categoria-subtitulo]')?.textContent, horario: document.querySelector('[data-categoria-horario]')?.textContent?.includes('Martes a jueves:12 a 15:30 · 20 a 00:30'), columnas: getComputedStyle(g).gridTemplateColumns.split(' ').length, bifeClickeable: [botonBife?.tagName, getComputedStyle(botonBife).cursor], asadoNoClickeable: [spanAsado?.tagName, asado.querySelector('[data-plato-abrir]'), getComputedStyle(spanAsado).cursor !== 'pointer'], porcionBife: bife.querySelector('[data-plato-porcion]')?.textContent, porcionHamb: hamb.querySelector('[data-plato-porcion]'), precioBife: bife.querySelector('[data-plato-precio]')?.textContent?.replace(/\\s+/g, ' ').trim(), vacioSinStock: [vacio.dataset.disponible, getComputedStyle(vacio).opacity, getComputedStyle(vacio.querySelector('[data-plato-precio]')).textDecorationLine.includes('line-through'), vacio.querySelector('[data-plato-sin-stock]')?.textContent], alergenosHamb: [...hamb.querySelectorAll('[data-alergeno]')].map((a) => a.textContent), leyenda: document.querySelector('[data-leyenda-alergenos]')?.textContent?.includes('Gluten') && document.querySelector('[data-leyenda-alergenos]')?.textContent?.includes('Lácteos') }; })()",
+      "label": "1 /carta/fuegos: Lenis activo, portada, horario del repositorio, 2 columnas, porción solo si existe, sin stock atenuado con 'No hay hoy', alérgenos y leyenda, sin foto no es botón",
+      "expect": {
+        "ruta": "/carta/fuegos",
+        "lenis": true,
+        "h1": "Fuegos",
+        "subtitulo": "Fuegos",
+        "horario": true,
+        "columnas": 2,
+        "bifeClickeable": ["BUTTON", "pointer"],
+        "asadoNoClickeable": ["SPAN", null, true],
+        "porcionBife": "(500 g)",
+        "porcionHamb": null,
+        "precioBife": "$ 32.000",
+        "vacioSinStock": ["false", "0.6", true, "No hay hoy"],
+        "alergenosHamb": ["G", "L", "H"],
+        "leyenda": true
+      }
+    },
+    { "shot": "../shots/f10-categoria-fuegos.png" },
+    { "click": { "selector": "[data-plato=\"d1500000-0000-4000-8000-000000000203\"] [data-plato-nombre]" } },
+    {
+      "eval": "(async () => { await __frames(3); return document.querySelector('[data-polaroid]')?.dataset.polaroidEstado; })()",
+      "label": "2 clic en plato sin foto (Asado de tira): no abre la polaroid",
+      "expect": "cerrada"
+    },
+    { "eval": "__qa.reloj(0.2)" },
+    { "click": { "selector": "[data-plato-abrir=\"d1500000-0000-4000-8000-000000000201\"]" } },
+    {
+      "eval": "(async () => { const p = document.querySelector('[data-polaroid]'); const f = document.querySelector('[data-polaroid-flip]'); const btn = document.querySelector('[data-plato-abrir=\"d1500000-0000-4000-8000-000000000201\"]'); const br = btn.getBoundingClientRect(); await __waitUntil(() => p.dataset.polaroidEstado, (e) => e === 'abriendo'); const r = await __waitUntil(() => f.getBoundingClientRect(), (rect) => rect.width > 60 && rect.width < 320); return [p.dataset.polaroidEstado, r.width < 320, Math.abs(r.left - br.left) < Math.abs(540 - br.left)]; })()",
+      "label": "3 clic en 'Bife de chorizo grueso': la polaroid crece con Flip desde el punto del clic",
+      "expect": ["abriendo", true, true]
+    },
+    { "shot": "../shots/f10-polaroid-abriendo.png" },
+    {
+      "eval": "(async () => { __qa.reloj(1); const p = document.querySelector('[data-polaroid]'); await __waitUntil(() => p.dataset.polaroidEstado, (e) => e === 'abierta'); await __frames(2); const marco = document.querySelector('[data-polaroid-marco]'); const pie = document.querySelector('[data-polaroid-pie]'); const cs = getComputedStyle(marco); return { estado: p.dataset.polaroidEstado, rotacion: cs.rotate, padLados: [cs.paddingLeft, cs.paddingRight, cs.paddingTop], pieAlto: Math.round(pie.getBoundingClientRect().height) >= 56, nombre: document.querySelector('[data-polaroid-nombre]')?.textContent?.trim(), precio: document.querySelector('[data-polaroid-precio]')?.textContent?.replace(/\\s+/g, ' ').trim(), contador: document.querySelector('[data-polaroid-contador]')?.textContent?.trim(), foco: document.activeElement?.getAttribute('data-polaroid-cerrar') !== null, lenisStopped: document.documentElement.classList.contains('lenis-stopped') }; })()",
+      "label": "4 polaroid abierta: rotación fija -1.5°, bordes 14px, pie ≥56px con nombre en Caslon y precio, contador 1 / 3, foco en cerrar, Lenis en pausa",
+      "expect": {
+        "estado": "abierta",
+        "rotacion": "-1.5deg",
+        "padLados": ["14px", "14px", "14px"],
+        "pieAlto": true,
+        "nombre": "Bife de chorizo grueso",
+        "precio": "$ 32.000",
+        "contador": "1 / 3",
+        "foco": true,
+        "lenisStopped": true
+      }
+    },
+    { "shot": "../shots/f10-polaroid-abierta.png" },
+    { "eval": "(window.__focoPol = () => { const a = document.activeElement; if (a?.hasAttribute('data-polaroid-cerrar')) return 'cerrar'; if (a?.hasAttribute('data-polaroid-anterior')) return 'anterior'; if (a?.hasAttribute('data-polaroid-siguiente')) return 'siguiente'; return 'otro'; }, window.__tabs = [], true)" },
+    { "key": "Tab" },
+    { "eval": "(__tabs.push(__focoPol()), true)" },
+    { "key": "Tab" },
+    { "eval": "(__tabs.push(__focoPol()), true)" },
+    { "key": "Tab" },
+    { "eval": "(__tabs.push(__focoPol()), true)" },
+    { "key": "Tab", "shift": true },
+    { "eval": "(__tabs.push(__focoPol()), __tabs)", "label": "5 foco atrapado en la polaroid con Tab y Shift+Tab", "expect": ["anterior", "siguiente", "cerrar", "siguiente"] },
+    { "key": "ArrowRight" },
+    {
+      "eval": "(async () => { await __waitUntil(() => [document.querySelector('[data-polaroid-nombre]')?.textContent?.trim(), getComputedStyle(document.querySelector('[data-polaroid-marco]')).rotate], (v) => v?.[0] === 'Ojo de bife' && v?.[1] === '3deg'); return [document.querySelector('[data-polaroid-nombre]')?.textContent?.trim(), document.querySelector('[data-polaroid-precio]')?.textContent?.replace(/\\s+/g, ' ').trim(), document.querySelector('[data-polaroid-contador]')?.textContent?.trim(), getComputedStyle(document.querySelector('[data-polaroid-marco]')).rotate]; })()",
+      "label": "6 → avanza al 2º plato con foto (Ojo de bife, 3°)",
+      "expect": ["Ojo de bife", "$ 30.500", "2 / 3", "3deg"]
+    },
+    { "key": "ArrowRight" },
+    {
+      "eval": "(async () => { await __waitUntil(() => [document.querySelector('[data-polaroid-nombre]')?.textContent?.trim(), getComputedStyle(document.querySelector('[data-polaroid-marco]')).rotate], (v) => v?.[0] === 'Hamburguesa de la casa' && v?.[1] === '-2deg'); return [document.querySelector('[data-polaroid-nombre]')?.textContent?.trim(), document.querySelector('[data-polaroid-precio]')?.textContent?.replace(/\\s+/g, ' ').trim(), document.querySelector('[data-polaroid-contador]')?.textContent?.trim(), getComputedStyle(document.querySelector('[data-polaroid-marco]')).rotate]; })()",
+      "label": "7 → avanza al 3º plato con foto (Hamburguesa de la casa, -2°)",
+      "expect": ["Hamburguesa de la casa", "$ 18.500", "3 / 3", "-2deg"]
+    },
+    { "key": "ArrowRight" },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-polaroid-nombre]')?.textContent?.trim(), (n) => n === 'Bife de chorizo grueso'); return [document.querySelector('[data-polaroid-nombre]')?.textContent?.trim(), document.querySelector('[data-polaroid-contador]')?.textContent?.trim()]; })()",
+      "label": "8 → da la vuelta al 1º (Bife de chorizo grueso, 1 / 3)",
+      "expect": ["Bife de chorizo grueso", "1 / 3"]
+    },
+    { "key": "ArrowLeft" },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-polaroid-nombre]')?.textContent?.trim(), (n) => n === 'Hamburguesa de la casa'); return [document.querySelector('[data-polaroid-nombre]')?.textContent?.trim(), document.querySelector('[data-polaroid-contador]')?.textContent?.trim()]; })()",
+      "label": "9 ← vuelve al 3º (Hamburguesa de la casa, 3 / 3)",
+      "expect": ["Hamburguesa de la casa", "3 / 3"]
+    },
+    { "key": "Escape" },
+    {
+      "eval": "(async () => { const p = document.querySelector('[data-polaroid]'); await __waitUntil(() => p.dataset.polaroidEstado, (e) => e === 'cerrada'); await __frames(2); return [p.dataset.polaroidEstado, document.activeElement?.getAttribute('data-plato-abrir'), document.documentElement.classList.contains('lenis-stopped')]; })()",
+      "label": "10 Esc cierra la polaroid, devuelve el foco al nombre del plato que la abrió y reanuda Lenis",
+      "expect": ["cerrada", "d1500000-0000-4000-8000-000000000201", false]
+    },
+    { "click": { "selector": "[data-plato-abrir=\"d1500000-0000-4000-8000-000000000202\"]" } },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-polaroid]')?.dataset.polaroidEstado, (e) => e === 'abierta'); return true; })()",
+      "expect": true
+    },
+    { "click": { "selector": "[data-polaroid-cerrar]" } },
+    {
+      "eval": "(async () => { const p = document.querySelector('[data-polaroid]'); await __waitUntil(() => p.dataset.polaroidEstado, (e) => e === 'cerrada'); await __frames(2); return [p.dataset.polaroidEstado, document.activeElement?.getAttribute('data-plato-abrir')]; })()",
+      "label": "11 botón ✕ cierra la polaroid y devuelve el foco a 'Ojo de bife'",
+      "expect": ["cerrada", "d1500000-0000-4000-8000-000000000202"]
+    },
+    { "click": { "selector": "[data-plato-abrir=\"d1500000-0000-4000-8000-000000000206\"]" } },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-polaroid]')?.dataset.polaroidEstado, (e) => e === 'abierta'); return true; })()",
+      "expect": true
+    },
+    { "click": { "x": 60, "y": 60 } },
+    {
+      "eval": "(async () => { const p = document.querySelector('[data-polaroid]'); await __waitUntil(() => p.dataset.polaroidEstado, (e) => e === 'cerrada'); await __frames(2); return [p.dataset.polaroidEstado, document.activeElement?.getAttribute('data-plato-abrir')]; })()",
+      "label": "12 clic afuera cierra la polaroid y devuelve el foco a 'Hamburguesa de la casa'",
+      "expect": ["cerrada", "d1500000-0000-4000-8000-000000000206"]
+    },
+    { "wheel": { "x": 720, "y": 450, "dy": 420, "count": 4, "interval": 25 } },
+    {
+      "eval": "(async () => { const y = await __waitUntil(() => Math.round(window.scrollY), (s) => s > 200); let prev = -1; await __waitUntil(() => { const cur = Math.round(window.scrollY); const q = cur === prev; prev = cur; return q; }, (q) => q, 4000); return y > 200; })()",
+      "label": "13 rueda con Lenis desplaza suavemente la página hacia el pie",
+      "expect": true
+    },
+    { "click": { "selector": "[data-categoria-siguiente=pastas]" } },
+    {
+      "eval": "(async () => { await __waitUntil(() => location.pathname, (p) => p === '/carta/pastas', 10000); await __qa.cartaEstable(); return [location.pathname, document.querySelector('[data-categoria] h1')?.textContent, Math.round(window.scrollY)]; })()",
+      "label": "14 'Categoría siguiente →' con barrido lleva a /carta/pastas arriba de todo",
+      "expect": ["/carta/pastas", "Pastas", 0]
+    },
+    { "eval": "(window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }), true)" },
+    { "eval": "__frames(2)" },
+    { "click": { "selector": "[data-categoria-anterior=fuegos]" } },
+    {
+      "eval": "(async () => { await __waitUntil(() => location.pathname, (p) => p === '/carta/fuegos', 10000); await __qa.cartaEstable(); return [location.pathname, document.querySelector('[data-categoria] h1')?.textContent]; })()",
+      "label": "15 '← Categoría anterior' con barrido vuelve a /carta/fuegos",
+      "expect": ["/carta/fuegos", "Fuegos"]
+    },
+    { "atras": true },
+    {
+      "eval": "(async () => { await __waitUntil(() => location.pathname, (p) => p === '/carta/pastas', 10000); await __qa.cartaEstable(); return [location.pathname, document.querySelector('[data-categoria] h1')?.textContent]; })()",
+      "label": "16 atrás del navegador vuelve a /carta/pastas",
+      "expect": ["/carta/pastas", "Pastas"]
+    },
+    { "eval": "(window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }), true)" },
+    { "eval": "__frames(2)" },
+    { "click": { "selector": "[data-categoria-volver-carta]" } },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-carta-estado]')?.dataset.cartaEstado, (e) => e === 'abierta', 15000); await __qa.cartaEstable(); await __qa.reposo(); return [location.pathname, document.querySelector('[data-carta-estado]')?.dataset.cartaEstado, document.documentElement.classList.contains('lenis')]; })()",
+      "label": "17 'Volver a la carta' con barrido vuelve directo a /carta y destruye Lenis al desmontar",
+      "expect": ["/carta", "abierta", false]
+    },
+    { "click": { "selector": "[data-carta-card=bodega]" } },
+    { "eval": "__qa.reposo()", "expect": true },
+    { "click": { "selector": "[data-carta-card=bodega]" } },
+    {
+      "eval": "(async () => { await __waitUntil(() => location.pathname, (p) => p === '/carta/bodega', 10000); await __qa.cartaEstable(); const grupos = [...document.querySelectorAll('[data-categoria-grupo]')].map((g) => g.dataset.categoriaGrupo); const pinot = document.querySelector('[data-plato=\"d1500000-0000-4000-8000-000000000603\"]'); return [location.pathname, grupos, pinot?.dataset.disponible, pinot?.querySelector('[data-plato-sin-stock]')?.textContent, document.querySelectorAll('[data-plato-abrir]').length]; })()",
+      "label": "18 /carta/bodega: 3 grupos editoriales (Tintos, Blancos y rosados, Tu botella), Pinot Noir sin stock y 0 platos clickeables (ninguno tiene foto)",
+      "expect": ["/carta/bodega", ["Tintos", "Blancos y rosados", "Tu botella"], "false", "No hay hoy", 0]
+    },
+    { "click": { "selector": "[data-categoria-carta]" } },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-carta-estado]')?.dataset.cartaEstado, (e) => e === 'abierta', 15000); await __qa.cartaEstable(); await __qa.reposo(); return location.pathname; })()",
+      "label": "19 '← Categorías' en la barra superior vuelve a /carta con el barrido",
+      "expect": "/carta"
+    },
+    { "click": { "selector": "[data-carta-card=entradas]" } },
+    { "eval": "__qa.reposo()", "expect": true },
+    { "click": { "selector": "[data-carta-card=entradas]" } },
+    {
+      "eval": "(async () => { await __waitUntil(() => location.pathname, (p) => p === '/carta/entradas', 10000); return __qa.cartaEstable(); })()",
+      "expect": true
+    },
+    { "click": { "selector": "[data-categoria-wordmark]" } },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '0', 15000); await __qa.estable(); const r = document.querySelector('[data-mode]'); return [location.pathname + location.hash, r.dataset.mode, r.dataset.active, document.documentElement.classList.contains('lenis')]; })()",
+      "label": "20 wordmark en la barra superior lleva a HOME abierto con el barrido y sin Lenis",
+      "expect": ["/#home", "open", "0", false]
+    },
+    { "nav": "http://localhost:5173/carta/no-existe" },
+    {
+      "eval": "(async () => { const aviso = await __waitUntil(() => document.querySelector('[data-categoria-aviso]')?.textContent?.includes('Esa categoría ya no está en la carta.'), (ok) => ok === true, 8000); await __waitUntil(() => location.pathname, (p) => p === '/carta', 10000); await __waitUntil(() => document.querySelector('[data-carta-estado]')?.dataset.cartaEstado, (e) => e === 'abierta', 15000); await __qa.cartaEstable(); return [aviso, location.pathname, document.querySelector('[data-carta-estado]')?.dataset.cartaEstado]; })()",
+      "label": "21 categoría inexistente: muestra el aviso y vuelve sola a /carta con el barrido",
+      "expect": [true, "/carta", "abierta"]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+@import 'tailwindcss';
+@import './tokens.css';
+
+/* Fuentes autohospedadas */
+@import '@fontsource-variable/archivo/wdth.css';
+@import '@fontsource/libre-caslon-text/400.css';
+@import '@fontsource/libre-caslon-text/400-italic.css';
+@import '@fontsource/libre-caslon-text/700.css';
+
+@layer base {
+  html {
+    color-scheme: dark;
+    background-color: var(--color-noche);
+    color: var(--color-champan);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    min-height: 100dvh;
+    font-size: var(--text-cuerpo);
+    line-height: var(--text-cuerpo--line-height);
+  }
+
+  ::selection {
+    background-color: var(--color-oro);
+    color: var(--color-noche);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-oro);
+    outline-offset: 3px;
+  }
+}

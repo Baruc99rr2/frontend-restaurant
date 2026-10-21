@@ -1,0 +1,19 @@
+# dependencias y build
+node_modules
+dist
+dist-ssr
+*.local
+.vite
+
+# logs
+*.log
+pnpm-debug.log*
+
+# editor / SO
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+Thumbs.db
+*.suo
+*.sw?

@@ -1,0 +1,103 @@
+/*
+ * Tokens de marca.
+ *
+ * Dos capas:
+ *  1. Variables crudas `--brand-*` en :root. Son lo único que cambia por cliente
+ *     (white-label): se pueden pisar desde site.config.ts en runtime.
+ *  2. `@theme inline` las expone a Tailwind v4 como utilidades
+ *     (bg-oro, text-champan, font-display, text-gigante, ...).
+ *
+ * Los colores por defecto de Tailwind están desactivados a propósito:
+ * solo existen los de la marca.
+ */
+
+:root {
+  /* Color — QUEBRACHO (demo) */
+  --brand-noche: #000000;
+  --brand-tizon: #14120f;
+  --brand-oro: #b8914a;
+  --brand-champan: #e6d7a8;
+  --brand-monte: #13261c;
+  --brand-hoja: #2b4a38;
+  --brand-vino: #5e1222;
+  --brand-vino-luz: #7a1c2c;
+  --brand-ceniza: #9a9384;
+
+  /* Overlay sobre video y fotos */
+  --brand-velo: rgb(0 0 0 / 0.55);
+}
+
+@theme inline {
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  --color-noche: var(--brand-noche);
+  --color-tizon: var(--brand-tizon);
+  --color-oro: var(--brand-oro);
+  --color-champan: var(--brand-champan);
+  --color-monte: var(--brand-monte);
+  --color-hoja: var(--brand-hoja);
+  --color-vino: var(--brand-vino);
+  --color-vino-luz: var(--brand-vino-luz);
+  --color-ceniza: var(--brand-ceniza);
+  --color-velo: var(--brand-velo);
+}
+
+@theme {
+  /* Familias */
+  --font-sans: 'Archivo Variable', system-ui, sans-serif;
+  --font-display: 'Archivo Variable', system-ui, sans-serif;
+  --font-serif: 'Libre Caslon Text', Georgia, 'Times New Roman', serif;
+
+  /* Escala tipográfica fluida (mobile → desktop).
+     `gigante` es un piso razonable; en F3+ los títulos gigantes se ajustan
+     al ancho con medición en JS. */
+  --text-gigante: clamp(4.5rem, 16vw, 18rem);
+  --text-gigante--line-height: 0.82;
+  --text-gigante--letter-spacing: -0.02em;
+
+  --text-display: clamp(2.75rem, 1.5rem + 5.5vw, 6.5rem);
+  --text-display--line-height: 0.9;
+
+  --text-titulo: clamp(1.875rem, 1.25rem + 2.4vw, 3.25rem);
+  --text-titulo--line-height: 1;
+
+  --text-subtitulo: clamp(1.25rem, 1.05rem + 0.8vw, 1.75rem);
+  --text-subtitulo--line-height: 1.2;
+
+  --text-cuerpo: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  --text-cuerpo--line-height: 1.6;
+
+  --text-ui: clamp(0.8125rem, 0.78rem + 0.15vw, 0.9375rem);
+  --text-ui--line-height: 1.3;
+
+  --text-etiqueta: 0.6875rem;
+  --text-etiqueta--line-height: 1.2;
+  --text-etiqueta--letter-spacing: 0.18em;
+
+  /* Motivo visual: marco inclinado (ref. 06) */
+  --marco-rotacion: -16deg;
+}
+
+/* Archivo ancho 125 + peso 800: títulos gigantes (HOME, nombre en la carta). */
+@utility font-gigante {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-stretch: 125%;
+  font-variation-settings: 'wdth' 125;
+}
+
+/* Archivo ancho 100: navegación, UI y cuerpo. */
+@utility font-ui {
+  font-family: var(--font-sans);
+  font-stretch: 100%;
+  font-variation-settings: 'wdth' 100;
+}
+
+/* Velo oscuro + viñeta radial para texto sobre video/fotos. */
+@utility velo {
+  background:
+    radial-gradient(ellipse at center, transparent 35%, rgb(0 0 0 / 0.6) 100%),
+    var(--brand-velo);
+}

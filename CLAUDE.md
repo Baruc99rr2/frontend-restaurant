@@ -41,9 +41,10 @@ Motivo visual único: el **marco inclinado** (cuadrilátero rotado ~-16°, token
 - `pnpm check:content` — ids de `editorial.json` ↔ mock ↔ medios
 - `pnpm api:check` — genera tipos desde `api/openapi.json` y verifica que `src/data/types.ts` sea idéntico (solo local)
 - QA de datos: `pnpm dev` → http://localhost:5173/dev/datos
-- Capturas: la extensión de Chrome puede no estar conectada; alternativa: Chrome headless
-  (`chrome.exe --headless=new --screenshot=... --window-size=1440,H --virtual-time-budget=30000 URL`).
-  Headless no baja de ~500px de ancho: no sirve para capturas mobile.
+- Capturas y QA de movimiento: si la extensión de Chrome no está conectada, `pnpm qa <plan.json>`
+  (`scripts/qa-browser.mjs`: Chrome headless por DevTools, sin dependencias). El plan (JSON, fuera del repo)
+  admite viewport con emulación táctil (sirve para mobile real a 390 px), reduced motion, wheel, teclado,
+  swipe, clic, `eval` y capturas. Ver el encabezado del script.
 
 ## Datos
 

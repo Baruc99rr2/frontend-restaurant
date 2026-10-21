@@ -57,13 +57,22 @@ export function WipeSwap({
       tlRef.current = null
 
       const interruptedDuringOut = phaseRef.current === 'out'
+      // Fin del barrido de salida: el borde izquierdo alcanza al derecho.
+      let outEnd = 'inset(0 0% 0 100%)'
       if (!interruptedDuringOut) {
+        // Si se interrumpe mientras entraba el texto anterior, la salida arranca
+        // desde lo que ya se veía (su recorte actual), no desde el texto entero.
+        const interruptedDuringIn = phaseRef.current === 'in'
+        const visibleRight = interruptedDuringIn
+          ? Number(/inset\(\S+\s+([\d.]+)%/.exec(incoming.style.clipPath)?.[1] ?? 0)
+          : 0
         outgoing.innerHTML = prevHtmlRef.current
         gsap.set(outgoing, {
           display: 'block',
-          opacity: 1,
-          clipPath: 'inset(0 0% 0 0%)',
+          opacity: interruptedDuringIn && reduced ? Number(gsap.getProperty(incoming, 'opacity')) : 1,
+          clipPath: `inset(0 ${visibleRight}% 0 0%)`,
         })
+        outEnd = `inset(0 ${visibleRight}% 0 ${100 - visibleRight}%)`
       }
 
       prevHtmlRef.current = incoming.innerHTML
@@ -106,7 +115,7 @@ export function WipeSwap({
 
         // 1. Sale el contenido anterior con barrido de izquierda a derecha.
         tl.to(outgoing, {
-          clipPath: 'inset(0 0% 0 100%)',
+          clipPath: outEnd,
           duration: outDuration,
           ease: motionEase.exit,
         })

@@ -125,16 +125,27 @@ export function Navbar({
     { dependencies: [syncIndicator], scope: navRef },
   )
 
-  // Mantener alineada la barra dorada al redimensionar la ventana.
+  // Mantener alineada la barra dorada al redimensionar (sin animar).
+  // El observer se crea una sola vez: si se recreara al cambiar de ítem, su primera
+  // notificación reposicionaría la barra de golpe y mataría el deslizamiento.
+  const syncRef = useRef(syncIndicator)
+  useEffect(() => {
+    syncRef.current = syncIndicator
+  }, [syncIndicator])
   useEffect(() => {
     const pill = pillRef.current
     if (!pill || typeof ResizeObserver === 'undefined') return
+    let first = true
     const ro = new ResizeObserver(() => {
-      syncIndicator(false)
+      if (first) {
+        first = false
+        return
+      }
+      syncRef.current(false)
     })
     ro.observe(pill)
     return () => ro.disconnect()
-  }, [syncIndicator])
+  }, [showLinks])
 
   // Cerrar lámina mobile con Escape.
   useEffect(() => {
@@ -199,13 +210,13 @@ export function Navbar({
   return (
     <header
       ref={navRef}
-      className={`relative z-30 flex w-full items-center justify-between gap-4 bg-transparent px-4 py-4 sm:px-8 ${className}`}
+      className={`@container relative z-30 flex w-full items-center justify-between gap-3 bg-transparent px-4 py-4 sm:gap-4 sm:px-8 ${className}`}
     >
       {/* Izquierda: Wordmark Caslon de dos líneas (ref. 06) */}
       <button
         type="button"
         onClick={() => handleSelect('home')}
-        className="group cursor-pointer text-left font-serif text-champan focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-oro"
+        className="group shrink-0 cursor-pointer text-left font-serif text-champan focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-oro"
       >
         <span className="block text-subtitulo leading-[0.92] tracking-[0.06em] uppercase transition-colors group-hover:text-oro">
           {linea1}
@@ -217,7 +228,7 @@ export function Navbar({
 
       {/* Centro (Desktop): Píldora de vidrio con barra dorada deslizante (refs 01–02) */}
       {showLinks && (
-        <nav aria-label="Secciones principales" className="hidden lg:block">
+        <nav aria-label="Secciones principales" className="hidden @min-[75rem]:block">
           <ul
             ref={pillRef}
             className="relative flex items-center gap-1 rounded-full border border-champan/15 bg-champan/10 px-3 py-1.5 backdrop-blur-md"
@@ -239,7 +250,7 @@ export function Navbar({
                     type="button"
                     aria-current={isActive ? 'page' : undefined}
                     onClick={() => handleSelect(item.key)}
-                    className={`relative cursor-pointer rounded-full px-3.5 py-2 font-ui text-etiqueta font-semibold uppercase tracking-[0.15em] transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro ${
+                    className={`relative cursor-pointer whitespace-nowrap rounded-full px-3.5 py-2 font-ui text-etiqueta font-semibold uppercase tracking-[0.15em] transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro ${
                       isActive ? 'text-champan' : 'text-champan/70 hover:text-champan'
                     }`}
                   >
@@ -253,7 +264,7 @@ export function Navbar({
       )}
 
       {/* Derecha: Botón de links (mobile) + Botón MENU */}
-      <div className="flex items-center gap-2.5">
+      <div className="flex shrink-0 items-center gap-2 sm:gap-2.5">
         {showLinks && (
           <button
             type="button"
@@ -261,9 +272,21 @@ export function Navbar({
             aria-controls="navbar-mobile-sheet"
             aria-label={mobileSheetOpen ? siteConfig.botones.cerrar : 'Secciones'}
             onClick={() => setMobileSheetOpen((v) => !v)}
-            className="inline-flex size-11 cursor-pointer items-center justify-center rounded-full border border-champan/20 bg-champan/10 text-champan backdrop-blur-md transition-colors hover:border-oro hover:text-oro focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro lg:hidden"
+            className="relative inline-flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-full border border-champan/20 bg-champan/10 text-champan backdrop-blur-md transition-colors hover:border-oro hover:text-oro focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro @min-[75rem]:hidden"
           >
-            {mobileSheetOpen ? <X className="size-5" /> : <ListFilter className="size-5" />}
+            {/* Los dos íconos quedan montados y se cruzan (nada aparece sin transición). */}
+            <ListFilter
+              aria-hidden="true"
+              className={`absolute size-5 transition-[opacity,transform] duration-300 ${
+                mobileSheetOpen ? 'scale-75 rotate-90 opacity-0' : 'opacity-100'
+              }`}
+            />
+            <X
+              aria-hidden="true"
+              className={`absolute size-5 transition-[opacity,transform] duration-300 ${
+                mobileSheetOpen ? 'opacity-100' : 'scale-75 -rotate-90 opacity-0'
+              }`}
+            />
           </button>
         )}
 
@@ -276,7 +299,7 @@ export function Navbar({
           id="navbar-mobile-sheet"
           ref={sheetRef}
           style={{ display: 'none' }}
-          className="absolute top-full right-4 left-4 mt-2 overflow-hidden rounded-2xl border border-champan/15 bg-tizon/95 p-3 backdrop-blur-md lg:hidden"
+          className="absolute top-full right-4 left-4 mt-2 overflow-hidden rounded-2xl border border-champan/15 bg-tizon/95 p-3 backdrop-blur-md @min-[75rem]:hidden"
         >
           <ul className="divide-y divide-champan/10">
             {NAV_ITEMS.map((item) => {

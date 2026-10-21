@@ -107,3 +107,23 @@ Una línea por decisión + motivo. Lo más nuevo abajo.
 - `MenuButton` mueve el nivel vertical del líquido con `yPercent` (`106` vacío → `82` hover ~15% → `0` lleno) y dos SVG de `width="200%"` con período exacto de 100 unidades que ciclan a `xPercent: -50` en sentidos/velocidades desfasadas (`fill-vino` y `fill-vino-luz`) → loop horizontal continuo sin costuras y subida/bajada interrumpible sin saltos.
 - `/dev` se mantiene junto a `/dev/datos` (ambas con `import.meta.env.DEV ? lazy(...) : null`, fuera del bundle de producción) y enlaza a `/` y `/dev/datos` en su cabecera.
 
+
+## Revisión de F2 (2026-10-21) — `fix(web): revision de F2`
+
+Probado en Chrome (headless por DevTools, con emulación táctil a 390 px) con `scripts/qa-browser.mjs`.
+
+- Navbar: la barra dorada no se deslizaba, saltaba → el `ResizeObserver` se recreaba en cada cambio de ítem y su primera notificación la reposicionaba sin animar. Ahora se crea una vez y lee la función de sincronización por ref.
+- Navbar: "Sobre nosotros", "Preguntas frecuentes" partían en dos líneas y la píldora se encimaba al wordmark en anchos medios → `whitespace-nowrap` y la píldora aparece por container query cuando el header mide ≥ 75rem (debajo, botón de links + lámina). Motivo: lo que importa es el ancho del navbar, no el del viewport.
+- Navbar: el ícono de links ↔ X cambiaba de golpe → los dos íconos quedan montados y se cruzan (opacidad + giro, 300 ms).
+- MenuButton: en táctil, después de abrir y cerrar el vino quedaba asomado ~15% (el tap dispara `mouseenter` sin `mouseleave`) → hover solo con `pointerType === 'mouse'` o foco visible de teclado.
+- MenuButton: el llenado usaba `expo.out` y llegaba arriba en ~0,25 s (se sentía un salto) → llenar y vaciar con `power4.inOut` en 0,9 s; asomar/retirar el hover sigue en 0,35 s.
+- MenuButton: en 390 px el botón quedaba cortado → padding y tracking más chicos debajo de `sm`.
+- Reveal: tenía `children` como dependencia, así que cualquier render del padre con JSX nuevo re-disparaba el reveal → depende del texto (`contentKey`) o de `triggerKey`.
+- Reveal: si cambiaba el texto, `SplitText.revert()` restauraba el HTML viejo sobre el mismo nodo → el elemento se remonta por texto (`key`).
+- Reveal: las líneas enmascaradas quedaban fijas y se recortaban al cambiar el ancho → al terminar la entrada se revierte el split (vuelve a texto plano que re-fluye).
+- WipeSwap: interrumpido durante la entrada, el texto a medio barrer aparecía entero y recién ahí salía → la salida arranca desde el recorte visible.
+- BlurSwapImage: A → B → A rápido terminaba mostrando B (la precarga de B seguía viva) → al volver a la imagen actual se descarta la precarga y se re-enfoca.
+- CountUp: un `format` inline reiniciaba el conteo en cada render del padre → el formateador va por ref, no como dependencia.
+- `/dev`: la caja del navbar ocupa casi todo el ancho (como el navbar real) para que se vea la píldora.
+- `scripts/qa-browser.mjs`: QA con Chrome por el protocolo de DevTools sin dependencias (viewport/táctil, reduced motion, wheel, teclado, swipe, capturas). Motivo: la extensión de Chrome no conecta y el headless común no baja de ~500 px.
+- Pendiente menor (sin cambiar): `useGSAP` con dependencias acumula en su contexto las animaciones de cada disparo hasta el desmontaje; no se nota en una sesión normal.

@@ -235,7 +235,9 @@ export default function DevPage() {
 
           {/* Escenario simulado con foto de restaurante y velo */}
           <div
-            className="relative overflow-hidden border border-ceniza/25 bg-tizon bg-cover bg-center"
+            // Más ancho que la columna: el navbar real ocupa todo el viewport y la
+            // píldora de links aparece desde 75rem de ancho del header.
+            className="relative left-1/2 w-[min(calc(100vw-2rem),90rem)] -translate-x-1/2 overflow-hidden border border-ceniza/25 bg-tizon bg-cover bg-center"
             style={{
               backgroundImage: `url(${bgHero.lg.webp}), url(${bgHero.placeholder})`,
             }}

@@ -40,6 +40,8 @@ export function Reveal({
   const tlRef = useRef<gsap.core.Timeline | null>(null)
   const splitRef = useRef<SplitText | null>(null)
   const reduced = useReducedMotion()
+  const contentKey =
+    typeof children === 'string' || typeof children === 'number' ? String(children) : undefined
 
   useGSAP(
     () => {
@@ -89,7 +91,17 @@ export function Reveal({
       const dur = duration ?? motionDuration.reveal[mode]
       const stag = stagger ?? motionDuration.reveal.stagger[mode]
 
-      const tl = gsap.timeline()
+      // Al terminar se revierte el split: el texto vuelve a ser texto plano y,
+      // si la ventana cambia de ancho, re-fluye normal (las líneas enmascaradas
+      // quedaban fijas y se recortaban).
+      const tl = gsap.timeline({
+        onComplete: () => {
+          if (splitRef.current === split) {
+            split.revert()
+            splitRef.current = null
+          }
+        },
+      })
       tl.fromTo(
         targets,
         { yPercent: 115, opacity: 0 },
@@ -110,13 +122,17 @@ export function Reveal({
       }
     },
     {
-      dependencies: [mode, active, triggerKey, delay, duration, stagger, reduced, children],
+      // `children` no va como dependencia: un JSX nuevo en cada render del padre
+      // re-disparaba el reveal. Solo cuenta el texto (`contentKey`) o `triggerKey`.
+      dependencies: [mode, active, triggerKey, delay, duration, stagger, reduced, contentKey],
       scope: rootRef,
     },
   )
 
+  // Si cambia el texto, se remonta el elemento: SplitText.revert() restaura el
+  // HTML que guardó al partir, así que sobre el mismo nodo volvía el texto viejo.
   return (
-    <Tag ref={rootRef} className={className}>
+    <Tag key={contentKey} ref={rootRef} className={className}>
       {children}
     </Tag>
   )

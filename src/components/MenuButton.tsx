@@ -40,6 +40,7 @@ export function MenuButton({ open, onToggle, className = '' }: MenuButtonProps) 
   const levelTlRef = useRef<gsap.core.Timeline | null>(null)
   const waveTlRef = useRef<gsap.core.Timeline | null>(null)
   const initializedRef = useRef(false)
+  const prevTargetRef = useRef(LEVEL_EMPTY)
 
   const [hovered, setHovered] = useState(false)
   const reduced = useReducedMotion()
@@ -104,23 +105,23 @@ export function MenuButton({ open, onToggle, className = '' }: MenuButtonProps) 
 
       if (!initializedRef.current) {
         initializedRef.current = true
+        prevTargetRef.current = targetY
         gsap.set(liquid, { yPercent: targetY })
         return
       }
 
+      // Asomar/retirar el hover es corto; llenar o vaciar el botón dura ~0,9 s con una
+      // curva pareja (con `expo.out` el líquido llegaba arriba en ~0,25 s y se sentía un salto).
+      const isHoverMove = !open && prevTargetRef.current !== LEVEL_FULL
+      prevTargetRef.current = targetY
+
       const dur = reduced
         ? motionDuration.reduced
-        : open || (!open && !hovered)
-          ? motionDuration.menuFill
-          : motionDuration.menuHover
+        : isHoverMove
+          ? motionDuration.menuHover
+          : motionDuration.menuFill
 
-      const ease = reduced
-        ? motionEase.ui
-        : open
-          ? motionEase.enter
-          : hovered
-            ? motionEase.ui
-            : motionEase.scene
+      const ease = reduced ? motionEase.ui : isHoverMove ? motionEase.ui : motionEase.scene
 
       const tl = gsap.timeline()
       tl.to(liquid, {
@@ -146,11 +147,19 @@ export function MenuButton({ open, onToggle, className = '' }: MenuButtonProps) 
       aria-expanded={open}
       aria-label={label}
       onClick={onToggle}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onFocus={() => setHovered(true)}
+      // Hover solo con mouse: en táctil el tap dispara `mouseenter` sin `mouseleave`
+      // y el vino quedaba asomado después de cerrar. Con teclado cuenta el foco visible.
+      onPointerEnter={(e) => {
+        if (e.pointerType === 'mouse') setHovered(true)
+      }}
+      onPointerLeave={(e) => {
+        if (e.pointerType === 'mouse') setHovered(false)
+      }}
+      onFocus={(e) => {
+        if (e.currentTarget.matches(':focus-visible')) setHovered(true)
+      }}
       onBlur={() => setHovered(false)}
-      className={`relative inline-flex cursor-pointer select-none items-center justify-center overflow-hidden rounded-full bg-oro px-7 py-3 font-ui text-ui font-bold uppercase tracking-[0.2em] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-champan ${
+      className={`relative inline-flex shrink-0 cursor-pointer select-none items-center justify-center overflow-hidden rounded-full bg-oro px-5 py-3 font-ui text-ui font-bold uppercase tracking-[0.16em] sm:px-7 sm:tracking-[0.2em] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-champan ${
         open ? 'text-champan' : 'text-noche'
       } ${className}`}
     >

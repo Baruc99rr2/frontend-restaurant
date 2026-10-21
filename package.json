@@ -10,6 +10,7 @@
     "preview": "vite preview",
     "media": "node scripts/process-video.mjs && node scripts/process-images.mjs",
     "check:content": "node scripts/check-content.mjs",
+    "qa": "node scripts/qa-browser.mjs",
     "api:types": "openapi-typescript api/openapi.json -o api/schema.d.ts",
     "api:check": "pnpm api:types && tsc -p tsconfig.contract.json"
   },

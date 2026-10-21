@@ -75,6 +75,21 @@ export function BlurSwapImage({
 
       if (currentSrcRef.current === src) {
         img.alt = alt
+        // Volvió a la imagen que ya se ve antes de que terminara el cambio (A → B → A):
+        // se descarta la precarga pendiente y se re-enfoca la actual.
+        if (tlRef.current) {
+          reqIdRef.current++
+          tlRef.current.kill()
+          const backTl = gsap.timeline()
+          tlRef.current = backTl
+          backTl.to(img, {
+            filter: 'blur(0px)',
+            scale: 1,
+            opacity: 1,
+            duration: reduced ? motionDuration.reduced : motionDuration.blurSwap.in,
+            ease: reduced ? motionEase.ui : motionEase.enter,
+          })
+        }
         return
       }
 

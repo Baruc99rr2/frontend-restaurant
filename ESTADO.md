@@ -1,6 +1,6 @@
 # ESTADO
 
-Última actualización: 2026-10-21 — **revisión de F5–F8 hecha**. Próxima: F9.
+Última actualización: 2026-10-21 — **F9 hecha (overlay de la carta)**. Próxima: F10.
 Repo remoto: https://github.com/Baruc99rr2/frontend-restaurant (público).
 
 ## Sub-fases
@@ -19,12 +19,20 @@ Repo remoto: https://github.com/Baruc99rr2/frontend-restaurant (público).
 | F8 — PREGUNTAS y CONTACTO | ✅ hecha | `feat(web): preguntas y contacto con mapa` |
 | — Regresión estable (planes de F3/F4 sin esperas fijas) | ✅ hecha | `test(web): regresion estable` |
 | — Revisión de F5–F8 (fondos en la capa del panel, CONTACTO, PLATOS, accesibilidad) | ✅ hecha | `fix(web): revision de F5 a F8` |
-| F9–F12 | pendiente | — |
+| F9 — Overlay de la carta (+ "Reglas aprendidas" en CLAUDE.md) | ✅ hecha | `feat(web): overlay de carta` |
+| F10–F12 | pendiente | — |
 
 ## Qué hay hoy
 
 - **Stack:** Vite 8 + React 19 + TS 6 strict + Tailwind v4 + ESLint 10 + GSAP 3.15 (`@gsap/react`) + `leaflet` 1.9 + `lucide-react`. Alias `@/`.
-- **Rutas:** `/` escenario · solo en dev: `/dev` (primitivas, navbar, MENU, reduced motion), `/dev/datos` (datos + editorial + medios), `/dev/tokens` (muestras).
+- **Rutas** (`src/app/router.ts`, router propio con `popstate`): `/` escenario · `/carta` escenario + overlay de la carta (mismo `<Stage>`, no se desmonta) · `/carta/:slug` página de categoría (placeholder hasta F10) · solo en dev: `/dev` (primitivas, navbar, MENU, reduced motion), `/dev/datos` (datos + editorial + medios), `/dev/tokens` (muestras).
+- **Carta (`src/carta/`):**
+  - `navegacion.ts`: abrir/cerrar la carta es navegar (`pushState('/carta')` / `history.back()` o `replaceState('/')`); guarda en el historial el escenario de abajo (`{ index, abierto }`). MENU, "Ver la carta", "Ver la carta completa", Esc, CERRAR, atrás y adelante comparten ese estado.
+  - `CartaOverlay.tsx`: diálogo modal `tizon` dentro del escenario (debajo del navbar: CERRAR es el mismo `MenuButton`); "Hoy: {plato} — {precio}" de `daily_menu` del repositorio con `Reveal`; 6 cartelitos de `categoriasCarta()` que caen en cascada y se van hacia abajo al cerrar; flip de a uno; pie con dirección/teléfono, "Reservar mesa", rubro/email; nombre gigante ajustado al ancho (`useAjusteAncho`). Mobile: carrusel con snap. Foco atrapado (`focusTrap.ts`) y cartelitos con `roving.ts`. Estado en `data-carta-estado`.
+  - `CartaCard.tsx`: un botón por cartelito (frente número + nombre; dorso portada + "Ver categoría"); rotación y desplazamiento fijos por índice.
+  - `WipeTransition.tsx`: barrido negro reutilizable `useWipeTransition().transicion(cambio)` (cubre desde abajo → `cambio()` → sigue subiendo). Estado en `data-barrido`.
+  - `CategoryPage.tsx`: placeholder de `/carta/:slug` con "← Categorías" y "Volver al inicio" por el barrido.
+  - Con la carta abierta el escenario queda quieto: input suspendido, video en pausa, `inert`, no escribe hash.
 - **Escenario (`src/stage/`):**
   - `stageMachine.ts` (reducer: `loading → intro → closed ⇄ opening/closing → open`, `lock`, cola de 1; pasos en modo cerrado y abierto) + `StageProvider.tsx`.
   - `geometry.ts` + `frameController.ts` (tween de los 8 números, seguro ante resize) + `Frame.tsx` (clip-path, clic/Enter para abrir).
@@ -39,13 +47,24 @@ Repo remoto: https://github.com/Baruc99rr2/frontend-restaurant (público).
   - `Preguntas/PreguntasPanel.tsx` (fondo diagonal `monte → noche`, título con `Reveal`, bajada con links reales `mailto:`/`tel:`/WhatsApp desde `site.config.ts`, buscador en píldora sin acentos/mayúsculas con reseteo de paginación a 1 y mensaje `sinResultados` con fundido, acordeón de 3 preguntas por página con paginación `1 / 4`, títulos con `WipeSwap`, una sola abierta a la vez con altura animada en GSAP, pregunta 12 con zonas de delivery del repositorio y scroll interno `data-stage-scroller`).
   - `Contacto/ContactoPanel.tsx` + `Contacto/ContactoMapa.tsx` (mapa Leaflet + OpenStreetMap en chunk diferido que solo carga cuando `CONTACTO` está por mostrarse, filtro oscuro exclusivo en `.leaflet-tile-pane`, marcador SVG dorado con la forma del marco inclinado `--marco-rotacion`, zoom con rueda deshabilitado hasta clic o `Ctrl + rueda`, arrastre táctil deshabilitado hasta tocar `"Tocá para mover el mapa"` para que el swipe cambie de sección, atribución OSM visible, etiqueta `"Te esperamos. Desde 2011."`, tarjeta `champan` con datos de `site.config.ts` y horarios/estado/cocina/próximo día distinto del repositorio, redes con `src/components/icons/social.tsx` y botón `"Volver al inicio"` → `HOME`).
 - **Fondos de sección:** `LaCasaFondo`, `EventosFondo`, `PreguntasFondo`, `ContactoFondo` (mapa) se exportan desde cada sección y los monta `StageMedia`. Sección nueva con fondo propio → exportar `XFondo` y sumarlo a `FONDOS` en `StageMedia`, nunca dentro de `[data-open-text]`.
-- **Accesibilidad:** foco itinerante compartido en `src/components/roving.ts` (pestañas de LA CASA, chips de EVENTOS).
+- **Accesibilidad:** foco itinerante compartido en `src/components/roving.ts` (pestañas de LA CASA, chips de EVENTOS, cartelitos de la carta); foco atrapado en `src/components/focusTrap.ts`; texto gigante al ancho en `src/components/useAjusteAncho.ts`.
 - **Movimiento (`src/motion/`):** `gsap.ts`, `tokens.ts` (intro, paso cerrado, paso abierto, abrir/cerrar), `useReducedMotion` (+ snapshot), primitivas `Reveal` (entrada y salida), `SlideIn`, `WipeSwap`, `BlurSwapImage`, `CountUp`.
 - **Componentes:** `Picture`, `Navbar` (links con fundido según modo, píldora ≥ 75rem, barra dorada, lámina mobile), `MenuButton`, `icons/social.tsx`.
 - **Datos y contenido:** igual que F1 (`src/data/`, `src/content/`, mock).
 - **QA:** `pnpm qa <plan.json>` y `pnpm qa:regresion` (todos los planes de `qa/plans/`, con resultados esperados). Capturas en `qa/shots/` (ignorada). Requiere `pnpm dev`.
-  - Planes sin esperas fijas: `__waitUntil` / `__frames` / `__sleep` (los inyecta `qa-browser.mjs`) y, en dev, `window.__qa` (`src/motion/qa.ts`): `reloj(escala)` enlentece GSAP para muestras a mitad de animación, `estable()` espera el escenario quieto, `reposo()` además sin animaciones (capturas). Planes nuevos: no usar `{ "wait": N }` para esperar estados.
+  - Planes sin esperas fijas: `__waitUntil` / `__frames` / `__sleep` (los inyecta `qa-browser.mjs`) y, en dev, `window.__qa` (`src/motion/qa.ts`): `reloj(escala)` enlentece GSAP para muestras a mitad de animación, `estable()` espera el escenario quieto (también carta y barrido), `reposo()` además sin animaciones (capturas), `cartaEstable()` carta y barrido quietos sin mirar el escenario (página de categoría). Planes nuevos: no usar `{ "wait": N }` para esperar estados.
+  - Pasos del plan: además de los anteriores, teclas ←/→/Inicio/Fin y `"shift": true`, `{ "atras": true }` / `{ "adelante": true }` (botones del navegador) y `{ "click": { "selector": "…" } }`; en viewport mobile el `click` es un toque.
   - No editar archivos del proyecto mientras corre la regresión: Tailwind vigila todo el repo y Vite recarga la página a mitad del plan.
+
+## Verificación F9
+
+- `pnpm build` ✅ (sin `__qa` en el build; aviso de chunk > 500 kB, ver pendientes) · `pnpm lint` ✅ · `pnpm check:content` ✅.
+- `pnpm qa:regresion` ✅ **19/19 planes** (F3–F8 sin cambios + 4 de F9). Una segunda corrida la cortó Claude Code por falta de memoria en la máquina cuando iba por `f7-1` (todo OK hasta ahí, 110 chequeos).
+  - `f9-1-carta.json` (1440×900): "Ver la carta" → `/carta`; a mitad, el líquido sube mientras los cartelitos caen; abierta: CERRAR lleno, video en pausa, "Hoy: Carbonada en zapallo — $ 16.500", 6 cartelitos, foco en el primero, escenario `inert`; rotaciones `-3/2.5/-1.5/4/-4/5°` y 6 desplazamientos distintos; nombre gigante al ancho exacto; todo entra en 1440×900; →/Fin/Inicio/← recorren los cartelitos con vuelta; Tab atrapado (cartelito → reservar → tel → mail → CERRAR → cartelito) y Shift+Tab; rueda/PageDown/↓ no mueven el escenario; flip a mitad (rotateY 40–140°) y uno solo dado vuelta; Enter da vuelta; Esc a mitad (cartelitos bajando + líquido bajando, URL ya en `/`); al cerrar HOME abierto con video corriendo y foco en "Ver la carta"; MENU abre; atrás cierra; adelante reabre; CERRAR cierra; ↓↓ a PLATOS; "Ver la carta completa" abre y Esc vuelve a PLATOS; MENU en modo cerrado, Enter da vuelta sin abrir el panel, Esc vuelve al modo cerrado y ↓ sigue andando.
+  - `f9-2-barrido.json`: barrido a mitad cubriendo (aún en `/carta`) y descubriendo (ya en `/carta/bodega`, escenario desmontado); atrás vuelve a la carta con el escenario re-montado en modo cerrado en EVENTOS; otra vez atrás → `/` en EVENTOS cerrado; "← Categorías" y "Volver al inicio" con el mismo barrido; recargar en `/carta` deja LA CASA abierta debajo y Esc → `/#la-casa`; categoría inexistente → aviso.
+  - `f9-3-carta-mobile.json` (390×844 táctil): sin desborde horizontal, carrusel `x mandatory` con el primero centrado, swipe vertical no mueve el escenario, el snap centra FUEGOS, toque da vuelta (uno solo), atrás cierra con el video corriendo, al reabrir todo vuelve a cero, CERRAR cierra, 2º toque entra con barrido y atrás vuelve.
+  - `f9-4-carta-reduced.json`: abre y cierra en < 0,7 s sin caída ni giro; flip sin ángulos intermedios; barrido como fundido sin desplazamiento.
+- Capturas en `qa/shots/f9-*.png` (abriendo, abierta, flip a mitad, flip, cerrando, barrido cubriendo/descubriendo, categoría, mobile abierta/flip/categoría).
 
 ## Verificación de la revisión de F5–F8
 
@@ -113,7 +132,12 @@ Repo remoto: https://github.com/Baruc99rr2/frontend-restaurant (público).
 
 ## Pendientes / para la próxima sesión
 
-- **Sub-fases restantes:** F9, F10, F11, F12.
+- **Sub-fases restantes:** F10, F11, F12.
+- **Para F10 (de F9):** `/carta/:slug` es un placeholder; categoría inexistente hoy muestra aviso (falta volver a la carta sola); decidir si el escenario sigue desmontado debajo de la categoría (hoy se re-monta al volver, en el mismo estado pero el video arranca de cero); la barra superior de la categoría (← Categorías, wordmark, MENU) usa `volverALaCarta()` y el barrido ya existentes.
+- **Producción:** el hosting tiene que servir `index.html` para `/carta` y `/carta/:slug` (fallback de SPA); en dev lo hace Vite. Va con F11.
+- **Menú del día:** si el backend manda más de un plato del día, hoy se muestra el primero disponible.
+- **Bundle:** el chunk principal pasó de 486 kB a 503 kB con F9 y `vite build` avisa (> 500 kB). Lo grueso son los placeholders de `media.generated.ts` y GSAP; dividir en F11 (rendimiento).
+- Probar en un teléfono real el carrusel con snap y el flip 3D de los cartelitos (en QA el toque está emulado).
 - **Licencias:** confirmar si fotos y video son de licencia libre → recién ahí versionar `public/media/`. Ojo: el video (HOME, ahora a pantalla completa) muestra el cartel de otro negocio ("Historia Meze & Grill"), `restaurant5` el nombre "Gustav", `food2` una botella de Guinness.
 - **Medios en baja resolución:** fuentes de 495–1280 px y video 852×480; a pantalla completa se notan.
 - **Datos de HOME** (140 etiquetas, 12 h, 38 cubiertos, 4,8) son placeholder en `site.config.ts → home`.

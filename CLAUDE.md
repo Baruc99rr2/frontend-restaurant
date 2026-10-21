@@ -40,7 +40,8 @@ Motivo visual único: el **marco inclinado** (cuadrilátero rotado ~-16°, token
 - `pnpm media` — procesa `content/` → `public/media/` + `src/content/media.generated.ts`
 - `pnpm check:content` — ids de `editorial.json` ↔ mock ↔ medios
 - `pnpm api:check` — genera tipos desde `api/openapi.json` y verifica que `src/data/types.ts` sea idéntico (solo local)
-- Rutas: `/` escenario · solo dev: `/dev` (primitivas, navbar, MENU), `/dev/datos` (datos y medios), `/dev/tokens` (muestras).
+- Rutas (`src/app/router.ts`, sin dependencias): `/` escenario · `/carta` escenario + overlay de la carta (el mismo `<Stage>`,
+  no se desmonta) · `/carta/:slug` categoría · solo dev: `/dev` (primitivas, navbar, MENU), `/dev/datos` (datos y medios), `/dev/tokens` (muestras).
 - Escenario (`src/stage/`): estado en `stageMachine.ts` (reducer puro); los timelines viven en `Stage.tsx`/`Intro.tsx`
   y al terminar despachan el evento siguiente. Movimiento nuevo → usar/extender las primitivas de `src/motion/`, no duplicarlas.
 - Capturas y QA de movimiento: si la extensión de Chrome no está conectada, `pnpm qa <plan.json>`
@@ -66,3 +67,29 @@ Motivo visual único: el **marco inclinado** (cuadrilátero rotado ~-16°, token
 - Overlay oscuro sobre fotos/video: utilidad `velo`.
 - TypeScript fijado en `~6.0` hasta que `typescript-eslint` soporte TS 7.
 - pnpm 11 bloquea scripts de instalación: los permitidos van en `pnpm-workspace.yaml` → `allowBuilds` (hoy solo `ffmpeg-static`).
+
+## Reglas aprendidas (errores de F5–F8 que no se repiten)
+
+- **Fondos de sección:** van en la capa del panel (`FONDOS` en `src/stage/StageMedia.tsx`, cada sección exporta su `XFondo`),
+  nunca dentro de `[data-open-text]`. Esa capa es lo que el escenario mueve en el paso abierto; lo que está en el texto se desvanece.
+- **QA:** los planes nuevos no usan `{ "wait": N }` para esperar estados: usan `__waitUntil(fn, pred)` y `window.__qa`
+  (`estable()`, `reposo()`, `cartaEstable()`, `reloj(escala)` para muestras a mitad de animación). `__sleep` solo marca el ritmo de un input.
+  En viewport mobile el paso `click` es un toque (el clic de mouse con táctil emulado cuelga el protocolo).
+- **Teclado en grupos:** todo grupo navegable con flechas usa `src/components/roving.ts` (foco itinerante, `tabIndex` 0 solo el actual,
+  consume la tecla para que el escenario no pase de sección). No escribir manejadores de flechas a mano.
+- **Gestos que chocan con el escenario:** contenido que scrollea → `data-stage-scroller`; zona con gestos propios (mapa activo) →
+  `data-stage-gestos-propios`; tecla que la sección usa (↑ ↓ Espacio PageUp/PageDown) → `preventDefault` + `stopPropagation`.
+  Algo modal encima del escenario → `useStepInput({ enabled: false })` + `inert` en lo de abajo (como la carta).
+- **`preventDefault` de rueda o toque:** listener nativo `{ passive: false }`; el `onWheel` de React es pasivo y no frena nada.
+- **Estado que lee un listener global** (refs de `enabled`, callbacks): sincronizarlo en `useLayoutEffect`, no en `useEffect`
+  (si se habilita desde un tick de GSAP, el primer input se perdía).
+- **Datos:** nada inventado en pantalla mientras carga (sin respaldos con datos falsos); la unión editorial + repositorio vive en
+  `src/content/editorial.ts` (`categoriasCarta`, `platosInsignia`), no se repite en componentes.
+- **Copy:** cada texto visible sale de `copy.es.ts` o `site.config.ts`, entero; no armar textos con `replace` sobre otro copy.
+- **Colores:** ni `rgb()`/`rgba()` sueltos (tampoco en sombras): tokens, con `color-mix` si hace falta transparencia. `vino` solo en el MENU.
+- **Transformaciones:** un elemento, un dueño. Si GSAP anima el `transform`, la posición base fija (rotación, desplazamiento) va en
+  otra capa o con `rotate`/`translate` de CSS (ver `CartaCard`). GSAP no recibe listas vacías (avisa): chequear antes.
+- **Navegación:** abrir/cerrar algo que tiene URL es navegar (`src/app/router.ts`; carta en `src/carta/navegacion.ts`), así
+  botones, `Esc` y atrás del navegador comparten un solo estado. Cambio de página con barrido: `useWipeTransition().transicion(cambio)`
+  (`src/carta/WipeTransition.tsx`), no otro barrido.
+- **Antes de corregir un error, reproducirlo** con un plan sobre el código anterior; el arreglo queda cubierto por ese plan.

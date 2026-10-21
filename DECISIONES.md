@@ -257,3 +257,44 @@ Revisado en Chrome headless con `scripts/qa-browser.mjs` (la extensión no sirvi
 - `f8-2-contacto.json` reescrito para la nueva estructura (el mapa se busca en la capa `[data-panel=contacto]`) y con chequeos nuevos: no carga desde dos secciones, se precarga desde PREGUNTAS, entra desde abajo con su panel a mitad del paso, `elementFromPoint` sobre tarjeta/botones/atribución, un solo `.leaflet-container`, Ctrl+rueda con `defaultPrevented`, rueda con el mapa activo, swipe con el mapa activo y bloqueado. `f6-1-platos.json`: los puntos se leen por `aria-current`.
 - Los dos errores de CONTACTO (Ctrl+rueda y swipe con el mapa activo) se reprodujeron sobre el código anterior antes de corregirlos.
 - La extensión de Chrome conectó pero la ventana estaba tapada y Chrome le daba ~2 frames por segundo (capturas a mitad de animación y un timeout): la revisión visual se hizo con el Chrome headless de `scripts/qa-browser.mjs`.
+
+## F9 — Overlay de la carta (2026-10-21) — `feat(web): overlay de carta`
+
+**Rutas e historial**
+- Router propio mínimo (`src/app/router.ts`: `useSyncExternalStore` sobre `pathname` + `popstate`), sin dependencia → son 3 rutas y el escenario ya maneja su hash; una librería no aporta nada.
+- `/` y `/carta` renderizan el mismo `<Stage>` en la misma posición → abrir la carta no desmonta el escenario y al cerrar queda exactamente donde estaba (modo, sección, textos, posición del video).
+- El estado de la carta **es** la ruta: el botón MENU (`menuOpen = carta`), "Ver la carta", "Ver la carta completa", `Esc`, CERRAR, atrás y adelante pasan todos por la URL → el líquido y MENU ↔ CERRAR no pueden desincronizarse.
+- Cerrar = `history.back()` si la entrada `/carta` la creó esta carga (marca `CARGA` en `history.state`); si no (URL directa o recarga), `replaceState('/')` → el historial queda limpio, "adelante" reabre y una recarga en `/carta` no saca al usuario del sitio al cerrar.
+- Mientras la ruta es `/carta`, el escenario no escribe su hash (quedaría `/carta#home`); al cerrar lo re-sincroniza. `escribirHash` conserva `history.state`.
+- Al abrir se guarda en el historial cómo estaba el escenario (`{ index, abierto }`). Si se vuelve a montar en `/carta` (recarga o atrás desde una categoría) entra directo a ese estado; en modo cerrado, sin el crecimiento del marco (`Intro closedOnEnter`, mismo camino que reduced motion) porque quedaría escondido detrás de la carta y el CERRAR tardaría en aparecer. URL directa sin dato → HOME abierto.
+- `/carta/:slug` desmonta el escenario (la página de categoría scrollea; el escenario fija `overflow: hidden` y no tiene sentido mantener video y GSAP vivos detrás). Volver atrás a `/carta` lo vuelve a montar como estaba. F10 puede revisarlo.
+- Atajos ignorados mientras hay un `history.back()` pendiente o un barrido en curso → un doble clic rápido en MENU/CERRAR no retrocede dos entradas (podía sacar al usuario del sitio).
+
+**Overlay**
+- Vive dentro del escenario (`z-25`), debajo del navbar (`z-30`): el CERRAR es el mismo `MenuButton` del navbar, un solo líquido. Con la carta abierta el navbar oculta wordmark y links con fundido escalonado con el "Hoy: …" (ocupan el mismo lugar).
+- Con la carta abierta: `useStepInput({ enabled: false })` (y su `keydown` ya no hace `preventDefault` deshabilitado, así las flechas llegan a los cartelitos), video en pausa (`videoPlaying && !carta`), `inert` en marco, modo cerrado y modo abierto; `Enter` no abre el panel de abajo.
+- Diálogo modal (`role="dialog"`, `aria-modal`): foco atrapado entre CERRAR y el overlay (`src/components/focusTrap.ts`, CERRAR primero porque está arriba a la derecha); al abrir el foco va al cartelito actual; al cerrar vuelve a quien abrió ("Ver la carta", "Ver la carta completa", MENU) o al botón.
+- Menú del día: `useLocal().data.menu.daily_menu` (el repositorio ya lo trae con `/menu`, un pedido) → primer plato disponible, "Hoy: {nombre} — {precio}" con `Reveal words`; sin plato disponible "Carta de temporada"; mientras carga, nada (no se inventa).
+- Cartelitos: categorías de `categoriasCarta()` (repositorio + editorial). Rotación `[-3, 2.5, -1.5, 4, -4, 5]°` y desplazamiento `[1.75, -0.75, 2.25, -1.25, 2.75, -1.5] rem` (la mitad en mobile), fijos por índice. Base fija en CSS `rotate`/`translate` del `li`; la caída la anima GSAP en otra capa; el hover usa `translate` del botón → nadie se pisa el `transform`.
+- Cada cartelito es **un solo botón** (frente y dorso adentro); "Ver categoría" es parte del dorso, no un botón aparte → sin botones anidados; el `aria-label` cambia a "Ver categoría {nombre}" cuando está dado vuelta.
+- Entrada: los cartelitos caen desde arriba girados (±12–14°) en cascada (`expo.out` 1,1 s, stagger 0,08). Salida: caen hacia abajo (`power2.in` 0,55 s) mientras el líquido baja; el fondo se va después. Interrumpible: las que estaban saliendo vuelven desde donde iban. Si la carta llega con el overlay abierto, caen al llegar.
+- Flip `rotationY` 0,8 s `power4.inOut` con `perspective` en el botón; uno solo dado vuelta (estado `volteado`). Reduced motion: fundido de 100 + 100 ms con el cambio de cara en el medio.
+- Al terminar de cerrar, la carta vuelve a cero (todos de frente, foco en el primero, carrusel al principio) → reproducido en mobile: si no, al reabrir el carrusel quedaba corrido y un toque podía caer fuera de pantalla.
+- Pie: dirección del repositorio + teléfono (config), "Reservar mesa" (WhatsApp), rubro + email (config, con corte después de la @ en mobile). Nombre gigante con `useAjusteAncho` (mide a 100 px y escala al ancho exacto del contenedor; `ResizeObserver` + fuentes) y barrido de entrada desde abajo con máscara (no `Reveal chars`: partir en letras pierde el kerning y cambia el ancho medido). `pb-[0.07em]` para que la máscara no corte la cola de la Q.
+- Mobile (< `lg`): carrusel horizontal con `scroll-snap` (`x mandatory`, `snap-center`, padding para centrar el primero y el último), `touch-action: pan-x pan-y`; el overlay entero scrollea en vertical si no entra.
+- Error del repositorio: mensaje + "Probar de nuevo" (`retryLocal`). Copy nuevo en `copy.carta` (`titulo`, `listaCategorias`, `irACategoria`, `error`, `reintentar`, `enPreparacion`).
+
+**Barrido**
+- `src/carta/WipeTransition.tsx`: `WipeTransitionProvider` (en `App`, por encima de las rutas, así sobrevive al cambio de página) + `useWipeTransition().transicion(cambio)`. La lámina `noche` sube desde abajo (`yPercent 100 → 0`, 0,65 s `power4.inOut`), corre `cambio()` (navegar, volver atrás…), espera 2 frames y sigue subiendo (`0 → -100`). Genérico a propósito: F10 lo usa para entrar, salir y volver al inicio sin tocarlo. Reduced motion: fundido a negro de 200 ms.
+- Una transición a la vez (estado de módulo en `src/carta/barrido.ts`); mientras cubre, la lámina toma los clics.
+- `/carta/:slug` es un placeholder mínimo (número + nombre con `Reveal`, "Esta página se está armando.", "← Categorías" y "Volver al inicio" ya con el barrido; categoría inexistente → aviso). "← Categorías" vuelve con `history.back()` si se llegó desde la carta.
+
+**Componentes compartidos**
+- `roving.ts` reconoce también `[data-roving]` (botones comunes); en los cartelitos las flechas mueven el foco y Enter/clic elige (en pestañas y chips elegir sigue a las flechas).
+- `focusTrap.ts` (`tabulables`, `atraparFoco`) y `useAjusteAncho.ts` en `src/components/` → los va a usar la polaroid de F10 y cualquier título gigante.
+- `MenuButton` lleva `data-menu-button` y `aria-haspopup="dialog"`; `Navbar` suma `ocultarMarca`.
+
+**QA**
+- `qa-browser.mjs`: teclas ←/→/Inicio/Fin, `"shift": true`, pasos `atras`/`adelante` (botones del navegador por el historial de DevTools, no `history.back()` de la página), `click` por `selector`, y en viewport mobile el `click` es un toque (`dispatchMouseEvent` con táctil emulado no volvía nunca; por eso ningún plan mobile hacía clics).
+- `window.__qa`: `quieto()`/`estable()` también esperan a la carta y al barrido; `cartaQuieta()`/`cartaEstable()` sirven sin escenario (página de categoría).
+- Planes `f9-1-carta.json` (desktop), `f9-2-barrido.json` (barrido, categoría, atrás, recarga), `f9-3-carta-mobile.json` (390×844 táctil), `f9-4-carta-reduced.json`, sin esperas fijas.

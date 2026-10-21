@@ -1,0 +1,38 @@
+{
+  "descripcion": "F9 · Carta con reduced motion: abrir y cerrar con fundido corto (sin caída ni giro), el flip es un fundido que igual deja el dorso a la vista, el barrido es un fundido a negro (sin desplazamiento).",
+  "steps": [
+    { "viewport": { "width": 1440, "height": 900 } },
+    { "reducedMotion": true },
+    { "nav": "http://localhost:5173/#home" },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '0', 15000); await __qa.estable(); window.__estado = () => document.querySelector('[data-carta-estado]').dataset.cartaEstado; return __qa.reposo(); })()",
+      "expect": true
+    },
+    { "click": { "selector": "[data-menu-button]" } },
+    {
+      "eval": "(async () => { const t0 = performance.now(); const caida = document.querySelector('[data-carta-caida]'); const ys = []; await __waitUntil(() => { ys.push(Math.abs(__qa.gsap.getProperty(caida, 'y')) + Math.abs(__qa.gsap.getProperty(caida, 'rotation'))); return __estado(); }, (e) => e === 'abierta'); const dt = performance.now() - t0; return [location.pathname, dt < 700, Math.max(...ys)]; })()",
+      "label": "1 abre en menos de 0,7 s y los cartelitos no caen ni giran (solo fundido)",
+      "expect": ["/carta", true, 0]
+    },
+    { "click": { "selector": "[data-carta-card=fuegos]" } },
+    {
+      "eval": "(async () => { const f = document.querySelector('[data-carta-card=fuegos] [data-carta-flip]'); const rots = new Set(); await __waitUntil(() => { rots.add(Math.round(__qa.gsap.getProperty(f, 'rotationY'))); return [Math.round(__qa.gsap.getProperty(f, 'rotationY')), getComputedStyle(f).opacity]; }, (v) => v[0] === 180 && v[1] === '1', 3000); return [[...rots].every((r) => r === 0 || r === 180), Math.round(__qa.gsap.getProperty(f, 'rotationY'))]; })()",
+      "label": "2 flip con fundido: pasa de 0° a 180° sin ángulos intermedios",
+      "expect": [true, 180]
+    },
+    { "click": { "selector": "[data-carta-card=fuegos]" } },
+    {
+      "eval": "(async () => { const b = document.querySelector('[data-barrido]'); const ys = []; await __waitUntil(() => { ys.push(Math.round(__qa.gsap.getProperty(b, 'yPercent'))); return location.pathname; }, (p) => p === '/carta/fuegos'); await __qa.cartaEstable(); return [location.pathname, Math.max(...ys.map(Math.abs)), b.dataset.barrido]; })()",
+      "label": "3 barrido con reduced motion: fundido a negro, sin desplazamiento",
+      "expect": ["/carta/fuegos", 0, "quieto"]
+    },
+    { "atras": true },
+    { "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-carta-estado]')?.dataset.cartaEstado, (e) => e === 'abierta', 15000); return __qa.reposo(); })()", "expect": true },
+    { "key": "Escape" },
+    {
+      "eval": "(async () => { const t0 = performance.now(); await __waitUntil(__estado, (e) => e === 'cerrada'); return [location.pathname + location.hash, performance.now() - t0 < 700]; })()",
+      "label": "4 Esc cierra en menos de 0,7 s",
+      "expect": ["/#home", true]
+    }
+  ]
+}

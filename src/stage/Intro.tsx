@@ -27,6 +27,11 @@ type Props = {
   initialIndex: number
   /** Entrada directa en modo abierto (la URL trae hash). */
   openOnEnter: boolean
+  /**
+   * Entrada directa en modo cerrado, sin el crecimiento del marco (el escenario se monta
+   * debajo de la carta: la intro no se vería y el botón CERRAR tiene que estar ya).
+   */
+  closedOnEnter?: boolean
   onTextsIn: () => void
   /** Entrada directa en modo abierto: mostrar los textos del panel. */
   onEnterOpen: () => void
@@ -76,6 +81,7 @@ export function Intro({
   chromeRef,
   initialIndex,
   openOnEnter,
+  closedOnEnter = false,
   onTextsIn,
   onEnterOpen,
 }: Props) {
@@ -151,7 +157,8 @@ export function Intro({
       }
 
       tl.call(() => dispatch({ type: 'READY' }))
-      if (reduced) {
+      // Reduced motion o entrada directa debajo de la carta: sin crecimiento, fundido corto.
+      if (reduced || closedOnEnter) {
         tl.call(() => frame.set({ kind: 'closed', index: initialIndex }))
         tl.to(wrap, { autoAlpha: 1, duration: motionDuration.reduced, ease: motionEase.ui })
         tl.call(() => onTextsInRef.current())

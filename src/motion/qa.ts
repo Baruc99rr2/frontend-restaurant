@@ -17,10 +17,19 @@ type GanchoQa = {
    * aplica los `set()` inmediatos con un ancestro en pausa.
    */
   reloj: (escala: number) => number
-  /** Escenario quieto: modo cerrado o abierto, sin transición ni bloqueo. */
+  /**
+   * Escenario quieto: modo cerrado o abierto, sin transición ni bloqueo, y además la carta
+   * sin abrirse ni cerrarse y el barrido negro sin correr.
+   */
   quieto: () => boolean
   /** Espera (dos frames y después) a que el escenario quede quieto. Devuelve si lo logró. */
   estable: (timeout?: number) => Promise<boolean>
+  /**
+   * Carta y barrido quietos (sin mirar el escenario: sirve también en `/carta/:slug`).
+   * Carta quieta = `abierta` o `cerrada` (o no montada); barrido = `quieto`.
+   */
+  cartaQuieta: () => boolean
+  cartaEstable: (timeout?: number) => Promise<boolean>
   /**
    * Como `estable` y además sin animaciones finitas de GSAP en curso (reveals, conteos).
    * Para capturas: los bucles infinitos (ondas del MENU) no cuentan.
@@ -38,9 +47,19 @@ const frames = (n: number) =>
   })
 
 export function instalarGanchoQa() {
+  const cartaQuieta = () => {
+    const carta = document.querySelector<HTMLElement>('[data-carta-estado]')?.dataset.cartaEstado
+    const barrido = document.querySelector<HTMLElement>('[data-barrido]')?.dataset.barrido
+    return (!carta || carta === 'abierta' || carta === 'cerrada') && (!barrido || barrido === 'quieto')
+  }
   const quieto = () => {
     const r = raiz()
-    return !!r && (r.dataset.mode === 'closed' || r.dataset.mode === 'open') && r.dataset.lock === undefined
+    return (
+      !!r &&
+      (r.dataset.mode === 'closed' || r.dataset.mode === 'open') &&
+      r.dataset.lock === undefined &&
+      cartaQuieta()
+    )
   }
   const animando = () =>
     gsap.globalTimeline
@@ -63,6 +82,8 @@ export function instalarGanchoQa() {
     },
     quieto,
     estable: (timeout = 8000) => esperar(quieto, timeout),
+    cartaQuieta,
+    cartaEstable: (timeout = 8000) => esperar(cartaQuieta, timeout),
     reposo: (timeout = 8000) => esperar(() => quieto() && !animando(), timeout),
     gsap,
   }

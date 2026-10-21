@@ -1,0 +1,100 @@
+{
+  "descripcion": "F9 · Barrido negro reutilizable (desktop): 2º clic en un cartelito → la lámina sube desde abajo, navega a /carta/:slug y sigue subiendo; atrás vuelve a la carta con el escenario de abajo como estaba (modo cerrado en EVENTOS) y otra vez atrás lo deja ahí; desde la categoría '← Categorías' y 'Volver al inicio' usan el mismo barrido; recargar en /carta y cerrar con Esc.",
+  "steps": [
+    { "viewport": { "width": 1440, "height": 900 } },
+    { "nav": "http://localhost:5173/" },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.mode, (m) => m === 'closed', 15000); window.__carta = () => { const r = document.querySelector('[data-mode]'); const c = document.querySelector('[data-carta-estado]'); const m = document.querySelector('[data-menu-button]'); const v = document.querySelector('video'); return { ruta: location.pathname + location.hash, escenario: r ? [r.dataset.mode, r.dataset.active, r.dataset.texts ?? '-'] : null, carta: c ? c.dataset.cartaEstado : null, boton: m ? [m.getAttribute('aria-label'), m.getAttribute('aria-expanded')] : null, video: v ? (v.paused ? 'pausa' : 'play') : null }; }; window.__barrido = () => { const b = document.querySelector('[data-barrido]'); return [b.dataset.barrido, Math.round(__qa.gsap.getProperty(b, 'yPercent'))]; }; await __qa.estable(); return __carta().escenario; })()",
+      "label": "1 modo cerrado (intro terminada)",
+      "expect": ["closed", "0", "-"]
+    },
+    { "key": "ArrowDown" }, { "eval": "__qa.estable()", "expect": true },
+    { "key": "ArrowDown" }, { "eval": "__qa.estable()", "expect": true },
+    { "key": "ArrowDown" },
+    { "eval": "(async () => { await __qa.estable(); return __carta().escenario; })()", "label": "2 modo cerrado en EVENTOS", "expect": ["closed", "3", "-"] },
+    { "click": { "selector": "[data-menu-button]" } },
+    { "eval": "(async () => { await __qa.reposo(); return __carta().carta; })()", "expect": "abierta" },
+    { "click": { "selector": "[data-carta-card=bodega]" } },
+    { "eval": "__qa.reposo()", "expect": true },
+    { "click": { "selector": "[data-carta-card=bodega]" } },
+    {
+      "eval": "(async () => { __qa.reloj(0.2); const b = await __waitUntil(__barrido, (v) => v[0] === 'cubriendo' && v[1] > 30 && v[1] < 70); return [b[0], location.pathname]; })()",
+      "label": "3 2º clic en BODEGA: la lámina negra sube desde abajo cubriendo la carta (todavía en /carta)",
+      "expect": ["cubriendo", "/carta"]
+    },
+    { "shot": "../shots/f9-barrido-cubriendo.png" },
+    {
+      "eval": "(async () => { const b = await __waitUntil(__barrido, (v) => v[0] === 'descubriendo' && v[1] < -30 && v[1] > -70); return [b[0], location.pathname, document.querySelector('[data-mode]') === null, document.querySelector('[data-categoria]')?.dataset.categoria]; })()",
+      "label": "4 con la pantalla tapada navega a /carta/bodega y la lámina sigue subiendo, descubriendo la página",
+      "expect": ["descubriendo", "/carta/bodega", true, "bodega"]
+    },
+    { "shot": "../shots/f9-barrido-descubriendo.png" },
+    {
+      "eval": "(async () => { __qa.reloj(1); await __qa.cartaEstable(); await __waitUntil(() => document.querySelector('[data-categoria] h1')?.textContent, (t) => t === 'Bodega'); return [location.pathname, document.querySelector('[data-categoria] h1')?.textContent, __barrido()[0], getComputedStyle(document.querySelector('[data-barrido]')).visibility]; })()",
+      "label": "5 placeholder de la categoría a la vista; barrido quieto y oculto",
+      "expect": ["/carta/bodega", "Bodega", "quieto", "hidden"]
+    },
+    { "shot": "../shots/f9-categoria.png" },
+    { "atras": true },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-carta-estado]')?.dataset.cartaEstado, (e) => e === 'abierta', 15000); await __qa.reposo(); return __carta(); })()",
+      "label": "6 atrás desde la categoría: vuelve la carta y el escenario de abajo se re-monta como estaba (cerrado en EVENTOS)",
+      "expect": { "ruta": "/carta", "escenario": ["closed", "3", "-"], "carta": "abierta", "boton": ["Cerrar", "true"], "video": "pausa" }
+    },
+    { "atras": true },
+    {
+      "eval": "(async () => { await __qa.estable(); return __carta(); })()",
+      "label": "7 otra vez atrás: cierra la carta y queda el modo cerrado en EVENTOS con la URL limpia",
+      "expect": { "ruta": "/", "escenario": ["closed", "3", "-"], "carta": "cerrada", "boton": ["Menu", "false"], "video": "pausa" }
+    },
+    { "click": { "selector": "[data-menu-button]" } },
+    { "eval": "__qa.reposo()", "expect": true },
+    { "click": { "selector": "[data-carta-card=entradas]" } },
+    { "eval": "__qa.reposo()", "expect": true },
+    { "click": { "selector": "[data-carta-card=entradas]" } },
+    {
+      "eval": "(async () => { await __waitUntil(() => location.pathname, (p) => p === '/carta/entradas'); await __qa.cartaEstable(); return [location.pathname, document.querySelector('[data-categoria] h1')?.textContent]; })()",
+      "label": "8 entra a ENTRADAS",
+      "expect": ["/carta/entradas", "Entradas"]
+    },
+    { "click": { "selector": "[data-categoria-carta]" } },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-carta-estado]')?.dataset.cartaEstado, (e) => e === 'abierta', 15000); await __qa.cartaEstable(); await __qa.reposo(); return [__carta().ruta, __carta().escenario, __carta().carta, document.querySelector('[data-categoria]')]; })()",
+      "label": "9 '← Categorías' (barrido + atrás): vuelve a la carta",
+      "expect": ["/carta", ["closed", "3", "-"], "abierta", null]
+    },
+    { "click": { "selector": "[data-carta-card=entradas]" } },
+    { "eval": "__qa.reposo()", "expect": true },
+    { "click": { "selector": "[data-carta-card=entradas]" } },
+    { "eval": "(async () => { await __waitUntil(() => location.pathname, (p) => p === '/carta/entradas'); return __qa.cartaEstable(); })()", "expect": true },
+    { "click": { "selector": "[data-categoria-inicio]" } },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '0', 15000); await __qa.estable(); return [__carta().ruta, __carta().escenario, __carta().carta]; })()",
+      "label": "10 'Volver al inicio' (mismo barrido): escenario con HOME abierto",
+      "expect": ["/#home", ["open", "0", "0"], "cerrada"]
+    },
+    { "key": "ArrowDown" },
+    { "eval": "__qa.estable()", "expect": true },
+    { "click": { "selector": "[data-menu-button]" } },
+    { "eval": "(async () => { await __qa.reposo(); return __carta().ruta; })()", "expect": "/carta" },
+    { "nav": "http://localhost:5173/carta" },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-carta-estado]')?.dataset.cartaEstado, (e) => e === 'abierta', 15000); await __qa.reposo(); const r = document.querySelector('[data-mode]'); return [location.pathname, r.dataset.mode, r.dataset.active, document.querySelector('[data-menu-button]').getAttribute('aria-label')]; })()",
+      "label": "11 recargar en /carta: la carta abierta y debajo LA CASA abierta, como estaba",
+      "expect": ["/carta", "open", "1", "Cerrar"]
+    },
+    { "key": "Escape" },
+    {
+      "eval": "(async () => { await __qa.estable(); const r = document.querySelector('[data-mode]'); return [location.pathname + location.hash, r.dataset.mode, r.dataset.active, r.dataset.texts, document.querySelector('[data-carta-estado]').dataset.cartaEstado]; })()",
+      "label": "12 Esc después de recargar: LA CASA abierta y la URL con su hash",
+      "expect": ["/#la-casa", "open", "1", "1", "cerrada"]
+    },
+    { "nav": "about:blank" },
+    { "nav": "http://localhost:5173/carta/no-existe" },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-categoria]')?.textContent ?? '', (t) => t.includes('ya no está'), 8000); return [location.pathname, document.querySelector('[data-categoria] h1'), document.querySelector('[data-categoria]').textContent.includes('Esa categoría ya no está en la carta.')]; })()",
+      "label": "13 categoría inexistente: aviso (la vuelta automática a la carta es de F10)",
+      "expect": ["/carta/no-existe", null, true]
+    }
+  ]
+}

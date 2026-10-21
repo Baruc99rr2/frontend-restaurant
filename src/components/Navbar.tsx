@@ -19,6 +19,8 @@ export type NavbarProps = {
   onToggleMenu: () => void
   /** Si es `false` (ej.: modo cerrado), oculta la píldora central y deja wordmark + MENU. */
   showLinks?: boolean
+  /** Con la carta abierta: el wordmark se va (fundido) y queda solo el botón CERRAR. */
+  ocultarMarca?: boolean
   className?: string
 }
 
@@ -37,6 +39,7 @@ export function Navbar({
   menuOpen,
   onToggleMenu,
   showLinks = true,
+  ocultarMarca = false,
   className = '',
 }: NavbarProps) {
   const navRef = useRef<HTMLElement | null>(null)
@@ -55,6 +58,30 @@ export function Navbar({
   const linksRef = useRef<HTMLElement | null>(null)
   const sheetButtonRef = useRef<HTMLButtonElement | null>(null)
   const linksFirstRef = useRef(true)
+  const marcaRef = useRef<HTMLButtonElement | null>(null)
+  const marcaFirstRef = useRef(true)
+
+  // Wordmark: fundido al abrir/cerrar la carta (su lugar lo toma el menú del día).
+  useGSAP(
+    () => {
+      const vars = { autoAlpha: ocultarMarca ? 0 : 1 }
+      if (marcaFirstRef.current) {
+        marcaFirstRef.current = false
+        gsap.set(marcaRef.current, vars)
+        return
+      }
+      // Se escalona con el menú del día de la carta, que ocupa el mismo lugar: al abrir el
+      // wordmark se va antes de que entre; al cerrar vuelve cuando el texto ya salió.
+      gsap.to(marcaRef.current, {
+        ...vars,
+        duration: reduced ? motionDuration.reduced : ocultarMarca ? 0.25 : motionDuration.navbarIndicator,
+        delay: reduced || ocultarMarca ? 0 : motionDuration.reveal.exit,
+        ease: motionEase.ui,
+        overwrite: true,
+      })
+    },
+    { dependencies: [ocultarMarca, reduced] },
+  )
 
   // Píldora y botón de links: fundido + leve desplazamiento al mostrarse/ocultarse.
   useGSAP(
@@ -239,6 +266,7 @@ export function Navbar({
     >
       {/* Izquierda: Wordmark Caslon de dos líneas (ref. 06) */}
       <button
+        ref={marcaRef}
         type="button"
         onClick={() => handleSelect('home')}
         className="group shrink-0 cursor-pointer text-left font-serif text-champan focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-oro"

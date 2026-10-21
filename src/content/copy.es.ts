@@ -105,8 +105,18 @@ export const copy = {
   },
 
   carta: {
+    /** Nombre del overlay para lectores de pantalla. */
+    titulo: 'Carta',
     hoy: 'Hoy:',
     temporada: 'Carta de temporada',
+    /** Lista de cartelitos. */
+    listaCategorias: 'Categorías de la carta',
+    /** Cartelito dado vuelta: {categoria}. */
+    irACategoria: 'Ver categoría {categoria}',
+    error: 'No pudimos traer la carta.',
+    reintentar: 'Probar de nuevo',
+    /** Placeholder de /carta/:slug hasta F10. */
+    enPreparacion: 'Esta página se está armando.',
     verCategoria: 'Ver categoría',
     categorias: '← Categorías',
     sinStock: 'No hay hoy',

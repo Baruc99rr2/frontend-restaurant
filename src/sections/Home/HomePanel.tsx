@@ -68,6 +68,7 @@ export function HomePanel({ active, onVerCarta, onConocerLaCasa }: Props) {
             <SlideIn from="left" active={active} delay={0.45} className="flex flex-wrap gap-3">
               <button
                 type="button"
+                data-ver-carta
                 onClick={onVerCarta}
                 className={`${pill} bg-oro text-noche hover:bg-champan`}
               >

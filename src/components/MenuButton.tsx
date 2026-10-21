@@ -144,6 +144,9 @@ export function MenuButton({ open, onToggle, className = '' }: MenuButtonProps) 
     <button
       ref={buttonRef}
       type="button"
+      // El overlay de la carta lo busca para dejarlo dentro del foco atrapado.
+      data-menu-button
+      aria-haspopup="dialog"
       aria-expanded={open}
       aria-label={label}
       onClick={onToggle}

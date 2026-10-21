@@ -164,6 +164,8 @@ export function useStepInput({ enabled, onStep }: Options) {
     })
 
     const onKeyDown = (e: KeyboardEvent) => {
+      // Deshabilitado (p. ej. con la carta abierta): las teclas siguen su camino normal.
+      if (!enabledRef.current) return
       if (e.defaultPrevented || e.repeat || e.altKey || e.ctrlKey || e.metaKey) return
       const active = document.activeElement
       if (esCampoDeTexto(active)) return

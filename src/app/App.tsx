@@ -1,19 +1,36 @@
 import { lazy, Suspense } from 'react'
+import { useRuta } from '@/app/router'
+import { CategoryPage } from '@/carta/CategoryPage'
+import { WipeTransitionProvider } from '@/carta/WipeTransition'
 import Stage from '@/stage/Stage'
 
-// `/` = escenario. Páginas de QA solo en desarrollo (fuera del bundle de producción):
+// Rutas (src/app/router.ts):
+// `/` escenario · `/carta` escenario + overlay de la carta (el mismo <Stage>, no se desmonta)
+// · `/carta/:slug` página de categoría (F10; hoy un placeholder).
+// Páginas de QA solo en desarrollo (fuera del bundle de producción):
 // /dev (primitivas, navbar, botón MENU) · /dev/datos (datos y medios) · /dev/tokens (muestras).
-// El router con /carta y /carta/:slug llega en F9–F10.
 const DevPage = import.meta.env.DEV ? lazy(() => import('@/app/DevPage')) : null
 const DatosPage = import.meta.env.DEV ? lazy(() => import('@/app/DatosPage')) : null
 const TokensPage = import.meta.env.DEV ? lazy(() => import('@/app/TokensPage')) : null
 
+function Rutas() {
+  const ruta = useRuta()
+  if (ruta.nombre === 'categoria') return <CategoryPage key={ruta.slug} slug={ruta.slug} />
+  if (ruta.nombre === 'otra') {
+    const dev =
+      (DevPage && ruta.path === '/dev' && <DevPage />) ||
+      (DatosPage && ruta.path === '/dev/datos' && <DatosPage />) ||
+      (TokensPage && ruta.path === '/dev/tokens' && <TokensPage />)
+    if (dev) return <Suspense fallback={null}>{dev}</Suspense>
+  }
+  // `/`, `/carta` y cualquier otra ruta: el escenario (misma posición → no se re-monta al abrir la carta).
+  return <Stage carta={ruta.nombre === 'carta'} />
+}
+
 export default function App() {
-  const path = window.location.pathname.replace(/\/+$/, '') || '/'
-  const dev =
-    (DevPage && path === '/dev' && <DevPage />) ||
-    (DatosPage && path === '/dev/datos' && <DatosPage />) ||
-    (TokensPage && path === '/dev/tokens' && <TokensPage />)
-  if (dev) return <Suspense fallback={null}>{dev}</Suspense>
-  return <Stage />
+  return (
+    <WipeTransitionProvider>
+      <Rutas />
+    </WipeTransitionProvider>
+  )
 }

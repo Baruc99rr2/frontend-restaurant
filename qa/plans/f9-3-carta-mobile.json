@@ -1,0 +1,82 @@
+{
+  "descripcion": "F9 · Overlay /carta en mobile 390×844 táctil: MENU abre, sin desborde horizontal, cartelitos en carrusel horizontal con snap, swipe vertical no mueve el escenario, toque da vuelta (uno solo), atrás del navegador cierra con el video corriendo otra vez, 'Ver la carta' abre y CERRAR cierra, 2º toque entra con el barrido y atrás vuelve.",
+  "steps": [
+    { "viewport": { "width": 390, "height": 844, "mobile": true, "scale": 2 } },
+    { "nav": "http://localhost:5173/#home" },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '0', 15000); window.__carta = () => { const r = document.querySelector('[data-mode]'); const c = document.querySelector('[data-carta-estado]'); const m = document.querySelector('[data-menu-button]'); const v = document.querySelector('video'); return { ruta: location.pathname + location.hash, escenario: r ? [r.dataset.mode, r.dataset.active, r.dataset.texts ?? '-'] : null, carta: c ? c.dataset.cartaEstado : null, boton: m ? [m.getAttribute('aria-label'), m.getAttribute('aria-expanded')] : null, video: v ? (v.paused ? 'pausa' : 'play') : null }; }; window.__liquido = () => Math.round(__qa.gsap.getProperty(document.querySelector('[data-menu-button] > div'), 'yPercent')); window.__volteados = () => [...document.querySelectorAll('[data-carta-card][data-volteado]')].map((b) => b.dataset.cartaCard); window.__centrado = () => { const l = document.querySelector('[data-carta-lista]'); const c = l.getBoundingClientRect().left + l.clientWidth / 2; let mejor = null; let d = Infinity; for (const li of l.querySelectorAll('[data-carta-item]')) { const r = li.getBoundingClientRect(); const x = Math.abs(r.left + r.width / 2 - c); if (x < d) { d = x; mejor = li.dataset.cartaItem; } } return [mejor, Math.round(d)]; }; await __qa.reposo(); return __waitUntil(__carta, (s) => s.video === 'play', 4000); })()",
+      "label": "1 HOME abierto en mobile con video",
+      "expect": { "ruta": "/#home", "escenario": ["open", "0", "0"], "carta": "cerrada", "boton": ["Menu", "false"], "video": "play" }
+    },
+    { "click": { "selector": "[data-menu-button]" } },
+    {
+      "eval": "(async () => { await __qa.reposo(); const l = document.querySelector('[data-carta-lista]'); const n = document.querySelector('[data-carta-nombre]'); const s = __carta(); return { ruta: s.ruta, boton: s.boton, video: s.video, liquido: __liquido(), anchoPagina: document.documentElement.scrollWidth, carrusel: [getComputedStyle(l).overflowX, getComputedStyle(l).scrollSnapType, l.scrollWidth > l.clientWidth * 3], nombreAlAncho: Math.abs(n.getBoundingClientRect().width - n.parentElement.clientWidth) <= 2, centrado: __centrado() }; })()",
+      "label": "2 MENU abre: CERRAR lleno, video en pausa, sin desborde horizontal, carrusel con snap y el primer cartelito centrado, nombre al ancho",
+      "expect": { "ruta": "/carta", "boton": ["Cerrar", "true"], "video": "pausa", "liquido": 0, "anchoPagina": 390, "carrusel": ["auto", "x mandatory", true], "nombreAlAncho": true, "centrado": ["entradas", 0] }
+    },
+    { "shot": "../shots/f9-mobile-abierta.png" },
+    { "swipe": { "x": 195, "fromY": 650, "toY": 250 } },
+    {
+      "eval": "(async () => { await __frames(3); await __qa.estable(); const s = __carta(); return [s.ruta, s.escenario, s.carta]; })()",
+      "label": "3 swipe vertical con la carta abierta: el escenario no pasa de sección",
+      "expect": ["/carta", ["open", "0", "0"], "abierta"]
+    },
+    {
+      "eval": "(async () => { const l = document.querySelector('[data-carta-lista]'); l.scrollBy({ left: 230, behavior: 'smooth' }); await __waitUntil(() => l.scrollLeft, (x) => x > 0); let prev = -1; await __waitUntil(() => { const x = l.scrollLeft; const quieto = x === prev; prev = x; return quieto; }, (q) => q, 4000); return __centrado(); })()",
+      "label": "4 el carrusel se desplaza y el snap deja un cartelito centrado (FUEGOS)",
+      "expect": ["fuegos", 0]
+    },
+    { "click": { "selector": "[data-carta-card=fuegos]" } },
+    {
+      "eval": "(async () => { await __qa.reposo(); return [__volteados(), location.pathname]; })()",
+      "label": "5 toque en FUEGOS: se da vuelta",
+      "expect": [["fuegos"], "/carta"]
+    },
+    { "shot": "../shots/f9-mobile-flip.png" },
+    {
+      "eval": "(async () => { const l = document.querySelector('[data-carta-lista]'); l.scrollBy({ left: 230, behavior: 'smooth' }); let prev = -1; await __sleep(60); await __waitUntil(() => { const x = l.scrollLeft; const quieto = x === prev; prev = x; return quieto; }, (q) => q, 4000); return __centrado()[0]; })()",
+      "expect": "pastas"
+    },
+    { "click": { "selector": "[data-carta-card=pastas]" } },
+    {
+      "eval": "(async () => { await __qa.reposo(); return __volteados(); })()",
+      "label": "6 toque en PASTAS: se da vuelta y FUEGOS vuelve a su frente",
+      "expect": ["pastas"]
+    },
+    { "atras": true },
+    {
+      "eval": "(async () => { await __qa.estable(); const s = await __waitUntil(__carta, (x) => x.video === 'play', 3000); return { ...s, liquido: __liquido() }; })()",
+      "label": "7 atrás del navegador cierra: HOME abierto con el video corriendo",
+      "expect": { "ruta": "/#home", "escenario": ["open", "0", "0"], "carta": "cerrada", "boton": ["Menu", "false"], "video": "play", "liquido": 106 }
+    },
+    { "click": { "selector": "[data-ver-carta]" } },
+    {
+      "eval": "(async () => { await __qa.reposo(); const s = __carta(); return [s.ruta, s.boton, __volteados(), __centrado()[0]]; })()",
+      "label": "8 'Ver la carta' abre de nuevo, todos de frente y el carrusel al principio",
+      "expect": ["/carta", ["Cerrar", "true"], [], "entradas"]
+    },
+    { "click": { "selector": "[data-menu-button]" } },
+    {
+      "eval": "(async () => { await __qa.estable(); const s = __carta(); return [s.ruta, s.carta, s.boton, __liquido()]; })()",
+      "label": "9 CERRAR cierra",
+      "expect": ["/#home", "cerrada", ["Menu", "false"], 106]
+    },
+    { "click": { "selector": "[data-menu-button]" } },
+    { "eval": "__qa.reposo()", "expect": true },
+    { "click": { "selector": "[data-carta-card=entradas]" } },
+    { "eval": "__qa.reposo()", "expect": true },
+    { "click": { "selector": "[data-carta-card=entradas]" } },
+    {
+      "eval": "(async () => { await __waitUntil(() => location.pathname, (p) => p === '/carta/entradas'); await __qa.cartaEstable(); return [location.pathname, document.querySelector('[data-categoria] h1')?.textContent, document.documentElement.scrollWidth]; })()",
+      "label": "10 2º toque: barrido y placeholder de ENTRADAS sin desborde",
+      "expect": ["/carta/entradas", "Entradas", 390]
+    },
+    { "shot": "../shots/f9-mobile-categoria.png" },
+    { "atras": true },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-carta-estado]')?.dataset.cartaEstado, (e) => e === 'abierta', 15000); await __qa.reposo(); const s = __carta(); return [s.ruta, s.escenario, s.boton]; })()",
+      "label": "11 atrás desde la categoría vuelve a la carta con HOME abierto debajo",
+      "expect": ["/carta", ["open", "0", "0"], ["Cerrar", "true"]]
+    }
+  ]
+}

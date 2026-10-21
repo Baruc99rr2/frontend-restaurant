@@ -1,4 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { rutaActual } from '@/app/router'
+import { CartaOverlay } from '@/carta/CartaOverlay'
+import { abrirCarta, cerrarCarta, escenarioDebajoDeLaCarta } from '@/carta/navegacion'
 import { Navbar } from '@/components/Navbar'
 import { copy, paneles } from '@/content/copy.es'
 import type { PanelKey } from '@/content/editorial'
@@ -19,34 +22,59 @@ import { useStepInput } from '@/stage/useStepInput'
  * Escenario a pantalla completa (§5): 100svh, sin scroll nativo, 6 paneles y dos modos.
  * Este componente orquesta: lee la máquina de estados y dispara los timelines
  * (paso cerrado, paso abierto, abrir, cerrar), que al terminar despachan el evento siguiente.
+ *
+ * Con `carta` (ruta `/carta`) muestra el overlay de la carta encima: el escenario sigue
+ * montado y quieto (input suspendido, video en pausa, el resto `inert`) y al cerrar queda
+ * exactamente donde estaba.
  */
 
-const entrada = (() => {
-  const index = typeof window === 'undefined' ? null : panelIndexFromHash(window.location.hash)
-  // Hash que no es un panel: se ignora y se limpia (en modo cerrado la URL queda limpia).
-  if (index === null && typeof window !== 'undefined' && window.location.hash) {
-    history.replaceState(null, '', window.location.pathname + window.location.search)
-  }
-  return { index: index ?? 0, abierto: index !== null }
-})()
+type Entrada = {
+  index: number
+  abierto: boolean
+  /** Montado debajo de la carta: entra directo a su modo, sin la intro larga (no se vería). */
+  directa: boolean
+}
 
-export default function Stage() {
+/**
+ * Panel y modo de entrada al montar. En `/` sale del hash (`/#eventos` → abierto en EVENTOS).
+ * En `/carta` (recarga o vuelta desde una categoría) es el escenario que había debajo al abrir
+ * la carta (guardado en el historial); sin dato, HOME abierto.
+ */
+function calcularEntrada(): Entrada {
+  if (rutaActual().nombre === 'carta') return { ...escenarioDebajoDeLaCarta(), directa: true }
+  const index = panelIndexFromHash(window.location.hash)
+  // Hash que no es un panel: se ignora y se limpia (en modo cerrado la URL queda limpia).
+  if (index === null && window.location.hash) {
+    history.replaceState(history.state, '', window.location.pathname + window.location.search)
+  }
+  return { index: index ?? 0, abierto: index !== null, directa: false }
+}
+
+export default function Stage({ carta = false }: { carta?: boolean }) {
+  // Se calcula al montar (no al cargar el módulo): el escenario se vuelve a montar al volver
+  // de una categoría.
+  const [entrada] = useState(calcularEntrada)
   return (
     <StageProvider initialIndex={entrada.index}>
-      <StageInner />
+      <StageInner entrada={entrada} carta={carta} />
     </StageProvider>
   )
 }
 
 const fill = (s: string, vars: Record<string, string>) => s.replace(/\{(\w+)\}/g, (_, k: string) => vars[k] ?? '')
 
-/** El hash refleja el panel abierto; en modo cerrado la URL queda limpia. */
+/**
+ * El hash refleja el panel abierto; en modo cerrado la URL queda limpia.
+ * Con la carta abierta la URL es `/carta` y no se toca: al cerrarla se re-sincroniza.
+ * Conserva `history.state` (ahí la carta guarda de dónde vino).
+ */
 function escribirHash(index: number | null) {
+  if (rutaActual().nombre === 'carta') return
   const key = index === null ? null : paneles[index]?.key
-  history.replaceState(null, '', key ? `#${key}` : window.location.pathname + window.location.search)
+  history.replaceState(history.state, '', key ? `#${key}` : window.location.pathname + window.location.search)
 }
 
-function StageInner() {
+function StageInner({ entrada, carta }: { entrada: Entrada; carta: boolean }) {
   const { state, dispatch, displayIndex } = useStage()
   const reduced = useReducedMotion()
   const [frame] = useState(() =>
@@ -61,7 +89,6 @@ function StageInner() {
   const [textsIn, setTextsIn] = useState(false)
   /** Panel del modo abierto cuyos textos se muestran (lo deciden los timelines). */
   const [textsPanel, setTextsPanel] = useState<number | null>(null)
-  const [menuOpen, setMenuOpen] = useState(false)
 
   const { mode, transition, activeIndex } = state
   const panel = paneles[displayIndex] ?? paneles[0]!
@@ -86,17 +113,19 @@ function StageInner() {
 
   // Input: un paso por gesto; la máquina decide si avanza o lo encola.
   const onStep = useCallback((dir: 1 | -1) => dispatch({ type: 'STEP', dir }), [dispatch])
-  useStepInput({ enabled: mode === 'closed' || mode === 'open', onStep })
+  // Con la carta abierta el escenario no recibe input.
+  useStepInput({ enabled: (mode === 'closed' || mode === 'open') && !carta, onStep })
 
   // Enter abre el panel; Esc cierra lo último abierto (carta → panel abierto).
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.defaultPrevented) return
       if (e.key === 'Escape') {
-        if (menuOpen) setMenuOpen(false)
+        if (carta) cerrarCarta()
         else if (mode === 'open') dispatch({ type: 'CLOSE' })
         return
       }
+      if (carta) return
       if (e.key === 'Enter' && mode === 'closed') {
         const t = e.target
         if (t instanceof HTMLElement && t.closest('button, a, input, textarea, select')) return
@@ -106,7 +135,17 @@ function StageInner() {
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [mode, menuOpen, dispatch])
+  }, [mode, carta, dispatch])
+
+  // Al cerrar la carta la URL vuelve a `/`: el hash se re-sincroniza con el escenario
+  // (si se cerró con atrás ya está bien; si la carta se abrió por URL directa, no).
+  const cartaPrevRef = useRef(carta)
+  useEffect(() => {
+    if (cartaPrevRef.current && !carta) {
+      escribirHash(mode === 'open' || mode === 'opening' ? activeIndex : null)
+    }
+    cartaPrevRef.current = carta
+  }, [carta, mode, activeIndex])
 
   // Paso entre paneles. Cerrado (ref. 07): corte horizontal dentro del mismo marco.
   // Abierto (§5): textos fuera → marco a inset 0 → panel nuevo desde abajo mientras el
@@ -234,6 +273,12 @@ function StageInner() {
   }, [mode, activeIndex, reduced, frame, dispatch, textosDe])
 
   const goTo = useCallback((index: number) => dispatch({ type: 'GOTO', index }), [dispatch])
+  // La carta guarda cómo queda el escenario (el destino si hay un paso en curso), por si hay
+  // que volver a montarlo (recarga en `/carta` o vuelta desde una categoría).
+  const verCarta = useCallback(
+    () => abrirCarta({ index: displayIndex, abierto: mode === 'open' || mode === 'opening' }),
+    [displayIndex, mode],
+  )
   const onNavSelect = useCallback(
     (key: PanelKey) => {
       const index = paneles.findIndex((p) => p.key === key)
@@ -243,8 +288,8 @@ function StageInner() {
   )
 
   const abierto = mode === 'opening' || mode === 'open'
-  // El video corre solo con HOME abierto (y se pausa apenas se sale de HOME).
-  const videoPlaying = abierto && paneles[displayIndex]?.key === 'home'
+  // El video corre solo con HOME abierto (y se pausa apenas se sale de HOME o se abre la carta).
+  const videoPlaying = abierto && paneles[displayIndex]?.key === 'home' && !carta
 
   return (
     <div
@@ -254,7 +299,7 @@ function StageInner() {
       data-texts={textsPanel ?? undefined}
       data-lock={state.lock ? '' : undefined}
     >
-      <div ref={frameWrapRef} className="invisible absolute inset-0 opacity-0">
+      <div ref={frameWrapRef} inert={carta} className="invisible absolute inset-0 opacity-0">
         <Frame
           controller={frame}
           interactive={mode === 'closed'}
@@ -271,16 +316,21 @@ function StageInner() {
         </Frame>
       </div>
 
-      <ClosedView displayIndex={displayIndex} textsIn={textsIn} faded={abierto || mode === 'loading'} onGoTo={goTo} />
+      {/* Con la carta abierta, el escenario de abajo no se puede enfocar ni tocar. */}
+      <div inert={carta} className="contents">
+        <ClosedView displayIndex={displayIndex} textsIn={textsIn} faded={abierto || mode === 'loading'} onGoTo={goTo} />
 
-      <OpenView
-        rootRef={openRef}
-        textsPanel={textsPanel}
-        visible={abierto}
-        onClose={() => dispatch({ type: 'CLOSE' })}
-        onVerCarta={() => setMenuOpen(true)}
-        onGoTo={goTo}
-      />
+        <OpenView
+          rootRef={openRef}
+          textsPanel={textsPanel}
+          visible={abierto}
+          onClose={() => dispatch({ type: 'CLOSE' })}
+          onVerCarta={verCarta}
+          onGoTo={goTo}
+        />
+      </div>
+
+      <CartaOverlay abierta={carta} listo={mode !== 'loading'} />
 
       <div
         ref={chromeRef}
@@ -290,9 +340,10 @@ function StageInner() {
         <Navbar
           activeKey={panel.key}
           onSelect={onNavSelect}
-          menuOpen={menuOpen}
-          onToggleMenu={() => setMenuOpen((v) => !v)}
-          showLinks={abierto}
+          menuOpen={carta}
+          onToggleMenu={carta ? cerrarCarta : verCarta}
+          showLinks={abierto && !carta}
+          ocultarMarca={carta}
         />
       </div>
 
@@ -304,6 +355,7 @@ function StageInner() {
         chromeRef={chromeRef}
         initialIndex={entrada.index}
         openOnEnter={entrada.abierto}
+        closedOnEnter={!entrada.abierto && entrada.directa}
         onTextsIn={() => setTextsIn(true)}
         onEnterOpen={() => setTextsPanel(entrada.index)}
       />

@@ -55,6 +55,30 @@ export const motionDuration = {
   menuFill: 0.9,
   menuWaveLoop: 2.4,
 
+  /** Carta (§9) */
+  carta: {
+    /** Fondo del overlay al abrir y al cerrar. */
+    fondo: 0.45,
+    /** Cartelitos: caen en cascada con rotación. */
+    caida: 1.1,
+    caidaStagger: 0.08,
+    caidaDemora: 0.15,
+    /** Salida: los cartelitos se van hacia abajo. */
+    salida: 0.55,
+    salidaStagger: 0.035,
+    /** Al cerrar, el fondo se va cuando los cartelitos ya están saliendo. */
+    fondoSalidaDemora: 0.45,
+    /** Vuelta de un cartelito (rotateY 180°). */
+    flip: 0.8,
+    /** Pie y nombre gigante. */
+    pie: 0.6,
+    pieDemora: 0.45,
+    nombre: 1.0,
+    nombreDemora: 0.35,
+    /** Cada mitad del barrido negro (cubrir / descubrir). */
+    barrido: 0.65,
+  },
+
   /** Escenario (§5) */
   stage: {
     intro: {

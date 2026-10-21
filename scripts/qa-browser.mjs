@@ -10,9 +10,13 @@
 //        (await permitido; imprime el resultado; con `expect` compara por JSON y el plan falla si difiere)
 //   { "shot": "ruta.png" }                       (captura del viewport)
 //   { "wheel": { "x": 700, "y": 450, "dy": 120, "count": 1, "interval": 16 } }
-//   { "key": "ArrowDown" }                       (ArrowDown, ArrowUp, PageDown, PageUp, Space, Enter, Escape)
+//   { "key": "ArrowDown" }                       (ArrowDown, ArrowUp, ArrowLeft, ArrowRight, Home, End, PageDown,
+//                                                 PageUp, Space, Enter, Escape, Tab; "shift": true para Shift+Tecla)
+//   { "atras": true } / { "adelante": true }      (botones atrás/adelante del navegador: entrada anterior/siguiente
+//                                                 del historial, como los usa el usuario; no espera carga)
 //   { "swipe": { "x": 200, "fromY": 600, "toY": 300, "steps": 8 } }
-//   { "click": { "x": 100, "y": 100 } }
+//   { "click": { "x": 100, "y": 100 } }  o  { "click": { "selector": "css" } }  (centro del elemento;
+//                                                 con viewport mobile es un toque: touchStart + touchEnd)
 //   { "move": { "x": 100, "y": 100 } }
 //
 // En cada página se inyectan ayudantes para los `eval` (así los planes no esperan con tiempos fijos):
@@ -119,6 +123,10 @@ const KEYS = {
   Enter: { key: 'Enter', code: 'Enter', keyCode: 13, text: '\r' },
   Escape: { key: 'Escape', code: 'Escape', keyCode: 27 },
   Tab: { key: 'Tab', code: 'Tab', keyCode: 9 },
+  ArrowLeft: { key: 'ArrowLeft', code: 'ArrowLeft', keyCode: 37 },
+  ArrowRight: { key: 'ArrowRight', code: 'ArrowRight', keyCode: 39 },
+  Home: { key: 'Home', code: 'Home', keyCode: 36 },
+  End: { key: 'End', code: 'End', keyCode: 35 },
 }
 
 const AYUDANTES = `
@@ -219,7 +227,14 @@ async function run() {
       }
     } else if (step.key) {
       const k = KEYS[step.key] ?? { key: step.key, code: step.key }
-      const base = { key: k.key, code: k.code, windowsVirtualKeyCode: k.keyCode, nativeVirtualKeyCode: k.keyCode }
+      // modifiers: 8 = Shift (protocolo de DevTools).
+      const base = {
+        key: k.key,
+        code: k.code,
+        windowsVirtualKeyCode: k.keyCode,
+        nativeVirtualKeyCode: k.keyCode,
+        modifiers: step.shift ? 8 : 0,
+      }
       await send('Input.dispatchKeyEvent', { type: k.text ? 'keyDown' : 'rawKeyDown', ...base, text: k.text })
       await send('Input.dispatchKeyEvent', { type: 'keyUp', ...base })
     } else if (step.swipe) {
@@ -230,8 +245,28 @@ async function run() {
         await sleep(16)
       }
       await send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+    } else if (step.atras || step.adelante) {
+      const { currentIndex, entries } = await send('Page.getNavigationHistory')
+      const destino = entries[currentIndex + (step.atras ? -1 : 1)]
+      if (!destino) throw new Error(`No hay entrada ${step.atras ? 'anterior' : 'siguiente'} en el historial`)
+      await send('Page.navigateToHistoryEntry', { entryId: destino.id })
     } else if (step.click) {
-      const { x, y } = step.click
+      let { x, y } = step.click
+      if (step.click.selector) {
+        const r = await send('Runtime.evaluate', {
+          expression: `(() => { const el = document.querySelector(${JSON.stringify(step.click.selector)}); if (!el) return null; const r = el.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2] })()`,
+          returnByValue: true,
+        })
+        if (!r.result.value) throw new Error(`click: no encontré ${step.click.selector}`)
+        ;[x, y] = r.result.value
+      }
+      if (viewport.mobile) {
+        // Con táctil emulado, `dispatchMouseEvent` puede no volver nunca: en mobile es un toque.
+        await send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y }] })
+        await sleep(30)
+        await send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+        continue
+      }
       await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x, y })
       await send('Input.dispatchMouseEvent', { type: 'mousePressed', x, y, button: 'left', clickCount: 1 })
       await send('Input.dispatchMouseEvent', { type: 'mouseReleased', x, y, button: 'left', clickCount: 1 })

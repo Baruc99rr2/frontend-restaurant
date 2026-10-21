@@ -1,0 +1,190 @@
+{
+  "descripcion": "F9 · Overlay /carta en desktop: se abre desde 'Ver la carta', MENU y 'Ver la carta completa'; ruta /carta; menú del día del repositorio; input del escenario suspendido y video en pausa; cartelitos con rotación y desplazamiento fijos; nombre gigante al ancho; foco atrapado y cartelitos con foco itinerante; un solo cartelito dado vuelta (flip a mitad); Esc, CERRAR y atrás cierran con el líquido sincronizado y el escenario queda donde estaba (HOME abierto con video, PLATOS, modo cerrado); adelante la reabre.",
+  "steps": [
+    { "viewport": { "width": 1440, "height": 900 } },
+    { "nav": "http://localhost:5173/#home" },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '0', 15000); window.__carta = () => { const r = document.querySelector('[data-mode]'); const c = document.querySelector('[data-carta-estado]'); const m = document.querySelector('[data-menu-button]'); const v = document.querySelector('video'); return { ruta: location.pathname + location.hash, escenario: r ? [r.dataset.mode, r.dataset.active, r.dataset.texts ?? '-'] : null, carta: c ? c.dataset.cartaEstado : null, boton: m ? [m.getAttribute('aria-label'), m.getAttribute('aria-expanded')] : null, video: v ? (v.paused ? 'pausa' : 'play') : null }; }; window.__liquido = () => Math.round(__qa.gsap.getProperty(document.querySelector('[data-menu-button] > div'), 'yPercent')); window.__foco = () => { const a = document.activeElement; if (!a || a === document.body) return 'body'; if (a.dataset.cartaCard) return a.dataset.cartaCard; if (a.hasAttribute('data-menu-button')) return 'menu'; if (a.hasAttribute('data-carta-reservar')) return 'reservar'; const h = a.getAttribute('href'); if (h) return h.split(':')[0]; return a.textContent.trim(); }; window.__volteados = () => [...document.querySelectorAll('[data-carta-card][data-volteado]')].map((b) => b.dataset.cartaCard); window.__rotY = (slug) => Math.round(__qa.gsap.getProperty(document.querySelector('[data-carta-card=' + slug + '] [data-carta-flip]'), 'rotationY')); await __qa.reposo(); return __waitUntil(__carta, (s) => s.video === 'play', 4000); })()",
+      "label": "1 HOME abierto con video, carta cerrada, botón MENU",
+      "expect": { "ruta": "/#home", "escenario": ["open", "0", "0"], "carta": "cerrada", "boton": ["Menu", "false"], "video": "play" }
+    },
+    { "click": { "selector": "[data-ver-carta]" } },
+    {
+      "eval": "(async () => { __qa.reloj(0.25); await __waitUntil(() => __carta().carta, (c) => c === 'abriendo'); const l = await __waitUntil(__liquido, (v) => v > 15 && v < 90); const caida = document.querySelector('[data-carta-caida]'); const y = await __waitUntil(() => __qa.gsap.getProperty(caida, 'y'), (v) => v < -20); return [location.pathname, l > 15 && l < 90, y < -20]; })()",
+      "label": "2 'Ver la carta' → /carta; a mitad: el líquido sube mientras los cartelitos caen desde arriba",
+      "expect": ["/carta", true, true]
+    },
+    { "shot": "../shots/f9-carta-abriendo.png" },
+    {
+      "eval": "(async () => { __qa.reloj(1); await __qa.reposo(); const s = __carta(); const front = document.getElementById('carta'); return { ...s, liquido: __liquido(), hoy: front.querySelector('header').textContent.replace(/\\s+/g, ' ').trim(), cartelitos: [...front.querySelectorAll('[data-carta-card]')].map((b) => b.dataset.cartaCard), foco: __foco(), dialogo: [front.getAttribute('role'), front.getAttribute('aria-modal')], escenarioInerte: document.querySelector('[data-open-panel=home]').closest('[inert]') !== null, direccion: front.querySelector('[data-carta-direccion]').textContent.trim() }; })()",
+      "label": "3 abierta: CERRAR con el líquido lleno, video en pausa, menú del día del repositorio, 6 cartelitos, foco en el primero, escenario inerte",
+      "expect": {
+        "ruta": "/carta",
+        "escenario": ["open", "0", "0"],
+        "carta": "abierta",
+        "boton": ["Cerrar", "true"],
+        "video": "pausa",
+        "liquido": 0,
+        "hoy": "Hoy: Carbonada en zapallo — $ 16.500",
+        "cartelitos": ["entradas", "fuegos", "pastas", "del-horno", "del-mar-y-la-huerta", "bodega"],
+        "foco": "entradas",
+        "dialogo": ["dialog", "true"],
+        "escenarioInerte": true,
+        "direccion": "Güemes 1150, San Salvador de Jujuy"
+      }
+    },
+    { "shot": "../shots/f9-carta-abierta.png" },
+    {
+      "eval": "(() => { const lis = [...document.querySelectorAll('[data-carta-item]')]; const n = document.querySelector('[data-carta-nombre]'); const scroller = document.querySelector('#carta > div'); return [lis.map((l) => getComputedStyle(l).rotate), new Set(lis.map((l) => getComputedStyle(l).translate)).size, Math.abs(n.getBoundingClientRect().width - n.parentElement.clientWidth) <= 2, scroller.scrollHeight <= scroller.clientHeight + 1, document.documentElement.scrollWidth]; })()",
+      "label": "4 rotaciones fijas por índice (-4° a 5°), 6 desplazamientos distintos, nombre gigante al ancho exacto, todo entra en 1440×900",
+      "expect": [["-3deg", "2.5deg", "-1.5deg", "4deg", "-4deg", "5deg"], 6, true, true, 1440]
+    },
+    { "eval": "(window.__seq = [], true)" },
+    { "key": "ArrowRight" },
+    { "eval": "(__seq.push(__foco()), true)" },
+    { "key": "End" },
+    { "eval": "(__seq.push(__foco()), true)" },
+    { "key": "Home" },
+    { "eval": "(__seq.push(__foco()), true)" },
+    { "key": "ArrowLeft" },
+    { "eval": "(__seq.push(__foco()), true)" },
+    { "key": "Tab" },
+    { "eval": "(__seq.push(__foco()), true)" },
+    { "key": "Tab" },
+    { "eval": "(__seq.push(__foco()), true)" },
+    { "key": "Tab" },
+    { "eval": "(__seq.push(__foco()), true)" },
+    { "key": "Tab" },
+    { "eval": "(__seq.push(__foco()), true)" },
+    { "key": "Tab" },
+    { "eval": "(__seq.push(__foco()), true)" },
+    { "key": "Tab", "shift": true },
+    { "eval": "(__seq.push(__foco()), true)" },
+    {
+      "eval": "(async () => { await __qa.estable(); return [__seq, __carta().escenario, location.pathname]; })()",
+      "label": "5 flechas/Inicio/Fin recorren los cartelitos (roving.ts, con vuelta); Tab queda atrapado entre cartelito, pie y CERRAR; el escenario no se mueve",
+      "expect": [["fuegos", "bodega", "entradas", "bodega", "reservar", "tel", "mailto", "menu", "bodega", "menu"], ["open", "0", "0"], "/carta"]
+    },
+    { "wheel": { "x": 720, "y": 450, "dy": 140, "count": 3, "interval": 30 } },
+    { "key": "PageDown" },
+    { "key": "ArrowDown" },
+    {
+      "eval": "(async () => { await __frames(3); await __qa.estable(); const s = __carta(); return [s.escenario, s.ruta, s.carta, s.video]; })()",
+      "label": "6 rueda, PageDown y ↓ con la carta abierta: el escenario no pasa de sección y el video sigue en pausa",
+      "expect": [["open", "0", "0"], "/carta", "abierta", "pausa"]
+    },
+    { "click": { "selector": "[data-carta-card=pastas]" } },
+    {
+      "eval": "(async () => { __qa.reloj(0.2); const r = await __waitUntil(() => __rotY('pastas'), (v) => v > 40 && v < 140); return [r > 40 && r < 140, location.pathname]; })()",
+      "label": "7 1er clic en PASTAS: se da vuelta (rotateY a mitad del giro), no navega",
+      "expect": [true, "/carta"]
+    },
+    { "shot": "../shots/f9-carta-flip-mitad.png" },
+    {
+      "eval": "(async () => { __qa.reloj(1); await __qa.reposo(); return [__volteados(), __rotY('pastas'), location.pathname]; })()",
+      "label": "7b PASTAS dada vuelta (180°) mostrando la portada y 'Ver categoría'",
+      "expect": [["pastas"], 180, "/carta"]
+    },
+    { "shot": "../shots/f9-carta-flip.png" },
+    { "click": { "selector": "[data-carta-card=fuegos]" } },
+    {
+      "eval": "(async () => { await __qa.reposo(); return [__volteados(), __rotY('pastas'), __rotY('fuegos')]; })()",
+      "label": "8 clic en FUEGOS: se da vuelta y PASTAS vuelve a su frente (uno solo dado vuelta)",
+      "expect": [["fuegos"], 0, 180]
+    },
+    { "key": "ArrowLeft" },
+    { "key": "Enter" },
+    {
+      "eval": "(async () => { await __qa.reposo(); return [__foco(), __volteados(), location.pathname]; })()",
+      "label": "8b con teclado: ← lleva el foco a ENTRADAS y Enter la da vuelta",
+      "expect": ["entradas", ["entradas"], "/carta"]
+    },
+    { "eval": "__qa.reloj(0.25)" },
+    { "key": "Escape" },
+    {
+      "eval": "(async () => { const c = await __waitUntil(() => __carta().carta, (e) => e === 'cerrando'); const l = await __waitUntil(__liquido, (v) => v > 10 && v < 96); const caida = document.querySelector('[data-carta-caida]'); const y = await __waitUntil(() => __qa.gsap.getProperty(caida, 'y'), (v) => v > 20); return [c, l > 10 && l < 96, y > 20, location.pathname]; })()",
+      "label": "9 Esc: a mitad, los cartelitos se van hacia abajo mientras el líquido baja; la URL ya volvió a /",
+      "expect": ["cerrando", true, true, "/"]
+    },
+    { "shot": "../shots/f9-carta-cerrando.png" },
+    {
+      "eval": "(async () => { __qa.reloj(1); await __qa.estable(); const s = await __waitUntil(__carta, (x) => x.video === 'play', 3000); return { ...s, liquido: __liquido(), foco: __foco(), volteados: __volteados() }; })()",
+      "label": "9b cerrada: HOME abierto como estaba (hash, textos, video corriendo), MENU vacío y el foco vuelve a 'Ver la carta'",
+      "expect": { "ruta": "/#home", "escenario": ["open", "0", "0"], "carta": "cerrada", "boton": ["Menu", "false"], "video": "play", "liquido": 106, "foco": "Ver la carta", "volteados": [] }
+    },
+    { "click": { "selector": "[data-menu-button]" } },
+    {
+      "eval": "(async () => { await __qa.reposo(); const s = __carta(); return [s.ruta, s.carta, s.boton, __liquido(), __volteados()]; })()",
+      "label": "10 MENU abre la carta (todos los cartelitos de frente)",
+      "expect": ["/carta", "abierta", ["Cerrar", "true"], 0, []]
+    },
+    { "atras": true },
+    {
+      "eval": "(async () => { await __qa.estable(); const s = await __waitUntil(__carta, (x) => x.video === 'play', 3000); return { ...s, liquido: __liquido() }; })()",
+      "label": "11 atrás del navegador cierra: HOME abierto con video y MENU vacío",
+      "expect": { "ruta": "/#home", "escenario": ["open", "0", "0"], "carta": "cerrada", "boton": ["Menu", "false"], "video": "play", "liquido": 106 }
+    },
+    { "adelante": true },
+    {
+      "eval": "(async () => { await __waitUntil(() => __carta().carta, (c) => c === 'abierta'); await __qa.reposo(); const s = __carta(); return [s.ruta, s.boton, s.video, __liquido()]; })()",
+      "label": "12 adelante la vuelve a abrir (CERRAR lleno, video en pausa)",
+      "expect": ["/carta", ["Cerrar", "true"], "pausa", 0]
+    },
+    { "click": { "selector": "[data-menu-button]" } },
+    {
+      "eval": "(async () => { await __qa.estable(); const s = __carta(); return [s.ruta, s.carta, s.boton, __liquido(), __foco()]; })()",
+      "label": "13 CERRAR cierra (y el foco queda en el botón)",
+      "expect": ["/#home", "cerrada", ["Menu", "false"], 106, "menu"]
+    },
+    { "key": "ArrowDown" },
+    { "eval": "__qa.estable()", "expect": true },
+    { "key": "ArrowDown" },
+    {
+      "eval": "(async () => { await __qa.estable(); await __waitUntil(() => __carta().escenario[2], (t) => t === '2'); await __qa.reposo(); return __carta().escenario; })()",
+      "label": "14 después de cerrar, el input del escenario vuelve: ↓ ↓ llega a PLATOS",
+      "expect": ["open", "2", "2"]
+    },
+    { "click": { "selector": "[data-platos-carta]" } },
+    {
+      "eval": "(async () => { await __qa.reposo(); const s = __carta(); return [s.ruta, s.escenario, s.carta, s.boton]; })()",
+      "label": "15 'Ver la carta completa' abre la misma carta",
+      "expect": ["/carta", ["open", "2", "2"], "abierta", ["Cerrar", "true"]]
+    },
+    { "key": "Escape" },
+    {
+      "eval": "(async () => { await __qa.estable(); const s = __carta(); return [s.ruta, s.escenario, s.carta, s.boton, __foco()]; })()",
+      "label": "15b Esc vuelve a PLATOS como estaba y el foco a 'Ver la carta completa'",
+      "expect": ["/#platos", ["open", "2", "2"], "cerrada", ["Menu", "false"], "Ver la carta completa"]
+    },
+    { "key": "Escape" },
+    {
+      "eval": "(async () => { await __qa.estable(); const s = __carta(); return [s.ruta, s.escenario]; })()",
+      "label": "16 Esc sin carta cierra el panel: modo cerrado en PLATOS",
+      "expect": ["/", ["closed", "2", "-"]]
+    },
+    { "click": { "selector": "[data-menu-button]" } },
+    {
+      "eval": "(async () => { await __qa.reposo(); const s = __carta(); return [s.ruta, s.escenario, s.carta, s.boton, __foco()]; })()",
+      "label": "17 MENU en modo cerrado abre la carta",
+      "expect": ["/carta", ["closed", "2", "-"], "abierta", ["Cerrar", "true"], "entradas"]
+    },
+    { "key": "Enter" },
+    {
+      "eval": "(async () => { await __qa.reposo(); return [__carta().escenario, __volteados(), location.pathname]; })()",
+      "label": "17b Enter con la carta abierta da vuelta el cartelito y no abre el panel de abajo",
+      "expect": [["closed", "2", "-"], ["entradas"], "/carta"]
+    },
+    { "key": "Escape" },
+    {
+      "eval": "(async () => { await __qa.estable(); const s = __carta(); return [s.ruta, s.escenario, s.carta, s.boton]; })()",
+      "label": "17c Esc: modo cerrado en PLATOS como estaba, URL limpia",
+      "expect": ["/", ["closed", "2", "-"], "cerrada", ["Menu", "false"]]
+    },
+    { "key": "ArrowDown" },
+    {
+      "eval": "(async () => { await __qa.estable(); return __carta().escenario; })()",
+      "label": "17d el modo cerrado sigue respondiendo: ↓ pasa a EVENTOS",
+      "expect": ["closed", "3", "-"]
+    }
+  ]
+}

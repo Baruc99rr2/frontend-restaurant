@@ -177,3 +177,12 @@ Probado en Chrome (headless por DevTools, con emulación táctil a 390 px) con `
 - Foto central fija (`editorial.medios.laCasa` → `r2` en `shape="retrato"`) dentro del marco inclinado (`rotate-(--marco-rotacion)`) con `scale-[1.18]` y parallax leve con `gsap.quickTo` (±11 px X / ±9 px Y sobre puntero mouse, desactivado con reduced motion).
 - Columna derecha con dos tarjetas claras `bg-champan` (como ref. 02 y §1): arriba la cita en Caslon cursiva (`Reveal words`), abajo el panel de detalle con título (`font-gigante text-monte`) y descripción (`font-ui text-noche/90`) envueltos cada uno en su `WipeSwap`.
 
+## F6 — PLATOS (2026-10-21)
+
+- Franja superior (~40%) usa directamente la foto de fondo `f8` del escenario (`StageMedia` + `velo` de `OpenView`), sin duplicar un `<Picture>` propio → respeta la continuidad visual al abrir o pasar desde otra sección y evita cargar dos veces la misma imagen.
+- Respaldo instantáneo (`FALLBACK_PLATOS`) a partir de `editorial.insignia` mientras `useLocal()` completa su carga inicial (150 ms) → la estructura y las fotos están listas desde el frame 0 sin parpadeo al hidratarse los datos del repositorio.
+- Detección de sección activa leyendo `useStage()` (`active && state.mode === 'open' && state.transition === null && paneles[state.activeIndex]?.key === 'platos'`), sin tocar la máquina de estados → el autoplay de 7 s solo corre cuando `PLATOS` está efectivamente abierto y en reposo.
+- Anillo de progreso SVG en el botón "Plato siguiente" animado con un tween lineal de GSAP (`0 → 1` en 7 s sobre `strokeDashoffset`) que se pausa/reanuda en el lugar (`tween.paused(isPaused)`) ante hover de mouse (`pointerType === 'mouse'`), foco de teclado dentro de la fila, pestaña oculta (`visibilitychange`) o `useReducedMotion()`, y se reinicia de cero al cambiar de plato (manual o automático).
+- En mobile/vertical (`< lg` o portrait), la fila inferior se organiza en grilla de 2 columnas arriba (foto `BlurSwapImage` a la izquierda + panel `monte` de origen a la derecha, `h-36 sm:h-44`) y el panel `tizon` de detalle abajo ocupando las 2 columnas → los tres paneles y la cabecera entran en 390×844 sin scroll vertical ni desborde horizontal.
+
+

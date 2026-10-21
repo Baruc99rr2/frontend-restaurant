@@ -1,0 +1,164 @@
+{
+  "descripcion": "F6 · PLATOS en modo abierto: avance automático del anillo (7 s), pausa con hover, atrás/adelante y puntos sincronizados, ráfaga rápida sin imagen desenfocada ni desbordada, y desktop + mobile.",
+  "steps": [
+    { "viewport": { "width": 1440, "height": 900 } },
+    { "nav": "http://localhost:5173/#platos" },
+    { "wait": 2600 },
+    {
+      "eval": "(() => { const root = document.querySelector('[data-mode]'); const panel = document.querySelector('[data-open-panel=\"platos\"]'); window.__platosState = () => { const activeDot = panel.querySelector('[role=\"tab\"][aria-selected=\"true\"]'); const allSelected = panel.querySelectorAll('[role=\"tab\"][aria-selected=\"true\"]').length; const fila = panel.querySelector('[data-platos-fila]'); const oIn = panel.querySelector('[data-platos-origen] p').children[1]; const rIn = panel.querySelector('[data-platos-region] p').children[1]; const dIn = panel.querySelector('[data-platos-descripcion] p').children[1]; const nWrap = panel.querySelector('[data-platos-nombre] h3'); const nOut = nWrap.children[0]; const nIn = nWrap.children[1]; const mIn = panel.querySelector('[data-platos-meta] p').children[1]; const marco = panel.querySelector('[data-platos-marco]'); const img = marco.querySelector('img'); const mRect = marco.getBoundingClientRect(); const iRect = img.getBoundingClientRect(); const cs = getComputedStyle(img); const contained = iRect.left >= mRect.left - 1 && iRect.top >= mRect.top - 1 && iRect.right <= mRect.right + 1 && iRect.bottom <= mRect.bottom + 1; return { stage: [root.dataset.mode, root.dataset.active, root.dataset.texts, location.hash], dot: Number(activeDot?.dataset.platosDot), selectedCount: allSelected, paused: fila.dataset.platosPaused === 'true', origen: oIn.textContent, region: rIn.textContent, nombre: nIn.textContent, meta: mIn.textContent.replace(/\\u00a0/g, ' '), descOk: dIn.textContent.length > 20, outHidden: getComputedStyle(nOut).display === 'none', inUnclipped: !nIn.style.clipPath, imgSharp: cs.filter === 'none' || cs.filter === 'blur(0px)', imgContained: contained, imgFile: img.getAttribute('src')?.split('/').pop() ?? '' }; }; return __platosState(); })()",
+      "label": "1 desktop /#platos: abre en plato 0 (Bife de chorizo grueso) con imagen nítida y contenida",
+      "expect": {
+        "stage": ["open", "2", "2", "#platos"],
+        "dot": 0,
+        "selectedCount": 1,
+        "paused": false,
+        "origen": "A la parrilla",
+        "region": "Pampa húmeda",
+        "nombre": "Bife de chorizo grueso",
+        "meta": "Fuegos · $ 32.000 · 500 g",
+        "descOk": true,
+        "outHidden": true,
+        "inUnclipped": true,
+        "imgSharp": true,
+        "imgContained": true,
+        "imgFile": "f6-paisaje-lg.webp"
+      }
+    },
+    { "shot": "../shots/f6-platos-0.png" },
+    {
+      "eval": "(() => { const fila = document.querySelector('[data-platos-fila]'); fila.dispatchEvent(new PointerEvent('pointerover', { bubbles: true, relatedTarget: document.body, pointerType: 'mouse' })); return 1; })()"
+    },
+    { "wait": 100 },
+    {
+      "eval": "(() => { const fila = document.querySelector('[data-platos-fila]'); window.__pPaused0 = Number(document.querySelector('[data-platos-progress]').dataset.platosProgress); return fila.dataset.platosPaused; })()",
+      "label": "2 hover sobre la fila pausa el anillo de progreso",
+      "expect": "true"
+    },
+    { "wait": 650 },
+    {
+      "eval": "(() => { const p1 = Number(document.querySelector('[data-platos-progress]').dataset.platosProgress); window.__pFrozen = Math.abs(p1 - window.__pPaused0) < 0.005; const fila = document.querySelector('[data-platos-fila]'); fila.dispatchEvent(new PointerEvent('pointerout', { bubbles: true, relatedTarget: document.body, pointerType: 'mouse' })); return 1; })()"
+    },
+    { "wait": 100 },
+    {
+      "eval": "[window.__pFrozen, document.querySelector('[data-platos-fila]').dataset.platosPaused, __platosState().dot]",
+      "label": "3 durante 650 ms de hover el progreso no avanza y al salir se reanuda",
+      "expect": [true, "false", 0]
+    },
+    { "wait": 7400 },
+    {
+      "eval": "__platosState()",
+      "label": "4 al completar el anillo de 7 s avanza automáticamente al plato 1 (Sorrentinos gratinados)",
+      "expect": {
+        "stage": ["open", "2", "2", "#platos"],
+        "dot": 1,
+        "selectedCount": 1,
+        "paused": false,
+        "origen": "Mar del Plata",
+        "region": "Costa atlántica",
+        "nombre": "Sorrentinos gratinados",
+        "meta": "Pastas · $ 17.500",
+        "descOk": true,
+        "outHidden": true,
+        "inUnclipped": true,
+        "imgSharp": true,
+        "imgContained": true,
+        "imgFile": "f1-paisaje-lg.webp"
+      }
+    },
+    { "shot": "../shots/f6-platos-1.png" },
+    {
+      "eval": "(() => { document.querySelector('[data-platos-next]').click(); return 1; })()"
+    },
+    { "wait": 1050 },
+    {
+      "eval": "[__platosState().dot, __platosState().nombre, __platosState().origen, __platosState().meta]",
+      "label": "5 botón adelante pasa a plato 2 (Lomo al horno de barro) y sincroniza el punto activo",
+      "expect": [2, "Lomo al horno de barro", "Horno de barro", "Del horno · $ 29.500 · 350 g"]
+    },
+    {
+      "eval": "(() => { document.querySelector('[data-platos-prev]').click(); return 1; })()"
+    },
+    { "wait": 1050 },
+    {
+      "eval": "[__platosState().dot, __platosState().nombre]",
+      "label": "6 botón atrás vuelve a plato 1 (Sorrentinos gratinados) y sincroniza el punto activo",
+      "expect": [1, "Sorrentinos gratinados"]
+    },
+    {
+      "eval": "(() => { document.querySelector('[data-platos-dot=\"4\"]').click(); return 1; })()"
+    },
+    { "wait": 1100 },
+    {
+      "eval": "__platosState()",
+      "label": "7 clic en punto 4 salta a Pollo de campo al horno",
+      "expect": {
+        "stage": ["open", "2", "2", "#platos"],
+        "dot": 4,
+        "selectedCount": 1,
+        "paused": false,
+        "origen": "Granja de campo",
+        "region": "Entre Ríos",
+        "nombre": "Pollo de campo al horno",
+        "meta": "Del horno · $ 19.000 · Medio pollo",
+        "descOk": true,
+        "outHidden": true,
+        "inUnclipped": true,
+        "imgSharp": true,
+        "imgContained": true,
+        "imgFile": "f9-paisaje-lg.webp"
+      }
+    },
+    {
+      "eval": "(() => { const btn = document.querySelector('[data-platos-next]'); [0, 1, 2, 3].forEach((idx) => { setTimeout(() => btn.click(), idx * 105); }); return 1; })()"
+    },
+    { "wait": 1600 },
+    {
+      "eval": "__platosState()",
+      "label": "8 ráfaga rápida (4 clics seguidos en adelante): termina en plato 3 sin imagen desenfocada ni desbordada",
+      "expect": {
+        "stage": ["open", "2", "2", "#platos"],
+        "dot": 3,
+        "selectedCount": 1,
+        "paused": false,
+        "origen": "Rawson",
+        "region": "Mar patagónico",
+        "nombre": "Spaghetti con langostinos",
+        "meta": "Pastas · $ 22.000",
+        "descOk": true,
+        "outHidden": true,
+        "inUnclipped": true,
+        "imgSharp": true,
+        "imgContained": true,
+        "imgFile": "f3-paisaje-lg.webp"
+      }
+    },
+    {
+      "eval": "(() => { document.querySelector('[data-platos-carta]').click(); return 1; })()"
+    },
+    { "wait": 150 },
+    {
+      "eval": "(() => { const menuBtn = document.querySelector('header button.bg-oro[aria-expanded]'); const expanded = menuBtn?.getAttribute('aria-expanded'); menuBtn?.click(); return expanded; })()",
+      "label": "9 Ver la carta completa ejecuta la misma acción que Ver la carta de HOME",
+      "expect": "true"
+    },
+    { "viewport": { "width": 390, "height": 844, "mobile": true, "scale": 2 } },
+    { "nav": "about:blank" },
+    { "nav": "http://localhost:5173/#platos" },
+    { "wait": 2600 },
+    {
+      "eval": "(() => { const panel = document.querySelector('[data-open-panel=\"platos\"]'); const s = panel.querySelector('[data-stage-scroller]'); const dot = panel.querySelector('[role=\"tab\"][aria-selected=\"true\"]')?.dataset.platosDot; const nIn = panel.querySelector('[data-platos-nombre] h3').children[1].textContent; return [document.documentElement.scrollWidth, s.scrollHeight <= s.clientHeight, dot, nIn]; })()",
+      "label": "10 mobile 390×844: sin desborde horizontal y entra en pantalla",
+      "expect": [390, true, "0", "Bife de chorizo grueso"]
+    },
+    {
+      "eval": "(() => { document.querySelector('[data-platos-next]').click(); return 1; })()"
+    },
+    { "wait": 1100 },
+    {
+      "eval": "(() => { const panel = document.querySelector('[data-open-panel=\"platos\"]'); const marco = panel.querySelector('[data-platos-marco]'); const img = marco.querySelector('img'); const cs = getComputedStyle(img); const dot = panel.querySelector('[role=\"tab\"][aria-selected=\"true\"]')?.dataset.platosDot; const nIn = panel.querySelector('[data-platos-nombre] h3').children[1].textContent; return [dot, nIn, cs.filter === 'none' || cs.filter === 'blur(0px)']; })()",
+      "label": "11 mobile tap en adelante: cambia plato e imagen queda nítida",
+      "expect": ["1", "Sorrentinos gratinados", true]
+    },
+    { "shot": "../shots/f6-m-platos.png" }
+  ]
+}

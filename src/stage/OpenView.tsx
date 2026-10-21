@@ -8,6 +8,7 @@ import { motionDuration, motionEase } from '@/motion/tokens'
 import { useReducedMotion } from '@/motion/useReducedMotion'
 import { HomePanel } from '@/sections/Home/HomePanel'
 import { LaCasaPanel } from '@/sections/LaCasa/LaCasaPanel'
+import { PlatosPanel } from '@/sections/Platos/PlatosPanel'
 
 /**
  * Modo abierto (§5, §8): una sección por panel, apiladas encima del marco.
@@ -96,6 +97,8 @@ export function OpenView({ rootRef, textsPanel, visible, onClose, onVerCarta, on
               <HomePanel active={active} onVerCarta={onVerCarta} onConocerLaCasa={() => onGoTo(1)} />
             ) : panel.key === 'la-casa' ? (
               <LaCasaPanel active={active} />
+            ) : panel.key === 'platos' ? (
+              <PlatosPanel active={active} onVerCarta={onVerCarta} />
             ) : (
               <PanelPlaceholder panel={panel} active={active} />
             )}

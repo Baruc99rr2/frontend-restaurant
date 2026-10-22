@@ -1,0 +1,38 @@
+{
+  "source": {
+    "file": "video.mp4",
+    "width": 852,
+    "height": 480,
+    "duration": 31.06,
+    "kb": 6093
+  },
+  "sources": {
+    "lg": {
+      "src": "/media/video/hero-lg.mp4",
+      "width": 852,
+      "height": 480,
+      "kb": 2797
+    },
+    "sm": {
+      "src": "/media/video/hero-sm.mp4",
+      "width": 852,
+      "height": 480,
+      "kb": 2263
+    }
+  },
+  "poster": {
+    "lg": {
+      "width": 852,
+      "height": 480,
+      "avif": "/media/video/hero-poster-lg.avif",
+      "webp": "/media/video/hero-poster-lg.webp"
+    },
+    "sm": {
+      "width": 852,
+      "height": 480,
+      "avif": "/media/video/hero-poster-sm.avif",
+      "webp": "/media/video/hero-poster-sm.webp"
+    },
+    "placeholder": "data:image/webp;base64,UklGRkwAAABXRUJQVlA4IEAAAACwAQCdASoQAAkAA4BaJYwC7ACZAE/QAP7y48ocNyrAA0xuUPnEKJ54L3YjF+QagGF1pH4zuP2pqD10hyNzmkAA"
+  }
+}

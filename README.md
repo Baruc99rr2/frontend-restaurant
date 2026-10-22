@@ -10,7 +10,6 @@ Plan completo en [`ROADMAP.md`](ROADMAP.md) · estado en [`ESTADO.md`](ESTADO.md
 
 ```sh
 pnpm install
-pnpm media        # genera public/media/ desde content/ (ver abajo)
 pnpm dev          # http://localhost:5173
 ```
 
@@ -36,11 +35,12 @@ Estas carpetas están en `.gitignore` a propósito y viven solo en tu máquina:
 | `api/` | `openapi.json` del backend + tipos generados | El contrato es privado del backend. **Nunca se sube.** |
 | `content/` | Material crudo: `video.mp4`, `restaurant1..5.*`, `food1..10.*` | Material del cliente |
 | `references/` | Capturas de referencia `imagen1..14.png` | Solo para diseñar |
-| `public/media/` | Salida de `pnpm media` | Hasta confirmar que las fotos son de licencia libre |
 
+`public/media/` (salida de `pnpm media`: fotos AVIF/WebP y video) **sí** se versiona, junto con
 `src/content/media.generated.ts` (rutas y tamaños) y `media.placeholders.generated.ts` (miniaturas
-borrosas de 16 px, en un chunk aparte) **sí** se versionan, así el proyecto compila en un clon
-limpio aunque las fotos no estén.
+borrosas de 16 px, en un chunk aparte): un clon limpio hace `pnpm install && pnpm build` y el
+resultado ya tiene fotos y video (así se despliega en Vercel desde GitHub). `pnpm media` solo hace
+falta para regenerarlos desde `content/`.
 
 ## Contrato con el backend (tipos)
 
@@ -137,8 +137,8 @@ Los assets de `dist/assets/` llevan hash en el nombre: se pueden cachear para si
   intensivo. Pasar a un proveedor con uso comercial (MapTiler, Stadia, Carto, Mapbox…) en
   `src/sections/Contacto/ContactoMapa.tsx`, con su atribución. Ojo: la mayoría pide una API key
   (hoy el sitio no usa ninguna cuenta).
-- **Licencias de fotos y video:** confirmar que son de uso libre antes de versionar
-  `public/media/` o publicar. El video de HOME muestra el cartel de otro negocio ("Historia Meze & Grill"),
+- **Licencias de fotos y video:** `public/media/` se versiona para la demo personal; antes de
+  usar el template para un cliente, reemplazar los medios por los suyos. El video de HOME muestra el cartel de otro negocio ("Historia Meze & Grill"),
   `restaurant5` el nombre "Gustav" y `food2` una botella de Guinness: reemplazarlos. Fuentes de
   495–1280 px y video 852×480: a pantalla completa se notan.
 - **Placeholders de `site.config.ts`:** teléfono, WhatsApp, email, coordenadas, redes, cifras del HOME y `seo.url`.

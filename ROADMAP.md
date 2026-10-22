@@ -91,7 +91,7 @@ frontend/
   mocks/                     ← public-local.json (forma exacta del endpoint público)
   references/                ← capturas imagen1..imagen14.png, solo lectura, fuera del repo
   content/                   ← material crudo del usuario, solo lectura, fuera del repo
-  public/media/              ← salida generada por scripts (no editar a mano); fuera del repo hasta confirmar licencia de las fotos
+  public/media/              ← salida generada por scripts (no editar a mano); versionada desde v1.0.1
   scripts/
     process-images.mjs
     process-video.mjs

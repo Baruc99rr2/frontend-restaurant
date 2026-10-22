@@ -30,7 +30,7 @@ Motivo visual único: el **marco inclinado** (cuadrilátero rotado ~-16°, token
   - `api/` — `openapi.json` del backend + tipos generados. Local a propósito: **nunca se sube**.
   - `references/` — capturas `imagenN.png` (N = ref. del mapa de §0; `imagen6.png` = ref. 06).
   - `content/` — material crudo del usuario.
-- `public/media/` también está ignorada hasta confirmar que las fotos son de licencia libre.
+- `public/media/` **sí** se versiona (desde v1.0.1): el despliegue (Vercel) sale de GitHub.
 
 ## Comandos
 

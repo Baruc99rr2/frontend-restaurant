@@ -61,7 +61,7 @@ function PlatoItem({
             data-plato-abrir={plato.id}
             aria-haspopup="dialog"
             onClick={(e) => onAbrirFoto(plato.id, e)}
-            className={`cursor-pointer text-left font-ui text-ui font-bold uppercase tracking-[0.06em] ${disponible ? 'text-champan' : 'text-ceniza'} underline decoration-oro/60 decoration-1 underline-offset-4 transition-colors duration-200 hover:text-oro focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro`}
+            className={`toque-linea cursor-pointer text-left font-ui text-ui font-bold uppercase tracking-[0.06em] ${disponible ? 'text-champan' : 'text-ceniza'} underline decoration-oro/60 decoration-1 underline-offset-4 transition-colors duration-200 hover:text-oro focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro`}
           >
             {plato.name}
           </button>
@@ -267,7 +267,7 @@ export function CategoryPage({ slug }: { slug: string }) {
   const [linea1, linea2] = siteConfig.marca.wordmark
 
   const botonPildora =
-    'inline-flex cursor-pointer items-center justify-center rounded-full border border-champan/30 px-5 py-2.5 font-ui text-etiqueta font-semibold uppercase tracking-[0.14em] text-champan transition-colors duration-300 hover:border-oro hover:text-oro focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro sm:px-6 sm:py-3 sm:text-ui'
+    'area-tactil inline-flex cursor-pointer items-center justify-center rounded-full border border-champan/30 px-5 py-2.5 font-ui text-etiqueta font-semibold uppercase tracking-[0.14em] text-champan transition-colors duration-300 hover:border-oro hover:text-oro focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro sm:px-6 sm:py-3 sm:text-ui'
 
   return (
     <main
@@ -282,7 +282,7 @@ export function CategoryPage({ slug }: { slug: string }) {
               type="button"
               data-categoria-carta
               onClick={irACarta}
-              className="shrink-0 cursor-pointer rounded-full border border-champan/25 bg-champan/5 px-2.5 py-2 font-ui text-micro font-semibold uppercase tracking-[0.08em] text-champan transition-colors duration-200 hover:border-oro hover:text-oro focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro sm:px-4 sm:py-2.5 sm:text-etiqueta sm:tracking-[0.15em]"
+              className="area-tactil shrink-0 cursor-pointer rounded-full border border-champan/25 bg-champan/5 px-2.5 py-2 font-ui text-micro font-semibold uppercase tracking-[0.08em] text-champan transition-colors duration-200 hover:border-oro hover:text-oro focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro sm:px-4 sm:py-2.5 sm:text-etiqueta sm:tracking-[0.15em]"
             >
               {copy.carta.categorias}
             </button>
@@ -292,7 +292,7 @@ export function CategoryPage({ slug }: { slug: string }) {
               data-categoria-wordmark
               data-categoria-inicio
               onClick={irAInicio}
-              className="group shrink-0 cursor-pointer text-center font-serif text-champan focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-oro"
+              className="group area-tactil flex shrink-0 cursor-pointer flex-col justify-center text-center font-serif text-champan max-[24rem]:hidden focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-oro"
             >
               <span className="block text-cuerpo leading-[0.92] tracking-[0.04em] uppercase transition-colors group-hover:text-oro sm:text-subtitulo sm:tracking-[0.06em]">
                 {linea1}
@@ -408,9 +408,9 @@ export function CategoryPage({ slug }: { slug: string }) {
                     className="flex flex-wrap gap-x-5 gap-y-1 font-ui text-etiqueta tracking-[0.12em] uppercase text-ceniza md:justify-end"
                   >
                     {filasHorario.map((f) => (
-                      <div key={f.dias} className="inline-flex items-baseline gap-1.5">
+                      <div key={f.dias} className="inline-flex flex-wrap items-baseline gap-x-1.5">
                         <dt className="font-semibold text-champan/85">{f.dias}:</dt>
-                        <dd className="tabular-nums">{f.franjas}</dd>
+                        <dd className="whitespace-nowrap tabular-nums">{f.franjas}</dd>
                       </div>
                     ))}
                   </dl>

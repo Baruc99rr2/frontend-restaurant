@@ -168,7 +168,7 @@ export function LaCasaPanel({ active }: Props) {
             role="tablist"
             aria-label="Sobre nosotros"
             onKeyDown={(e) => teclaRoving(e, selectedIndex, ITEMS.length, selectItem)}
-            className="grid grid-cols-3 gap-1.5 sm:grid-cols-3 landscape:lg:flex landscape:lg:flex-col landscape:lg:items-start landscape:lg:gap-2.5"
+            className="grid grid-cols-3 gap-1.5 minimo:grid-cols-2 landscape:lg:flex landscape:lg:flex-col landscape:lg:items-start landscape:lg:gap-2.5"
           >
             {ITEMS.map((it, i) => {
               const Icon = ICONOS[it.icono] ?? Flame
@@ -187,7 +187,7 @@ export function LaCasaPanel({ active }: Props) {
                       onClick={() => selectItem(i)}
                       onPointerEnter={(e) => startHoverIntent(i, e.pointerType)}
                       onPointerLeave={clearHoverTimer}
-                      className="group flex w-full cursor-pointer items-center gap-1.5 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro landscape:lg:w-auto landscape:lg:gap-2.5"
+                      className="group area-tactil flex w-full cursor-pointer items-center gap-1.5 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro landscape:lg:w-auto landscape:lg:gap-2.5"
                     >
                       <span
                         className={`grid size-6 shrink-0 place-items-center transition-colors duration-300 landscape:lg:size-9 ${

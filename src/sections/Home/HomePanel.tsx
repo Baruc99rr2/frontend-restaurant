@@ -30,7 +30,7 @@ function parsearDato(valor: string) {
 }
 
 const pill =
-  'inline-flex cursor-pointer items-center justify-center rounded-full px-6 py-3 font-ui text-ui font-semibold uppercase tracking-[0.14em] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro'
+  'area-tactil inline-flex cursor-pointer items-center justify-center rounded-full px-6 py-3 font-ui text-ui font-semibold uppercase tracking-[0.14em] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro'
 
 export function HomePanel({ active, onVerCarta, onConocerLaCasa }: Props) {
   const { home, botones, marca } = siteConfig
@@ -50,7 +50,7 @@ export function HomePanel({ active, onVerCarta, onConocerLaCasa }: Props) {
               <div key={bloque} data-open-text className="overflow-hidden">
                 <SlideIn from="left" active={active} delay={i * 0.1}>
                   {/* Un bloque por línea, del ancho del texto (ref. 01). */}
-                  <span className="inline-block bg-champan px-[0.18em] pt-[0.1em] pb-[0.02em] font-gigante text-[clamp(2.25rem,5.2vw,5.75rem)] leading-[0.92] whitespace-nowrap text-noche">
+                  <span className="inline-block bg-champan px-[0.18em] pt-[0.1em] pb-[0.02em] font-gigante text-[min(clamp(2.25rem,5.2vw,5.75rem),calc((100vw-2rem)/9.8))] leading-[0.92] whitespace-nowrap text-noche">
                     {bloque}
                   </span>
                 </SlideIn>

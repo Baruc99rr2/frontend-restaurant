@@ -78,7 +78,7 @@ export function ContactoPanel({ active, onVolverAlInicio }: Props) {
         data-stage-scroller
         className="pointer-events-none absolute inset-0 z-10 overflow-x-hidden overflow-y-auto overscroll-contain [touch-action:pan-y]"
       >
-        <div className="relative z-10 mx-auto flex min-h-full max-w-7xl flex-col justify-end gap-3 px-[clamp(1rem,3vw,3rem)] pt-36 pb-16 sm:gap-4 landscape:lg:justify-center landscape:lg:gap-5 landscape:lg:pt-24 landscape:lg:pb-20">
+        <div className="relative z-10 mx-auto flex min-h-full max-w-7xl flex-col justify-end gap-3 px-[clamp(1rem,3vw,3rem)] pt-48 pb-16 sm:gap-4 landscape:lg:justify-center landscape:lg:gap-5 landscape:lg:pt-24 landscape:lg:pb-20">
           {/* Arriba izq.: etiqueta en Caslon cursiva "Te esperamos. Desde 2011." (ref. 05) */}
           <div data-open-text className="pointer-events-auto w-fit">
             <SlideIn from="left" active={active} delay={0.06}>
@@ -114,7 +114,7 @@ export function ContactoPanel({ active, onVolverAlInicio }: Props) {
                         {siteConfig.marca.bajada}
                       </p>
 
-                      <ul className="mt-3 space-y-2 font-ui text-[0.75rem] tracking-normal text-noche/90 sm:mt-4 sm:text-ui">
+                      <ul className="mt-3 space-y-2 font-ui text-ui tracking-normal text-noche/90 sm:mt-4">
                         {direccion && (
                           <li className="flex items-start gap-2.5">
                             <MapPin
@@ -128,13 +128,13 @@ export function ContactoPanel({ active, onVolverAlInicio }: Props) {
                         <li className="flex items-start gap-2.5">
                           <Phone className="mt-0.5 size-4 shrink-0 text-monte" aria-hidden="true" />
                           <div>
-                            <span className="block text-[0.6875rem] font-semibold uppercase tracking-wider text-noche/60">
+                            <span className="block text-etiqueta font-semibold uppercase tracking-wider text-noche/60">
                               {copy.contacto.telefono}
                             </span>
                             <a
                               data-contacto-telefono
                               href={`tel:${siteConfig.contacto.telefono.tel}`}
-                              className="font-semibold text-noche underline decoration-oro/70 underline-offset-2 transition-colors hover:text-monte"
+                              className="toque-linea font-semibold text-noche underline decoration-oro/70 underline-offset-2 transition-colors hover:text-monte"
                             >
                               {siteConfig.contacto.telefono.mostrar}
                             </a>
@@ -146,7 +146,7 @@ export function ContactoPanel({ active, onVolverAlInicio }: Props) {
                           <a
                             data-contacto-email
                             href={`mailto:${siteConfig.contacto.email}`}
-                            className="truncate font-semibold text-noche underline decoration-oro/70 underline-offset-2 transition-colors hover:text-monte"
+                            className="toque-linea max-w-full truncate font-semibold text-noche underline decoration-oro/70 underline-offset-2 transition-colors hover:text-monte"
                           >
                             {siteConfig.contacto.email}
                           </a>
@@ -160,7 +160,7 @@ export function ContactoPanel({ active, onVolverAlInicio }: Props) {
                         href={googleMapsUrl()}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-monte px-4 py-2 font-ui text-etiqueta font-semibold uppercase tracking-[0.12em] text-champan transition-colors duration-200 hover:bg-hoja focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-monte"
+                        className="area-tactil inline-flex cursor-pointer items-center gap-2 rounded-full bg-monte px-4 py-2 font-ui text-etiqueta font-semibold uppercase tracking-[0.12em] text-champan transition-colors duration-200 hover:bg-hoja focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-monte"
                       >
                         <Navigation className="size-3.5 text-oro" aria-hidden="true" />
                         <span>{siteConfig.botones.comoLlegar}</span>
@@ -181,7 +181,7 @@ export function ContactoPanel({ active, onVolverAlInicio }: Props) {
                       {fraseEstado && (
                         <p
                           data-contacto-estado
-                          className="mt-1.5 inline-flex items-center gap-2 rounded-full bg-monte px-3 py-1 font-ui text-[0.6875rem] font-semibold text-champan"
+                          className="mt-1.5 inline-flex items-center gap-2 rounded-full bg-monte px-3 py-1 font-ui text-etiqueta font-semibold tracking-normal text-champan"
                         >
                           <span
                             aria-hidden="true"
@@ -196,7 +196,7 @@ export function ContactoPanel({ active, onVolverAlInicio }: Props) {
                       {fraseCocina && (
                         <p
                           data-contacto-cocina
-                          className="mt-1 font-ui text-[0.6875rem] font-semibold text-monte"
+                          className="mt-1 font-ui text-etiqueta font-semibold tracking-normal text-monte"
                         >
                           {fraseCocina}
                         </p>
@@ -204,7 +204,7 @@ export function ContactoPanel({ active, onVolverAlInicio }: Props) {
 
                       <dl
                         data-contacto-horario
-                        className="mt-2.5 space-y-1 font-ui text-[0.75rem] tracking-normal text-noche/90 sm:text-[0.8125rem]"
+                        className="mt-2.5 space-y-1 font-ui text-ui tracking-normal text-noche/90"
                       >
                         {filasHorario.map((fila) => (
                           <div key={fila.dias} className="flex justify-between gap-2">
@@ -218,7 +218,7 @@ export function ContactoPanel({ active, onVolverAlInicio }: Props) {
                     {proximoEspecial && (
                       <p
                         data-contacto-proximo
-                        className="border-t border-noche/15 pt-2 font-ui text-[0.6875rem] text-noche/75"
+                        className="border-t border-noche/15 pt-2 font-ui text-etiqueta tracking-normal text-noche/75"
                       >
                         <span className="font-semibold uppercase tracking-wider text-noche">
                           {copy.contacto.proximoDistinto}:{' '}
@@ -236,7 +236,7 @@ export function ContactoPanel({ active, onVolverAlInicio }: Props) {
           <div data-open-text className="pointer-events-auto flex flex-wrap items-center gap-3">
             <SlideIn from="left" active={active} delay={0.26}>
               <div className="flex flex-wrap items-center gap-4">
-                <ul className="flex items-center gap-2">
+                <ul className="flex flex-wrap items-center gap-2">
                   {siteConfig.redes.map((item) => (
                     <li key={item.red}>
                       <a
@@ -245,7 +245,7 @@ export function ContactoPanel({ active, onVolverAlInicio }: Props) {
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label={copy.contacto.redes[item.red]}
-                        className="grid size-10 cursor-pointer place-items-center rounded-full border border-champan/25 bg-tizon/85 text-champan backdrop-blur-md transition-colors duration-200 hover:border-oro hover:bg-oro hover:text-noche focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro"
+                        className="grid size-10 cursor-pointer place-items-center rounded-full border border-champan/25 bg-tizon/85 tactil:size-11 text-champan backdrop-blur-md transition-colors duration-200 hover:border-oro hover:bg-oro hover:text-noche focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro"
                       >
                         <SocialIcon red={item.red} className="size-4" />
                       </a>
@@ -257,7 +257,7 @@ export function ContactoPanel({ active, onVolverAlInicio }: Props) {
                   type="button"
                   data-contacto-inicio
                   onClick={onVolverAlInicio}
-                  className="group inline-flex cursor-pointer items-center gap-3 rounded-full border border-champan/25 bg-tizon/85 pr-4 font-ui text-etiqueta font-semibold uppercase tracking-[0.14em] text-champan backdrop-blur-md transition-colors duration-200 hover:border-oro hover:text-oro focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-oro"
+                  className="group area-tactil inline-flex cursor-pointer items-center gap-3 rounded-full border border-champan/25 bg-tizon/85 pr-4 font-ui text-etiqueta font-semibold uppercase tracking-[0.14em] text-champan backdrop-blur-md transition-colors duration-200 hover:border-oro hover:text-oro focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-oro"
                 >
                   <span className="grid size-10 place-items-center rounded-full border border-champan/40 bg-noche/75 transition-colors duration-300 group-hover:border-oro group-hover:bg-oro group-hover:text-noche">
                     <ArrowUp className="size-4" aria-hidden="true" />

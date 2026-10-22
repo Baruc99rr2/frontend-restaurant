@@ -18,6 +18,7 @@ pnpm dev          # http://localhost:5173
 | `pnpm dev` | Servidor de desarrollo. `/` = escenario · solo en dev: `/dev` primitivas y navbar, `/dev/datos` datos y medios, `/dev/tokens` muestras |
 | `pnpm qa <plan.json>` | QA en Chrome headless por DevTools (viewport/táctil, reduced motion, wheel, teclado, capturas). Ver `scripts/qa-browser.mjs` |
 | `pnpm qa:regresion` | Corre todos los planes de `qa/plans/` con sus resultados esperados (necesita `pnpm dev`). Capturas en `qa/shots/` |
+| `pnpm qa:responsive` | Regenera `qa/plans/responsive.json` (14 tamaños de 240×320 a 2560×1440, más celular acostado). Correrlo solo: `pnpm qa qa/plans/responsive.json` (capturas en `qa/shots/responsive/`) |
 | `pnpm build` | Typecheck + build de producción |
 | `pnpm preview` | Sirve `dist/` en http://localhost:4173 (con el fallback de SPA de `/carta`) |
 | `pnpm lint` | ESLint |

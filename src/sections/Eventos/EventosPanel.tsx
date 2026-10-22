@@ -93,7 +93,7 @@ export function EventosPanel({ active }: Props) {
                 mode="words"
                 active={active}
                 delay={0.05}
-                className="font-serif text-[clamp(1.5rem,2.8vw,2.65rem)] leading-[1.08] text-champan"
+                className="font-serif text-titulo leading-[1.08] text-champan"
               >
                 {copy.eventos.titulo}
               </Reveal>
@@ -102,15 +102,15 @@ export function EventosPanel({ active }: Props) {
             {/* 1. Invitados: etiqueta en píldora champan + stepper oscuro (10–200, paso 5, inicial 40) */}
             <div data-open-text>
               <SlideIn from="left" active={active} delay={0.12}>
-                <div className="flex items-center gap-2.5 sm:gap-3.5">
-                  <div className="flex h-11 min-w-[8.5rem] items-center justify-end rounded-r-full bg-champan pr-5 pl-4 font-ui text-ui font-semibold text-noche sm:h-12 sm:min-w-[11rem] sm:pr-6">
+                <div className="flex flex-wrap items-center gap-2.5 sm:gap-3.5">
+                  <div className="flex h-11 min-w-[8.5rem] angosto:min-w-0 items-center justify-end rounded-r-full bg-champan pr-5 pl-4 font-ui text-ui font-semibold text-noche sm:h-12 sm:min-w-[11rem] sm:pr-6">
                     <span>{copy.eventos.etiquetas.invitados}</span>
                   </div>
 
                   <div
                     role="group"
                     aria-label={copy.eventos.etiquetas.invitados}
-                    className="inline-flex h-11 items-center gap-2 rounded-full border border-champan/20 bg-tizon/90 px-1.5 backdrop-blur-md sm:h-12 sm:gap-3 sm:px-2"
+                    className="inline-flex h-11 items-center gap-2 rounded-full border border-champan/20 bg-tizon/90 px-1.5 backdrop-blur-md tactil:h-auto tactil:py-0.5 sm:h-12 sm:gap-3 sm:px-2"
                   >
                     <button
                       type="button"
@@ -118,7 +118,7 @@ export function EventosPanel({ active }: Props) {
                       onClick={restarInvitados}
                       disabled={minAlcanzado}
                       aria-label="Restar 5 invitados"
-                      className="grid size-8 cursor-pointer place-items-center rounded-full border border-champan/25 bg-champan/10 text-champan transition-colors duration-200 hover:border-oro hover:bg-oro hover:text-noche focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:border-champan/25 disabled:hover:bg-champan/10 disabled:hover:text-champan sm:size-9"
+                      className="grid size-8 cursor-pointer place-items-center rounded-full border border-champan/25 bg-champan/10 text-champan transition-colors duration-200 hover:border-oro hover:bg-oro hover:text-noche focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:border-champan/25 disabled:hover:bg-champan/10 disabled:hover:text-champan sm:size-9 tactil:size-11"
                     >
                       <Minus className="size-4" aria-hidden="true" />
                     </button>
@@ -137,7 +137,7 @@ export function EventosPanel({ active }: Props) {
                       onClick={sumarInvitados}
                       disabled={maxAlcanzado}
                       aria-label="Sumar 5 invitados"
-                      className="grid size-8 cursor-pointer place-items-center rounded-full border border-champan/25 bg-champan/10 text-champan transition-colors duration-200 hover:border-oro hover:bg-oro hover:text-noche focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:border-champan/25 disabled:hover:bg-champan/10 disabled:hover:text-champan sm:size-9"
+                      className="grid size-8 cursor-pointer place-items-center rounded-full border border-champan/25 bg-champan/10 text-champan transition-colors duration-200 hover:border-oro hover:bg-oro hover:text-noche focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:border-champan/25 disabled:hover:bg-champan/10 disabled:hover:text-champan sm:size-9 tactil:size-11"
                     >
                       <Plus className="size-4" aria-hidden="true" />
                     </button>
@@ -177,7 +177,7 @@ export function EventosPanel({ active }: Props) {
                           tabIndex={isSelected ? 0 : -1}
                           data-eventos-ocasion={o.id}
                           onClick={() => setOcasion(o.id)}
-                          className={`cursor-pointer rounded-full border px-3 py-1.5 font-ui text-etiqueta font-semibold uppercase tracking-[0.1em] transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro sm:px-3.5 sm:py-2 ${
+                          className={`area-tactil cursor-pointer rounded-full border px-3 py-1.5 font-ui text-etiqueta font-semibold uppercase tracking-[0.1em] transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro sm:px-3.5 sm:py-2 ${
                             isSelected
                               ? 'border-oro bg-oro text-noche'
                               : 'border-champan/25 bg-tizon/85 text-champan hover:border-oro hover:text-oro'
@@ -223,7 +223,7 @@ export function EventosPanel({ active }: Props) {
                           tabIndex={isSelected ? 0 : -1}
                           data-eventos-formato={f.id}
                           onClick={() => setFormato(f.id)}
-                          className={`cursor-pointer rounded-full border px-3.5 py-1.5 font-ui text-etiqueta font-semibold uppercase tracking-[0.1em] transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro sm:px-4 sm:py-2 ${
+                          className={`area-tactil cursor-pointer rounded-full border px-3.5 py-1.5 font-ui text-etiqueta font-semibold uppercase tracking-[0.1em] transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro sm:px-4 sm:py-2 ${
                             isSelected
                               ? 'border-oro bg-oro text-noche'
                               : 'border-champan/25 bg-tizon/85 text-champan hover:border-oro hover:text-oro'
@@ -251,14 +251,14 @@ export function EventosPanel({ active }: Props) {
                       href={waHref}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex cursor-pointer items-center justify-center rounded-full bg-oro px-6 py-2.5 font-ui text-etiqueta font-bold uppercase tracking-[0.15em] text-noche transition-colors duration-300 hover:bg-champan focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro sm:py-3"
+                      className="area-tactil inline-flex cursor-pointer items-center justify-center rounded-full bg-oro px-6 py-2.5 font-ui text-etiqueta font-bold uppercase tracking-[0.15em] text-noche transition-colors duration-300 hover:bg-champan focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro sm:py-3"
                     >
                       {siteConfig.botones.pedirPresupuesto}
                     </a>
                     <a
                       data-eventos-mailto
                       href={mailHref}
-                      className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-champan/30 bg-noche/45 px-4 py-2.5 font-ui text-etiqueta font-semibold uppercase tracking-[0.12em] text-champan backdrop-blur-md transition-colors duration-300 hover:border-oro hover:text-oro focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro sm:py-3"
+                      className="area-tactil inline-flex cursor-pointer items-center gap-2 rounded-full border border-champan/30 bg-noche/45 px-4 py-2.5 font-ui text-etiqueta font-semibold uppercase tracking-[0.12em] text-champan backdrop-blur-md transition-colors duration-300 hover:border-oro hover:text-oro focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro sm:py-3"
                     >
                       <Mail className="size-3.5" aria-hidden="true" />
                       {/* El nombre accesible empieza con lo que se ve ("mail") y suma para qué es. */}
@@ -276,7 +276,7 @@ export function EventosPanel({ active }: Props) {
             <SlideIn from="right" active={active} delay={0.22}>
               <div
                 data-eventos-tarjetas
-                className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3.5 landscape:lg:gap-4"
+                className="grid grid-cols-2 gap-2.5 minimo:grid-cols-1 sm:grid-cols-3 sm:gap-3.5 landscape:lg:gap-4"
               >
                 {resultados.map((r) => {
                   const isPlata = r.unidad === 'plata'
@@ -311,8 +311,8 @@ export function EventosPanel({ active }: Props) {
                           format={isPlata ? formatPlataCard : formatNumeroCard}
                           className={`block font-gigante leading-none text-monte ${
                             isPlata
-                              ? 'text-[clamp(1.15rem,1.85vw,1.75rem)]'
-                              : 'text-[clamp(1.5rem,2.6vw,2.5rem)]'
+                              ? 'text-subtitulo'
+                              : 'text-titulo'
                           }`}
                         />
                       </div>

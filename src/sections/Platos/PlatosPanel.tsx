@@ -158,7 +158,7 @@ export function PlatosPanel({ active, onVerCarta }: Props) {
       data-stage-scroller
       className="absolute inset-0 overflow-x-hidden overflow-y-auto overscroll-contain [touch-action:pan-y]"
     >
-      <div className="relative z-10 mx-auto flex min-h-full max-w-7xl flex-col justify-between gap-5 px-[clamp(1.25rem,3.5vw,3.5rem)] pt-20 pb-20 landscape:lg:gap-8 landscape:lg:pt-24 landscape:lg:pb-20">
+      <div className="relative z-10 mx-auto flex min-h-full max-w-7xl flex-col justify-between gap-5 px-[clamp(1.25rem,3.5vw,3.5rem)] pt-20 angosto:px-4 pb-20 landscape:lg:gap-8 landscape:lg:pt-24 landscape:lg:pb-20">
         {/* Franja superior (~40%): título y botón "Ver la carta completa" sobre la foto oscurecida */}
         <div className="flex flex-1 flex-col justify-end gap-4 pb-1 landscape:lg:flex-row landscape:lg:items-end landscape:lg:justify-between landscape:lg:pb-4">
           <div data-open-text className="max-w-2xl">
@@ -167,7 +167,7 @@ export function PlatosPanel({ active, onVerCarta }: Props) {
               mode="words"
               active={active}
               delay={0.05}
-              className="font-gigante text-[clamp(1.75rem,3.8vw,3.5rem)] leading-[0.95] uppercase text-champan"
+              className="font-gigante text-titulo leading-[0.95] uppercase text-champan"
             >
               {copy.platos.titulo}
             </Reveal>
@@ -179,7 +179,7 @@ export function PlatosPanel({ active, onVerCarta }: Props) {
                 type="button"
                 data-platos-carta
                 onClick={onVerCarta}
-                className="inline-flex cursor-pointer items-center justify-center rounded-full border border-champan/35 bg-noche/50 px-5 py-2.5 font-ui text-etiqueta font-semibold uppercase tracking-[0.14em] text-champan backdrop-blur-md transition-colors duration-300 hover:border-oro hover:bg-oro hover:text-noche focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro landscape:lg:px-6 landscape:lg:py-3"
+                className="area-tactil inline-flex cursor-pointer items-center justify-center rounded-full border border-champan/35 bg-noche/50 px-5 py-2.5 font-ui text-etiqueta font-semibold uppercase tracking-[0.14em] text-champan backdrop-blur-md transition-colors duration-300 hover:border-oro hover:bg-oro hover:text-noche focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro landscape:lg:px-6 landscape:lg:py-3"
               >
                 {siteConfig.botones.verCartaCompleta}
               </button>
@@ -266,15 +266,15 @@ export function PlatosPanel({ active, onVerCarta }: Props) {
               <div
                 data-platos-derecha
                 // min-h en mobile: reserva el alto antes de que lleguen los datos (sin salto de layout).
-                className="flex size-full min-h-56 flex-col justify-between gap-4 border border-ceniza/20 bg-tizon p-4 sm:p-5 landscape:lg:min-h-0 landscape:lg:p-7"
+                className="flex size-full min-h-56 flex-col justify-between gap-4 border border-ceniza/20 bg-tizon p-4 angosto:p-3 sm:p-5 landscape:lg:min-h-0 landscape:lg:p-7"
               >
                 {/* Puntos / guía del carrusel (activo oro, ancho mayor). Botones simples con
                     `aria-current`: no hay panel por punto, así que no son pestañas. El área de
-                    toque (24 px de alto) es más grande que el punto. */}
+                    toque (24 px; 44 px táctil) es más grande que el punto. */}
                 <div
                   role="group"
                   aria-label={copy.platos.titulo}
-                  className="flex min-h-6 items-center gap-2"
+                  className="flex min-h-6 flex-wrap items-center gap-2 tactil:gap-0"
                 >
                   {platos.map((p, i) => {
                     const isAct = i === safeIndex
@@ -286,7 +286,7 @@ export function PlatosPanel({ active, onVerCarta }: Props) {
                         aria-label={`${i + 1}: ${p.name}`}
                         data-platos-dot={i}
                         onClick={() => setSelectedIndex(i)}
-                        className="group/dot grid h-6 cursor-pointer place-items-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro"
+                        className="group/dot grid h-6 min-w-6 cursor-pointer place-items-center tactil:h-11 tactil:min-w-11 rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro"
                       >
                         <span
                           aria-hidden="true"

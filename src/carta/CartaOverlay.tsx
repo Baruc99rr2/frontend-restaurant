@@ -264,7 +264,7 @@ export function CartaOverlay({ abierta, listo }: Props) {
       <div className="absolute inset-0 overflow-x-hidden overflow-y-auto overscroll-contain [touch-action:pan-y]">
         <div className="flex min-h-full flex-col">
           {/* Arriba izq.: menú del día (a la derecha queda el botón CERRAR del navbar). */}
-          <header className="flex min-h-[4.75rem] items-center px-4 pt-[env(safe-area-inset-top)] pr-36 sm:px-8 sm:pr-48">
+          <header className="flex min-h-[4.75rem] items-center px-4 pt-[env(safe-area-inset-top)] pr-36 angosto:px-3 angosto:pr-28 sm:px-8 sm:pr-48">
             {hoy ? (
               <Reveal
                 as="p"
@@ -297,7 +297,7 @@ export function CartaOverlay({ abierta, listo }: Props) {
                 aria-label={copy.carta.listaCategorias}
                 data-carta-lista
                 onKeyDown={(e) => teclaRoving(e, foco, n, setFoco)}
-                className="flex w-full snap-x snap-mandatory items-center gap-4 overflow-x-auto px-[calc(50%-min(31vw,8.5rem))] py-14 [scrollbar-width:none] [touch-action:pan-x_pan-y] lg:justify-center lg:gap-[clamp(1rem,2.2vw,2.5rem)] lg:overflow-visible lg:px-8 lg:py-10 [&::-webkit-scrollbar]:hidden"
+                className="flex w-full snap-x snap-mandatory items-center gap-4 overflow-x-auto px-[calc(50%-min(31vw,8.5rem,calc((100svh-9.5rem)*0.375)))] py-14 bajo:py-6 [scrollbar-width:none] [touch-action:pan-x_pan-y] lg:justify-center lg:gap-[clamp(1rem,2.2vw,2.5rem)] lg:overflow-visible lg:px-8 lg:py-10 [&::-webkit-scrollbar]:hidden"
               >
                 {categorias.map((cat, i) => (
                   <CartaCard
@@ -315,8 +315,8 @@ export function CartaOverlay({ abierta, listo }: Props) {
           </div>
 
           {/* Pie: datos de contacto, reservar, rubro. */}
-          <footer className="grid grid-cols-2 items-end gap-x-4 gap-y-6 px-4 pb-6 sm:px-8 lg:grid-cols-[1fr_auto_1fr]">
-            <div data-carta-pie className="col-span-2 justify-self-center lg:order-2 lg:col-span-1">
+          <footer className="grid grid-cols-2 items-end gap-x-4 gap-y-6 px-4 pb-6 angosto:grid-cols-1 angosto:gap-y-4 angosto:px-3 sm:px-8 lg:grid-cols-[1fr_auto_1fr]">
+            <div data-carta-pie className="col-span-2 justify-self-center angosto:col-span-1 lg:order-2 lg:col-span-1">
               <a
                 href={whatsappUrl(copy.reservar.mensaje)}
                 target="_blank"
@@ -332,14 +332,14 @@ export function CartaOverlay({ abierta, listo }: Props) {
               <span data-carta-direccion className="block">
                 {local.data?.local.address ?? ' '}
               </span>
-              <a href={`tel:${contacto.telefono.tel}`} className="hover:text-oro">
+              <a href={`tel:${contacto.telefono.tel}`} className="toque-linea hover:text-oro">
                 {contacto.telefono.mostrar}
               </a>
             </address>
-            <p data-carta-pie className={`text-right lg:order-3 ${pieClase}`}>
+            <p data-carta-pie className={`text-right angosto:text-left lg:order-3 ${pieClase}`}>
               <span className="block">{marca.rubro}</span>
               {/* En mobile el email corta después de la @, no a mitad de palabra. */}
-              <a href={`mailto:${contacto.email}`} className="hover:text-oro">
+              <a href={`mailto:${contacto.email}`} className="toque-linea hover:text-oro">
                 {contacto.email.split('@')[0]}@<wbr />
                 {contacto.email.split('@')[1]}
               </a>

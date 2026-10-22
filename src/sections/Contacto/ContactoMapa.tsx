@@ -257,7 +257,7 @@ export default function ContactoMapa({ active }: Props) {
           type="button"
           data-contacto-mapa-activar
           onClick={enableMap}
-          className="pointer-events-auto absolute top-20 right-4 inline-flex cursor-pointer items-center gap-2 rounded-full border border-champan/25 bg-noche/70 px-4 py-2 font-ui text-etiqueta font-semibold uppercase tracking-[0.12em] text-champan backdrop-blur-md transition-colors hover:border-oro hover:text-oro focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro sm:right-6 landscape:lg:top-24"
+          className="pointer-events-auto absolute top-20 right-4 area-tactil inline-flex cursor-pointer items-center gap-2 rounded-full border border-champan/25 bg-noche/70 px-4 py-2 font-ui text-etiqueta font-semibold uppercase tracking-[0.12em] text-champan backdrop-blur-md transition-colors hover:border-oro hover:text-oro focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro sm:right-6 landscape:lg:top-24"
         >
           {avisoTexto}
         </button>
@@ -268,7 +268,7 @@ export default function ContactoMapa({ active }: Props) {
           href="https://www.openstreetmap.org/copyright"
           target="_blank"
           rel="noopener noreferrer"
-          className="pointer-events-auto absolute top-34 right-4 rounded-full border border-champan/20 bg-noche/70 px-3 py-1 font-ui text-[0.6875rem] tracking-wide text-champan/80 backdrop-blur-md transition-colors hover:border-oro hover:text-oro focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro sm:right-6 landscape:lg:top-auto landscape:lg:right-auto landscape:lg:bottom-5 landscape:lg:left-[44%]"
+          className="pointer-events-auto absolute top-34 right-4 inline-flex min-h-6 items-center rounded-full tactil:min-h-11 border border-champan/20 bg-noche/70 px-3 py-1 font-ui text-etiqueta tracking-wide text-champan/80 backdrop-blur-md transition-colors hover:border-oro hover:text-oro focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro sm:right-6 landscape:lg:top-auto landscape:lg:right-auto landscape:lg:bottom-5 landscape:lg:left-[44%]"
         >
           {copy.contacto.atribucionMapa}
         </a>

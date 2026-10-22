@@ -385,3 +385,44 @@ Gravedad: **alta** (rompe navegación o datos) · **media** (se ve mal en un cas
 **QA**
 - Plan `f11-1-pulido.json` (head, JSON-LD, aria-live en modo abierto, content-visibility, carta en reposo, miniaturas, reduced motion en categoría y polaroid).
 - Ajustes por el montaje diferido: `f6-1` cambia sus dos `{ "wait": 2600 }` por esperar el panel activo; el `__waitUntil` propio de `f7-1` y `f8-1` tolera que el panel todavía no esté; `f9-2` paso 10 acepta la carta sin montar; `f10-1` mide el color del precio sin stock en vez de la opacidad.
+
+## v1.0.1 — Medios al repo (2026-10-21) — `chore(web): versionar medios`
+
+- `public/media/` sale del `.gitignore` y se versiona (14 MB, 188 archivos) → proyecto personal que se publica en Vercel desde GitHub; un clon limpio hace `pnpm install && pnpm build` con fotos y video (verificado: las 186 rutas de `media.generated.ts` existen en `dist/`). Para un cliente, los medios se reemplazan por los suyos.
+
+## v1.0.1 — Responsividad de 240 a 2560 (2026-10-21) — `fix(web): responsividad de 240 a 2560`
+
+**Criterios y variantes**
+- Áreas de toque: 44 px con puntero táctil (`pointer: coarse`), sin cambios con mouse (ahí el mínimo es 24 px, WCAG 2.5.8 AA) → agrandar todo para el mouse cambiaba el diseño de escritorio sin necesidad. Utilidades `area-tactil` (min 44×44 táctil) y `toque-linea` (link de texto suelto: padding + margen negativo, 24/44 px sin mover lo de alrededor), variante `tactil:` (`src/styles/tokens.css`).
+- Variantes por tamaño en `tokens.css`: `angosto:` (< 360 px: 240–320), `minimo:` (≤ 260 px, solo 240) y `bajo:` (≤ 480 px de alto: celular acostado y 240×320) → media queries con nombre en un solo lugar, en vez de valores sueltos en cada componente.
+- Links dentro de un párrafo (bajada de PREGUNTAS) quedan como están → excepción de WCAG para links en línea.
+
+**Escenario**
+- Modo cerrado vertical: el marco se dimensiona dentro de la banda libre entre la fila de arriba y el título (`filasVertical` en `geometry.ts`, compartida con `ClosedView`); donde hay lugar queda igual que antes (54 % del alto, centro al 47 %). Antes el alto era fijo y en 240–320 px el marco se pisaba con etiquetas, indicación y título.
+- Vertical bajo (< 480 px de alto): sin frases laterales (no entran con el marco); angosto (< 340 px): la frase derecha va debajo de "Tocá para entrar" (en la misma fila se pisaban).
+- Tope del título gigante en vertical: `min(24vw, 12vh)` → en pantallas bajas el título no se come el marco.
+- Números laterales: slot de 3,4 em táctil (44 px) y 1,75 em con mouse (antes 1,5 em = 20 px); el número sigue alineado con la etiqueta (margen negativo). Desplegada en pantallas bajas, la lista se corre lo justo para entrar en la pantalla. La lista lleva `data-desplegable`: sus números ocultos se alcanzan con foco/hover/toque.
+- Navbar en < 360 px: wordmark en `text-ui` (`text-etiqueta` y una línea en 240), MENU compacto, menos margen → antes MENU quedaba afuera de la pantalla en 240, 280 y 320. Lámina con alto máximo y scroll interno (`data-stage-scroller`).
+
+**Secciones**
+- HOME: bloques gigantes con tope `(100vw − 2rem) / 9,8` → "FUEGO LENTO," entra entero desde 240 (antes se cortaba).
+- LA CASA: pestañas en 2 columnas en 240 (en 3 se cortaban "Huerta" y "Familia"); desde 280 siguen en 3.
+- PLATOS: puntos de 24 px con mouse / 44 táctil (antes 16×24); menos padding en angosto para que los 5 entren en una fila desde 280 (en 240 bajan a una segunda fila).
+- EVENTOS: stepper de 44 px táctil y fila que baja si no entra (en 240 el "+" quedaba recortado); chips y botones de 44 px.
+- PREGUNTAS: el buscador ocupa todo el alto de la píldora (era de 17 px).
+- CONTACTO: redes con `flex-wrap` (en 240 WhatsApp quedaba afuera); en vertical el contenido arranca más abajo (`pt-48`) para no tapar la atribución de OSM; tipografía de la tarjeta pasada a la escala (`text-ui`, `text-etiqueta`) → pendiente de F10/F11.
+
+**Carta, categoría y polaroid**
+- Cartelitos con ancho limitado por el alto (`(100svh − 9,5rem) × 0,75`) y menos padding en pantallas bajas → en 667×375 un cartelito medía más que la pantalla.
+- Pie de la carta en una columna en angosto (el email se salía en 240, 280 y 320).
+- EVENTOS en 240: tarjetas en una columna ("$ 22.000" no entraba en media tarjeta).
+- Barra de la categoría: debajo de 384 px se oculta el wordmark (no entran los tres y MENU quedaba afuera en 360; "Volver al inicio" sigue en el pie).
+- Horario de la categoría: cada franja no se parte (`whitespace-nowrap`) y baja entera si no entra.
+- Polaroid: ancho limitado por el alto; en pantallas bajas, controles al costado en columna y nombre/precio apilados → en 667×375 los controles quedaban debajo de la pantalla.
+- Tamaños sueltos pasados a la escala: títulos de EVENTOS, PLATOS y PREGUNTAS → `text-titulo`; cifras de EVENTOS → `text-titulo`/`text-subtitulo`; nombre de los cartelitos → `text-subtitulo`.
+
+**QA**
+- `__auditar(opts)` en `qa-browser.mjs`: scroll horizontal (`scrollWidth` vs `innerWidth`), interactivos fuera del viewport o recortados (teniendo en cuenta scrollers y `fixed`), tapados (salvo que el scroller los pueda sacar de abajo), áreas táctiles, texto cortado (mirando el 60 % central de la caja del texto, por el interlineado ajustado de los títulos) y letra ≥ 10 px.
+- `qa/plans/responsive.json` generado por `scripts/qa-responsive.mjs` (14 tamaños × intro, cerrado, 6 secciones, lámina, carta frente y dorso, categoría, pie, polaroid); capturas en `qa/shots/responsive/`. Táctil hasta 1024 (1024×768 = tablet acostada), mouse desde 1280.
+- `f3-4-abrir-cerrar.json`: el número 05 desplegado pasa de y=516 a y=531 (el slot de los números creció de 1,5 a 1,75 em con mouse).
+- `qa-browser.mjs`: al volver de un viewport táctil a escritorio apaga la emulación táctil del mouse (el clic quedaba colgado).

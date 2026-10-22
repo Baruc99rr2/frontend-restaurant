@@ -162,7 +162,7 @@ export function MenuButton({ open, onToggle, className = '' }: MenuButtonProps) 
         if (e.currentTarget.matches(':focus-visible')) setHovered(true)
       }}
       onBlur={() => setHovered(false)}
-      className={`relative inline-flex shrink-0 cursor-pointer select-none items-center justify-center overflow-hidden rounded-full bg-oro px-5 py-3 font-ui text-ui font-bold uppercase tracking-[0.16em] sm:px-7 sm:tracking-[0.2em] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-champan ${
+      className={`relative inline-flex shrink-0 cursor-pointer select-none items-center justify-center overflow-hidden rounded-full area-tactil bg-oro px-5 py-3 font-ui text-ui font-bold uppercase tracking-[0.16em] angosto:px-3 angosto:tracking-[0.1em] sm:px-7 sm:tracking-[0.2em] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-champan ${
         open ? 'text-champan' : 'text-noche'
       } ${className}`}
     >
@@ -196,7 +196,7 @@ export function MenuButton({ open, onToggle, className = '' }: MenuButtonProps) 
       </div>
 
       {/* Texto con barrido WipeSwap */}
-      <WipeSwap value={label} className="relative z-10 min-w-[4.75rem] text-center" />
+      <WipeSwap value={label} className="relative z-10 min-w-[4.75rem] text-center angosto:min-w-[3.75rem]" />
     </button>
   )
 }

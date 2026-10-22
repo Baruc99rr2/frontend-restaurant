@@ -12,6 +12,7 @@
     "check:content": "node scripts/check-content.mjs",
     "qa": "node scripts/qa-browser.mjs",
     "qa:regresion": "node scripts/qa-all.mjs",
+    "qa:responsive": "node scripts/qa-responsive.mjs",
     "api:types": "openapi-typescript api/openapi.json -o api/schema.d.ts",
     "api:check": "pnpm api:types && tsc -p tsconfig.contract.json"
   },

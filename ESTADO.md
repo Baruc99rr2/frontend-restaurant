@@ -1,6 +1,6 @@
 # ESTADO
 
-Última actualización: 2026-10-21 — **F11 hecha: demo v1.0** (tag `v1.0-demo`). Próxima: F12 (conexión al backend, cuando haya un local real).
+Última actualización: 2026-10-21 — **v1.0.1: medios versionados y responsividad de 240 a 2560** (tag `v1.0.1-demo`). Próxima: F12 (conexión al backend, cuando haya un local real).
 Repo remoto: https://github.com/Baruc99rr2/frontend-restaurant (público).
 
 ## Sub-fases
@@ -23,10 +23,18 @@ Repo remoto: https://github.com/Baruc99rr2/frontend-restaurant (público).
 | F10 — Página de categoría y polaroid | ✅ hecha | `feat(web): categoria y polaroid` |
 | — Revisión de F10 (historial verificado, título gigante con tope, leyenda de alérgenos, contador de la polaroid) | ✅ hecha | `fix(web): revision de F10` |
 | F11 — Pulido: rendimiento, accesibilidad, SEO, white-label | ✅ hecha | `chore(web): pulido y documentacion white-label` |
+| — v1.0.1: medios al repo (Vercel desde GitHub) | ✅ hecha | `chore(web): versionar medios` |
+| — v1.0.1: responsividad de 240×320 a 2560×1440 y celular acostado | ✅ hecha | `fix(web): responsividad de 240 a 2560` |
 | F12 — Conexión al backend | pendiente (no ejecutar todavía) | — |
 
 ## Qué hay hoy
 
+- **v1.0.1 (medios y responsividad):**
+  - `public/media/` versionada: un clon limpio compila con fotos y video (despliegue en Vercel desde GitHub).
+  - Áreas de toque de 44 px con puntero táctil (`area-tactil`, `toque-linea`, variante `tactil:`) y variantes de tamaño `angosto:` (< 360 px), `minimo:` (≤ 260 px), `bajo:` (≤ 480 px de alto) en `tokens.css`.
+  - Modo cerrado vertical: el marco se calcula dentro de la banda libre (`filasVertical` en `geometry.ts`); en pantallas bajas sin frases laterales y con el título más chico; números laterales de 44 px táctil que, desplegados, se corren para entrar en la pantalla.
+  - Navbar compacto debajo de 360 px; lámina con scroll en pantallas bajas; cartelitos, polaroid (controles al costado) y carta ajustados por alto en el celular acostado; tamaños sueltos de CONTACTO, EVENTOS, PLATOS, PREGUNTAS y los cartelitos pasados a la escala.
+  - QA: `__auditar` en `qa-browser.mjs` y `qa/plans/responsive.json` (generado por `pnpm qa:responsive`).
 - **F11 (rendimiento, SEO, white-label):**
   - Chunks: app ~148 kB (era 540), React y GSAP aparte, y por ruta: overlay de la carta y página de categoría (`src/carta/cargas.ts`, con Lenis y Flip — `src/motion/flip.ts`), mapa, y miniaturas borrosas (`media.placeholders.generated.ts`, resueltas con `usePlaceholder` de `src/content/placeholders.ts`; en el catálogo `placeholder` es una clave `f1/paisaje`).
   - `index.html` lo arma el plugin de `vite.config.ts`: title/description/Open Graph desde `site.config.ts → seo` (`src/config/seo.ts`), precarga de fuentes y el loader de la intro ya en el HTML (`src/config/loaderEstatico.ts`, con un script que precarga el póster en `/` y la portada + chunk en `/carta/:slug`). React renderiza después del primer pintado. JSON-LD `Restaurant` en runtime (`src/app/Seo.tsx`) con datos del repositorio.
@@ -66,6 +74,14 @@ Repo remoto: https://github.com/Baruc99rr2/frontend-restaurant (público).
   - Planes sin esperas fijas: `__waitUntil` / `__frames` / `__sleep` (los inyecta `qa-browser.mjs`) y, en dev, `window.__qa` (`src/motion/qa.ts`): `reloj(escala)` enlentece GSAP para muestras a mitad de animación, `estable()` espera el escenario quieto (también carta y barrido), `reposo()` además sin animaciones (capturas), `cartaEstable()` carta y barrido quietos sin mirar el escenario (página de categoría). Planes nuevos: no usar `{ "wait": N }` para esperar estados.
   - Pasos del plan: además de los anteriores, teclas ←/→/Inicio/Fin y `"shift": true`, `{ "atras": true }` / `{ "adelante": true }` (botones del navegador) y `{ "click": { "selector": "…" } }`; en viewport mobile el `click` es un toque.
   - No editar archivos del proyecto mientras corre la regresión: Tailwind vigila todo el repo y Vite recarga la página a mitad del plan.
+
+## Verificación v1.0.1
+
+- `pnpm build` ✅ sin avisos · `pnpm lint` ✅ · `pnpm check:content` ✅.
+- **Medios:** clon limpio (`git clone` → `pnpm install --frozen-lockfile` → `pnpm build`): `dist/media` con 188 archivos (fotos AVIF/WebP, 2 videos y pósters); las 186 rutas de `media.generated.ts` existen en `dist/`.
+- `pnpm qa:regresion` ✅ **25/25 planes, 640 chequeos, sin errores de consola**, en una sola corrida secuencial (24 anteriores + `responsive.json`). `f3-4` con la posición nueva del número 05 (slot más alto). `f9-1` falló una vez al correr dos Chrome en paralelo y pasó solo y en la corrida completa.
+- `qa/plans/responsive.json`: 164 auditorías (14 tamaños × cerrado, 6 secciones, lámina debajo de 1200 px, carta frente y dorso, categoría y polaroid) todas limpias: sin scroll horizontal, sin interactivos fuera de pantalla, recortados ni tapados, áreas táctiles ≥ 44 px (40 en 240, 24 con mouse), sin texto cortado, letra ≥ 10 px. Capturas en `qa/shots/responsive/{ancho}x{alto}-{pantalla}.png` (más intro y pie de la categoría).
+- Antes de los arreglos, la misma auditoría marcaba problemas en todos los tamaños táctiles (detalle por tamaño en el reporte de la sesión y en `DECISIONES.md` → v1.0.1).
 
 ## Verificación F11
 
@@ -171,11 +187,12 @@ Repo remoto: https://github.com/Baruc99rr2/frontend-restaurant (público).
 - **Rendimiento de entradas directas:** `/carta` (75) y `/#eventos` (70) en Lighthouse móvil: el primer render monta el escenario + el panel o la carta de una. Opciones: partir el escenario en un chunk propio y dividir el montaje del panel inicial.
 - Lighthouse medido en local (`pnpm preview`, HTTP/1.1 sin compresión Brotli); en el hosting real hay que volver a medir.
 - **Polaroid:** el atrás del navegador sale de la categoría en vez de cerrar la foto (decisión de producto: ¿la foto tiene URL?).
-- Tamaños tipográficos sueltos en CONTACTO (`text-[0.6875rem]`, …): pasar a la escala.
 - **SEO:** sin `sitemap.xml` (las categorías salen del backend: generarlo en F12).
 - **Menú del día:** si el backend manda más de un plato del día, hoy se muestra el primero disponible.
+- Responsividad verificada con emulación (Chrome headless, táctil emulado): falta mirarla en teléfonos reales chicos y acostados (barra del navegador, zona segura del notch).
+- Celular acostado: las secciones del modo abierto usan el layout vertical con scroll interno; un layout propio en dos columnas para 667–844 × 375–390 mejoraría LA CASA y EVENTOS (hoy hay que scrollear).
 - Probar en un teléfono real el carrusel con snap, el flip 3D de los cartelitos y la polaroid (en QA el toque está emulado).
-- **Licencias:** confirmar si fotos y video son de licencia libre → recién ahí versionar `public/media/`. Ojo: el video (HOME, ahora a pantalla completa) muestra el cartel de otro negocio ("Historia Meze & Grill"), `restaurant5` el nombre "Gustav", `food2` una botella de Guinness.
+- **Medios:** `public/media/` ya se versiona (demo personal). Antes de usar el template para un cliente, reemplazarlos. Ojo: el video (HOME, ahora a pantalla completa) muestra el cartel de otro negocio ("Historia Meze & Grill"), `restaurant5` el nombre "Gustav", `food2` una botella de Guinness.
 - **Medios en baja resolución:** fuentes de 495–1280 px y video 852×480; a pantalla completa se notan.
 - **Datos de HOME** (140 etiquetas, 12 h, 38 cubiertos, 4,8) son placeholder en `site.config.ts → home`.
 - **Sin fotos de postres.**

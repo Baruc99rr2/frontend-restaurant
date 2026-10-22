@@ -24,6 +24,12 @@
 //   __waitUntil(fn, pred, timeout = 8000)  → repite fn() cada 30 ms hasta que pred(valor); al vencer devuelve fn()
 //   __frames(n = 2)                        → espera n frames
 //   __sleep(ms)                            → solo para simular el ritmo de un input (no para esperar estados)
+//   __auditar({ min = 44, encima })        → responsividad de la pantalla actual: { desborde (scrollWidth −
+//        innerWidth), fuera (interactivos fuera del viewport o recortados, contando scrollers y fixed),
+//        tapados (otro elemento encima del centro, salvo que un scroll lo saque o esté dentro de `encima`),
+//        chicos (área < min, salvo links dentro de un párrafo), cortados (texto cortado), letraMin }.
+//        Las listas con `data-desplegable` (se despliegan al enfocarlas) no cuentan como recortadas.
+//        Lo usa qa/plans/responsive.json (generado por scripts/qa-responsive.mjs).
 // En dev la app además expone `__qa` (src/motion/qa.ts): `reloj(escala)` enlentece GSAP para muestras
 // a mitad de animación, `estable()` espera a que el escenario quede quieto.
 
@@ -143,6 +149,113 @@ window.__waitUntil = async (fn, pred, timeout = 8000) => {
   }
   return fn();
 };
+window.__auditar = (opts = {}) => {
+  const min = opts.min ?? 44;
+  const W = innerWidth, H = innerHeight;
+  const de = document.documentElement;
+  const nombre = (el) => {
+    const d = [...el.attributes].find((a) => a.name.startsWith('data-'));
+    const t = (el.getAttribute('aria-label') || el.textContent || el.getAttribute('placeholder') || '').replace(/\\s+/g, ' ').trim().slice(0, 32);
+    return el.tagName.toLowerCase() + (d ? '[' + d.name + (d.value ? '=' + d.value.slice(0, 24) : '') + ']' : '') + (t ? ' "' + t + '"' : '');
+  };
+  const visible = (el) =>
+    !el.closest('[inert], [aria-hidden="true"]') &&
+    el.checkVisibility({ opacityProperty: true, visibilityProperty: true, contentVisibilityAuto: true });
+  const docScrollY = getComputedStyle(de).overflowY !== 'hidden' && getComputedStyle(document.body).overflowY !== 'hidden' && de.scrollHeight > H + 1;
+  // Dónde queda una caja: 'ok', 'recortado' (oculta del todo por un ancestro que recorta y no scrollea),
+  // 'cortado' (en parte), 'fuera' (sale del viewport y no hay scroll que la traiga).
+  const ubicar = (r0, el) => {
+    let L = r0.left, R = r0.right, T = r0.top, B = r0.bottom;
+    let estado = 'ok';
+    let fijo = false;
+    for (let a = el.parentElement; a && a !== de && a !== document.body; a = a.parentElement) {
+      const s = getComputedStyle(a);
+      const ar = a.getBoundingClientRect();
+      for (const eje of ['x', 'y']) {
+        const o = eje === 'x' ? s.overflowX : s.overflowY;
+        const [lo, hi, alo, ahi] = eje === 'x' ? [L, R, ar.left, ar.right] : [T, B, ar.top, ar.bottom];
+        const scrollea = (o === 'auto' || o === 'scroll') && (eje === 'x' ? a.scrollWidth > a.clientWidth + 1 : a.scrollHeight > a.clientHeight + 1);
+        if (scrollea) {
+          const len = hi - lo;
+          let n = lo;
+          if (n < alo) n = alo;
+          if (n + len > ahi) n = Math.max(alo, ahi - len);
+          if (eje === 'x') { L = n; R = n + len; } else { T = n; B = n + len; }
+        } else if (o !== 'visible') {
+          if (hi <= alo + 1 || lo >= ahi - 1) return 'recortado';
+          if (lo < alo - 1 || hi > ahi + 1) estado = 'cortado';
+        }
+      }
+      if (s.position === 'fixed') { fijo = true; break; }
+    }
+    if (L < -1 || R > W + 1) return 'fuera';
+    // Lo que cuelga de un fixed no baja con el scroll del documento.
+    if ((fijo || !docScrollY) && (T < -1 || B > H + 1)) return 'fuera';
+    return estado;
+  };
+  // Primer ancestro que scrollea en vertical (o el documento): si puede sacar al elemento de
+  // abajo de lo que lo tapa, no cuenta como tapado (se alcanza scrolleando).
+  const scrollerY = (el) => {
+    for (let a = el.parentElement; a && a !== de && a !== document.body; a = a.parentElement) {
+      const o = getComputedStyle(a).overflowY;
+      if ((o === 'auto' || o === 'scroll') && a.scrollHeight > a.clientHeight + 1) return a;
+      if (getComputedStyle(a).position === 'fixed') return null;
+    }
+    return docScrollY ? de : null;
+  };
+  const libreConScroll = (el, r, hit) => {
+    const sc = scrollerY(el);
+    if (!sc || sc.contains(hit)) return false;
+    const hr = hit.getBoundingClientRect();
+    const abajo = sc.scrollHeight - sc.clientHeight - sc.scrollTop;
+    return abajo >= r.bottom - hr.top || sc.scrollTop >= hr.bottom - r.top;
+  };
+  const SEL = 'a[href], button, input:not([type=hidden]), select, textarea, summary, [role=button], [role=tab], [role=link], [role=radio], [tabindex]:not([tabindex="-1"])';
+  const fuera = [], tapados = [], chicos = [], cortados = [];
+  for (const el of document.querySelectorAll(SEL)) {
+    if (!visible(el)) continue;
+    const r = el.getBoundingClientRect();
+    if (r.width < 1 || r.height < 1) continue;
+    const u = ubicar(r, el);
+    // Listas que se despliegan al enfocarlas o tocarlas (números del modo cerrado): ocultas a propósito.
+    if (u === 'recortado' && el.closest('[data-desplegable]')) continue;
+    if (u !== 'ok') { fuera.push(u + ' ' + nombre(el)); continue; }
+    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    if (cx >= 0 && cx <= W && cy >= 0 && cy <= H && getComputedStyle(el).pointerEvents !== 'none') {
+      const hit = document.elementFromPoint(cx, cy);
+      // opts.encima: algo abierto a propósito encima de todo (la lámina del navbar).
+      if (hit && !el.contains(hit) && !libreConScroll(el, r, hit) && !(opts.encima && hit.closest(opts.encima))) tapados.push(nombre(el) + ' ← ' + nombre(hit));
+    }
+    // Links dentro de un texto (excepción de WCAG 2.5.8): en línea y con más texto alrededor.
+    const enLinea = getComputedStyle(el).display === 'inline' && (el.parentElement?.textContent.trim().length ?? 0) > el.textContent.trim().length;
+    if (!enLinea && (r.width < min - 0.5 || r.height < min - 0.5)) chicos.push(nombre(el) + ' ' + Math.round(r.width) + '×' + Math.round(r.height));
+  }
+  let letraMin = Infinity;
+  const tw = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  const rango = document.createRange();
+  for (let n = tw.nextNode(); n; n = tw.nextNode()) {
+    if (!n.textContent.trim()) continue;
+    const el = n.parentElement;
+    if (!el || el.closest('script, style, noscript, .sr-only, [inert]') || !el.checkVisibility({ opacityProperty: true, visibilityProperty: true, contentVisibilityAuto: true })) continue;
+    rango.selectNodeContents(n);
+    const r0 = rango.getBoundingClientRect();
+    if (r0.width < 1 || r0.height < 1) continue;
+    // La caja del texto incluye el ascendente/descendente de la fuente: con interlineado ajustado
+    // (títulos gigantes) sobresale de su línea sin que se corte ninguna letra. Se mira el 60 % central.
+    const fs = parseFloat(getComputedStyle(el).fontSize);
+    const m = Math.min(r0.height * 0.2, fs * 0.2);
+    const r = { left: r0.left + 1, right: r0.right - 1, top: r0.top + m, bottom: r0.bottom - m };
+    const u = ubicar(r, el);
+    if (u === 'recortado') continue;
+    letraMin = Math.min(letraMin, parseFloat(getComputedStyle(el).fontSize));
+    if (u !== 'ok') cortados.push(u + ' ' + nombre(el));
+  }
+  return {
+    desborde: Math.max(0, Math.max(de.scrollWidth, document.body.scrollWidth) - W),
+    fuera: [...new Set(fuera)], tapados: [...new Set(tapados)], chicos: [...new Set(chicos)], cortados: [...new Set(cortados)],
+    letraMin: letraMin === Infinity ? null : letraMin,
+  };
+};
 `
 
 let viewport = { width: 1440, height: 900, mobile: false, scale: 1 }
@@ -184,9 +297,8 @@ async function run() {
         mobile: viewport.mobile,
       })
       await send('Emulation.setTouchEmulationEnabled', { enabled: !!viewport.mobile, maxTouchPoints: viewport.mobile ? 5 : 1 })
-      if (viewport.mobile) {
-        await send('Emulation.setEmitTouchEventsForMouse', { enabled: true, configuration: 'mobile' })
-      }
+      // Se apaga al volver a escritorio: con la emulación del mouse encendida, el clic no vuelve nunca.
+      await send('Emulation.setEmitTouchEventsForMouse', { enabled: !!viewport.mobile, configuration: 'mobile' })
     } else if ('reducedMotion' in step) {
       await send('Emulation.setEmulatedMedia', {
         features: [{ name: 'prefers-reduced-motion', value: step.reducedMotion ? 'reduce' : 'no-preference' }],

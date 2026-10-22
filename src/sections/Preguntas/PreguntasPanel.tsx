@@ -363,7 +363,7 @@ export function PreguntasPanel({ active }: Props) {
                   mode="words"
                   active={active}
                   delay={0.05}
-                  className="font-serif text-[clamp(1.65rem,3vw,2.75rem)] leading-[1.06] text-champan"
+                  className="font-serif text-titulo leading-[1.06] text-champan"
                 >
                   {copy.preguntas.titulo}
                 </Reveal>
@@ -388,7 +388,7 @@ export function PreguntasPanel({ active }: Props) {
                     onChange={(e) => handleQueryChange(e.target.value)}
                     placeholder={copy.preguntas.buscar}
                     aria-label={copy.preguntas.buscar}
-                    className="w-full min-w-0 bg-transparent font-ui text-ui text-champan placeholder:text-ceniza focus:outline-none [&::-webkit-search-cancel-button]:hidden"
+                    className="h-full w-full min-w-0 bg-transparent font-ui text-ui text-champan placeholder:text-ceniza focus:outline-none [&::-webkit-search-cancel-button]:hidden"
                   />
                   <button
                     type="button"
@@ -401,7 +401,7 @@ export function PreguntasPanel({ active }: Props) {
                         inputRef.current?.focus()
                       }
                     }}
-                    className="grid size-8 shrink-0 cursor-pointer place-items-center rounded-full bg-champan/10 text-champan transition-colors duration-200 hover:bg-oro hover:text-noche focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro"
+                    className="grid size-8 shrink-0 cursor-pointer place-items-center rounded-full bg-champan/10 tactil:size-11 text-champan transition-colors duration-200 hover:bg-oro hover:text-noche focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro"
                   >
                     {query ? (
                       <X className="size-4" aria-hidden="true" />

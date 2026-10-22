@@ -262,19 +262,19 @@ export function Navbar({
   return (
     <header
       ref={navRef}
-      className={`@container relative z-30 flex w-full items-center justify-between gap-3 bg-transparent px-4 py-4 sm:gap-4 sm:px-8 ${className}`}
+      className={`@container relative z-30 flex w-full items-center justify-between gap-3 bg-transparent px-4 py-4 angosto:gap-1.5 angosto:px-3 sm:gap-4 sm:px-8 ${className}`}
     >
       {/* Izquierda: Wordmark Caslon de dos líneas (ref. 06) */}
       <button
         ref={marcaRef}
         type="button"
         onClick={() => handleSelect('home')}
-        className="group shrink-0 cursor-pointer text-left font-serif text-champan focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-oro"
+        className="group area-tactil flex shrink-0 cursor-pointer flex-col justify-center text-left font-serif text-champan focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-oro"
       >
-        <span className="block text-subtitulo leading-[0.92] tracking-[0.06em] uppercase transition-colors group-hover:text-oro">
+        <span className="block text-subtitulo leading-[0.92] tracking-[0.06em] uppercase transition-colors angosto:text-ui minimo:text-etiqueta minimo:tracking-[0.04em] group-hover:text-oro">
           {linea1}
         </span>
-        <span className="mt-0.5 block text-etiqueta leading-none tracking-[0.16em] uppercase text-champan/85">
+        <span className="mt-0.5 block text-etiqueta leading-none tracking-[0.16em] uppercase text-champan/85 angosto:text-micro angosto:tracking-[0.04em] minimo:hidden">
           {linea2}
         </span>
       </button>
@@ -321,7 +321,7 @@ export function Navbar({
         </nav>
 
       {/* Derecha: Botón de links (mobile) + Botón MENU */}
-      <div className="flex shrink-0 items-center gap-2 sm:gap-2.5">
+      <div className="flex shrink-0 items-center gap-2 angosto:gap-1.5 sm:gap-2.5">
           <button
             ref={sheetButtonRef}
             type="button"
@@ -330,7 +330,7 @@ export function Navbar({
             aria-controls="navbar-mobile-sheet"
             aria-label={sheetOpen ? siteConfig.botones.cerrar : 'Secciones'}
             onClick={() => setMobileSheetOpen((v) => !v)}
-            className="relative inline-flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-full border border-champan/20 bg-champan/10 text-champan backdrop-blur-md transition-colors hover:border-oro hover:text-oro focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro @min-[75rem]:hidden"
+            className="relative inline-flex size-11 shrink-0 cursor-pointer minimo:size-10 items-center justify-center rounded-full border border-champan/20 bg-champan/10 text-champan backdrop-blur-md transition-colors hover:border-oro hover:text-oro focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro @min-[75rem]:hidden"
           >
             {/* Los dos íconos quedan montados y se cruzan (nada aparece sin transición). */}
             <ListFilter
@@ -355,7 +355,9 @@ export function Navbar({
           id="navbar-mobile-sheet"
           ref={sheetRef}
           style={{ display: 'none' }}
-          className="absolute top-full right-4 left-4 mt-2 overflow-hidden rounded-2xl border border-champan/15 bg-tizon/95 p-3 backdrop-blur-md @min-[75rem]:hidden"
+          // Pantallas bajas (celular acostado, 240×320): la lámina scrollea y no tapa el último link.
+          data-stage-scroller
+          className="absolute top-full right-4 left-4 mt-2 max-h-[calc(100svh-6rem)] overflow-x-hidden overflow-y-auto overscroll-contain rounded-2xl angosto:right-3 angosto:left-3 border border-champan/15 bg-tizon/95 p-3 backdrop-blur-md @min-[75rem]:hidden"
         >
           <ul className="divide-y divide-champan/10">
             {NAV_ITEMS.map((item) => {
@@ -366,7 +368,7 @@ export function Navbar({
                     type="button"
                     aria-current={isActive ? 'page' : undefined}
                     onClick={() => handleSelect(item.key)}
-                    className={`flex w-full cursor-pointer items-center justify-between px-3 py-3 text-left font-ui text-ui font-semibold uppercase tracking-[0.12em] transition-colors ${
+                    className={`area-tactil flex w-full cursor-pointer items-center justify-between px-3 py-3 text-left font-ui text-ui font-semibold uppercase tracking-[0.12em] transition-colors ${
                       isActive ? 'text-oro' : 'text-champan hover:text-oro'
                     }`}
                   >

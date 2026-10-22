@@ -144,7 +144,7 @@ export function OpenView({ rootRef, textsPanel, visible, onClose, onVerCarta, on
         type="button"
         onClick={onClose}
         tabIndex={visible ? 0 : -1}
-        className="pointer-events-auto invisible absolute right-[max(1.5rem,env(safe-area-inset-right))] bottom-[max(1.5rem,env(safe-area-inset-bottom))] z-10 inline-flex cursor-pointer items-center gap-2.5 rounded-full border border-champan/25 bg-noche/60 px-5 py-3 font-ui text-etiqueta font-semibold uppercase text-champan opacity-0 backdrop-blur-md transition-colors hover:border-oro hover:text-oro focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro"
+        className="pointer-events-auto invisible absolute right-[max(1.5rem,env(safe-area-inset-right))] bottom-[max(1.5rem,env(safe-area-inset-bottom))] z-10 area-tactil inline-flex cursor-pointer items-center gap-2.5 rounded-full border border-champan/25 bg-noche/60 px-5 py-3 font-ui text-etiqueta font-semibold uppercase text-champan opacity-0 backdrop-blur-md transition-colors hover:border-oro hover:text-oro focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro"
       >
         <FrameIcon className="size-4" aria-hidden="true" />
         {siteConfig.botones.vistaGeneral}

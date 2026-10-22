@@ -231,13 +231,13 @@ export function Polaroid({
       <div
         ref={flipRef}
         data-polaroid-flip
-        className="relative z-10 flex flex-col items-center gap-5 will-change-transform"
+        className="relative z-10 flex flex-col items-center gap-5 will-change-transform bajo:flex-row bajo:gap-3"
       >
         {/* Marco polaroid con rotación leve fija por plato, 14px de lados y 56px abajo. */}
         <div
           data-polaroid-marco
           style={{ '--rot': `${rot}deg` } as React.CSSProperties}
-          className="relative w-[min(84vw,22.5rem)] rotate-(--rot) bg-champan px-[14px] pt-[14px] text-noche shadow-[0_2rem_4.5rem_-1.25rem_var(--color-noche)] transition-[rotate] duration-500 ease-out sm:w-[min(76vw,24.5rem)] motion-reduce:transition-none"
+          className="relative w-[min(84vw,22.5rem,calc((100svh-10rem)*0.8))] rotate-(--rot) bg-champan px-[14px] pt-[14px] text-noche shadow-[0_2rem_4.5rem_-1.25rem_var(--color-noche)] transition-[rotate] duration-500 ease-out sm:w-[min(76vw,24.5rem,calc((100svh-10rem)*0.8))] bajo:!w-[min(calc(100vw-6.5rem),calc((100svh-7.5rem)*0.78))] motion-reduce:transition-none"
         >
           {/* Botón cerrar ✕ */}
           <button
@@ -246,7 +246,7 @@ export function Polaroid({
             data-polaroid-cerrar
             aria-label={copy.carta.cerrarFoto}
             onClick={onCerrar}
-            className="absolute -top-4 -right-4 z-20 grid size-10 cursor-pointer place-items-center rounded-full border border-champan/40 bg-tizon text-champan shadow-lg transition-colors duration-200 hover:border-oro hover:bg-oro hover:text-noche focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro"
+            className="absolute -top-4 -right-4 z-20 grid size-10 cursor-pointer tactil:size-11 place-items-center rounded-full border border-champan/40 bg-tizon text-champan shadow-lg transition-colors duration-200 hover:border-oro hover:bg-oro hover:text-noche focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro"
           >
             <X className="size-4" aria-hidden="true" />
           </button>
@@ -266,9 +266,9 @@ export function Polaroid({
           {/* Pie de 56px: nombre del plato en Caslon y precio en centavos formateado */}
           <div
             data-polaroid-pie
-            className="flex min-h-[56px] items-baseline justify-between gap-4 pt-3 pb-3.5"
+            className="flex min-h-[56px] items-baseline justify-between gap-4 pt-3 pb-3.5 bajo:flex-col bajo:gap-1"
           >
-            <div data-polaroid-nombre className="min-w-0 flex-1 overflow-hidden">
+            <div data-polaroid-nombre className="min-w-0 flex-1 overflow-hidden bajo:w-full">
               <WipeSwap
                 value={plato?.name ?? ''}
                 as="p"
@@ -287,13 +287,13 @@ export function Polaroid({
 
         {/* Controles ← → para recorrer los platos con foto de la categoría (teclado, clic o toque) */}
         {platos.length > 1 ? (
-          <div className="flex items-center gap-4 rounded-full border border-champan/20 bg-tizon/90 px-3 py-1.5 text-champan backdrop-blur-md">
+          <div className="flex items-center gap-4 rounded-full border border-champan/20 bg-tizon/90 px-3 py-1.5 text-champan backdrop-blur-md bajo:flex-col bajo:gap-2 bajo:px-1.5 bajo:py-3">
             <button
               type="button"
               data-polaroid-anterior
               aria-label={copy.platos.anterior}
               onClick={() => onCambiar((idxSeguro - 1 + platos.length) % platos.length)}
-              className="grid size-8 cursor-pointer place-items-center rounded-full border border-champan/25 text-champan transition-colors hover:border-oro hover:text-oro focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro"
+              className="grid size-8 cursor-pointer place-items-center rounded-full border border-champan/25 text-champan transition-colors hover:border-oro hover:text-oro tactil:size-11 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro"
             >
               <ArrowLeft className="size-4" aria-hidden="true" />
             </button>
@@ -308,7 +308,7 @@ export function Polaroid({
               data-polaroid-siguiente
               aria-label={copy.platos.siguiente}
               onClick={() => onCambiar((idxSeguro + 1) % platos.length)}
-              className="grid size-8 cursor-pointer place-items-center rounded-full border border-champan/25 text-champan transition-colors hover:border-oro hover:text-oro focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro"
+              className="grid size-8 cursor-pointer place-items-center rounded-full border border-champan/25 text-champan transition-colors hover:border-oro hover:text-oro tactil:size-11 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro"
             >
               <ArrowRight className="size-4" aria-hidden="true" />
             </button>

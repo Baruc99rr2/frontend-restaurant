@@ -4,7 +4,7 @@ import { gsap, useGSAP } from '@/motion/gsap'
 import { Reveal } from '@/motion/primitives'
 import { motionDuration, motionEase } from '@/motion/tokens'
 import { useReducedMotion } from '@/motion/useReducedMotion'
-import { closedBox, esVertical, leerRotacion, shapePoints, boundingBox } from '@/stage/geometry'
+import { closedBox, esVertical, filasVertical, leerRotacion, shapePoints, boundingBox, tituloTope } from '@/stage/geometry'
 import { TOTAL_PANELES } from '@/stage/stageMachine'
 import { useCoarsePointer, useElementSize } from '@/stage/useStageSize'
 
@@ -110,18 +110,30 @@ function IndexColumn({
   const coarse = useCoarsePointer()
   const open = expanded && textsIn
 
-  // Slots: 0 vacío + un número por panel. Un slot = 1.5em.
+  // Slots: 0 vacío + un número por panel. Un slot = SLOT em (área de toque: 44 px táctil, ~24 px mouse).
   const slot = textsIn ? displayIndex + 1 : 0
+  const SLOT = coarse ? 3.4 : 1.75
 
   useGSAP(
     () => {
       const win = windowRef.current
       const list = listRef.current
       if (!win || !list) return
-      // Desplegado: la ventana crece hacia arriba y abajo y el número actual queda quieto.
-      const top = open && !expandDown ? -displayIndex * 1.5 : 0
-      const height = open ? TOTAL_PANELES * 1.5 : 1.5
-      const y = open ? -1.5 : -slot * 1.5
+      // Desplegado: la ventana crece hacia arriba y abajo y el número actual queda quieto
+      // (si no entra en la pantalla, se corre lo justo para que entre: celular acostado).
+      let top = open && !expandDown ? -displayIndex * SLOT : 0
+      if (open && !expandDown) {
+        const caja = win.parentElement?.getBoundingClientRect()
+        const em = Number.parseFloat(getComputedStyle(win).fontSize) || 16
+        if (caja) {
+          const alto = TOTAL_PANELES * SLOT
+          const minimo = (8 - caja.top) / em
+          const maximo = (window.innerHeight - 8 - caja.top) / em - alto
+          top = Math.min(Math.max(top, minimo), Math.max(minimo, maximo))
+        }
+      }
+      const height = open ? TOTAL_PANELES * SLOT : SLOT
+      const y = open ? -SLOT : -slot * SLOT
       const vars = { top: `${top}em`, height: `${height}em` }
       gsap.killTweensOf([win, list])
       if (firstRef.current) {
@@ -141,12 +153,14 @@ function IndexColumn({
       gsap.to(win, { ...vars, duration, ease })
       gsap.to(list, { y: `${y}em`, duration, ease })
     },
-    { dependencies: [open, slot, displayIndex, reduced, expandDown] },
+    { dependencies: [open, slot, displayIndex, reduced, expandDown, SLOT] },
   )
 
   return (
     <div
-      className="pointer-events-auto relative h-[1.5em] w-[2.5em] text-ui"
+      // El número queda alineado con la primera línea de la etiqueta aunque su área sea más alta.
+      style={{ height: `${SLOT}em`, width: `${Math.max(2.5, SLOT)}em`, marginTop: `${-(SLOT - 1.5) / 2}em` }}
+      className="pointer-events-auto relative shrink-0 text-ui"
       onPointerEnter={(e) => e.pointerType === 'mouse' && setExpanded(true)}
       onPointerLeave={(e) => e.pointerType === 'mouse' && setExpanded(false)}
       onFocus={() => setExpanded(true)}
@@ -157,10 +171,12 @@ function IndexColumn({
       <nav
         ref={windowRef}
         aria-label={copy.escenario.paneles}
+        // Lista que se despliega con hover, foco o toque: los números ocultos son alcanzables.
+        data-desplegable
         className="absolute inset-x-0 overflow-hidden"
       >
         <div ref={listRef} className="will-change-transform">
-          <div className="h-[1.5em]" aria-hidden="true" />
+          <div style={{ height: `${SLOT}em` }} aria-hidden="true" />
           {paneles.map((p, i) => {
             const actual = i === displayIndex
             return (
@@ -180,7 +196,8 @@ function IndexColumn({
                   setExpanded(false)
                   if (!actual) onGoTo(i)
                 }}
-                className={`flex h-[1.5em] w-full cursor-pointer items-center tabular-nums transition-colors duration-300 focus-visible:outline-1 focus-visible:outline-oro ${
+                style={{ height: `${SLOT}em` }}
+                className={`flex w-full cursor-pointer items-center tabular-nums transition-colors duration-300 focus-visible:outline-1 focus-visible:outline-oro ${
                   actual ? 'text-champan' : 'text-champan/45 hover:text-oro'
                 }`}
               >
@@ -192,13 +209,6 @@ function IndexColumn({
       </nav>
     </div>
   )
-}
-
-// --- Título gigante: tamaño ajustado al ancho ---------------------------------------
-
-/** Tope del título: alto en desktop (~25% del alto), ancho en mobile. */
-function tituloTope(w: number, h: number) {
-  return w / h < 1 ? w * 0.24 : Math.min(w * 0.16, h * 0.25)
 }
 
 export function ClosedView({ displayIndex, textsIn, faded, onGoTo }: Props) {
@@ -216,7 +226,7 @@ export function ClosedView({ displayIndex, textsIn, faded, onGoTo }: Props) {
       const h = rootRef.current?.clientHeight ?? 0
       if (!w || !h) return
       const disponible = w - (w < 640 ? 32 : 64)
-      const tope = tituloTope(w, h)
+      const tope = tituloTope({ width: w, height: h })
       // En tres pasadas (escribir todos, medir todos, escribir todos): un solo reflow.
       const titulos = titleRefs.current.filter((el): el is HTMLDivElement => !!el)
       for (const el of titulos) el.style.fontSize = '100px'
@@ -259,6 +269,9 @@ export function ClosedView({ displayIndex, textsIn, faded, onGoTo }: Props) {
     : 0
   // Desktop: junto a la esquina inferior derecha, lejos de la etiqueta derecha y del título.
   const hint = vertical ? { x: 16, y: bajoMarco } : { x: pts[4] + 24, y: pts[5] - 8 }
+  // Vertical: en pantallas bajas no hay frases (no entran con el marco); en angostas la frase
+  // derecha va debajo de la indicación (en la misma fila se pisaban).
+  const filas = vertical ? filasVertical(size) : null
 
   const slot = textsIn ? displayIndex + 1 : 0
   const izquierdas = [['', ''], ...paneles.map((p) => p.izquierda)]
@@ -297,26 +310,28 @@ export function ClosedView({ displayIndex, textsIn, faded, onGoTo }: Props) {
           Mobile: índice + frase izq. arriba; frase der. debajo del marco (no entran las dos en una fila). */}
       <div
         className={`absolute inset-x-0 flex items-start justify-between px-4 sm:px-8 ${
-          vertical ? 'top-[calc(env(safe-area-inset-top)+5.25rem)]' : '-translate-y-1/2'
+          vertical ? '' : '-translate-y-1/2'
         }`}
-        style={vertical ? undefined : { top: box.cy }}
+        style={{ top: filas ? `calc(env(safe-area-inset-top) + ${filas.filaArriba}px)` : box.cy }}
       >
         <div className={`flex items-start ${vertical ? 'gap-4' : 'w-[30vw] gap-[6vw]'}`}>
           <IndexColumn displayIndex={displayIndex} textsIn={textsIn} onGoTo={onGoTo} expandDown={vertical} />
+          {filas?.bajo ? null : (
           <Roll
             items={izquierdas.map(frase)}
             slot={slot}
             className={labelClass}
             itemClassName={`h-[2.6em] ${vertical ? 'text-left' : 'text-center'}`}
           />
+          )}
         </div>
         <div className={`flex items-start justify-end ${vertical ? '' : 'w-[30vw] gap-[6vw]'}`}>
           {!vertical && derecha}
           {total}
         </div>
       </div>
-      {vertical && (
-        <div className="absolute right-4" style={{ top: bajoMarco }}>
+      {filas && !filas.bajo && (
+        <div className="absolute right-4" style={{ top: filas.angosto ? bajoMarco + 26 : bajoMarco }}>
           {derecha}
         </div>
       )}

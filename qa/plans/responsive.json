@@ -1,0 +1,4389 @@
+{
+  "descripcion": "Responsividad de 240 a 2560 (generado por scripts/qa-responsive.mjs, no editar a mano): en cada tamaño, intro, modo cerrado, las 6 secciones, lámina, carta frente y dorso, categoría y polaroid. `__auditar`: sin scroll horizontal, interactivos dentro del viewport (o de un scroller), sin tapar, áreas táctiles ≥ 44 px (40 en 240, 24 con mouse), texto sin cortar y letra ≥ 10 px. Capturas en qa/shots/responsive/.",
+  "steps": [
+    {
+      "viewport": {
+        "width": 240,
+        "height": 320,
+        "mobile": true,
+        "scale": 1
+      }
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.mode, (m) => m === 'intro', 15000); __qa.reloj(0.2); await __frames(30); return true })()"
+    },
+    {
+      "shot": "../shots/responsive/240x320-intro.png"
+    },
+    {
+      "eval": "(async () => { __qa.reloj(1); await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.mode, (m) => m === 'closed', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 40 }))",
+      "label": "240×320 cerrado",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/240x320-cerrado.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#home"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '0', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 40 }))",
+      "label": "240×320 home",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/240x320-home.png"
+    },
+    {
+      "click": {
+        "selector": "[aria-controls=navbar-mobile-sheet]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => getComputedStyle(document.getElementById('navbar-mobile-sheet')).opacity, (o) => o === '1'); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 40, encima: '#navbar-mobile-sheet' }))",
+      "label": "240×320 lamina",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/240x320-lamina.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#la-casa"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '1', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 40 }))",
+      "label": "240×320 la-casa",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/240x320-la-casa.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#platos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '2', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 40 }))",
+      "label": "240×320 platos",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/240x320-platos.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#eventos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '3', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 40 }))",
+      "label": "240×320 eventos",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/240x320-eventos.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#preguntas"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '4', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 40 }))",
+      "label": "240×320 preguntas",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/240x320-preguntas.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#contacto"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '5', 15000); await __waitUntil(() => document.querySelectorAll('.leaflet-tile-loaded').length, (n) => n > 0, 8000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 40 }))",
+      "label": "240×320 contacto",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/240x320-contacto.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/carta"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-carta-estado]')?.dataset.cartaEstado, (e) => e === 'abierta', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 40 }))",
+      "label": "240×320 carta",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/240x320-carta.png"
+    },
+    {
+      "click": {
+        "selector": "[data-carta-card]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-volteado]') !== null, (v) => v, 5000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 40 }))",
+      "label": "240×320 carta-dorso",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/240x320-carta-dorso.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/carta/fuegos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelectorAll('[data-plato]').length, (n) => n === 6, 15000); await __qa.cartaEstable(); return __waitUntil(() => !__qa.gsap.globalTimeline.getChildren(true, true, false).some((t) => t.isActive() && t.repeat() !== -1 && t.totalDuration() < 5), (v) => v) })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 40 }))",
+      "label": "240×320 categoria",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/240x320-categoria.png"
+    },
+    {
+      "eval": "(window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }), __frames(4))"
+    },
+    {
+      "shot": "../shots/responsive/240x320-categoria-pie.png"
+    },
+    {
+      "eval": "(document.querySelector('[data-plato-abrir]').scrollIntoView({ block: 'center', behavior: 'instant' }), __frames(4))"
+    },
+    {
+      "click": {
+        "selector": "[data-plato-abrir]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-polaroid]')?.dataset.polaroidEstado, (e) => e === 'abierta', 8000); return __waitUntil(() => !__qa.gsap.globalTimeline.getChildren(true, true, false).some((t) => t.isActive() && t.repeat() !== -1 && t.totalDuration() < 5), (v) => v) })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 40 }))",
+      "label": "240×320 polaroid",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/240x320-polaroid.png"
+    },
+    {
+      "viewport": {
+        "width": 280,
+        "height": 653,
+        "mobile": true,
+        "scale": 1
+      }
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.mode, (m) => m === 'intro', 15000); __qa.reloj(0.2); await __frames(30); return true })()"
+    },
+    {
+      "shot": "../shots/responsive/280x653-intro.png"
+    },
+    {
+      "eval": "(async () => { __qa.reloj(1); await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.mode, (m) => m === 'closed', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "280×653 cerrado",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/280x653-cerrado.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#home"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '0', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "280×653 home",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/280x653-home.png"
+    },
+    {
+      "click": {
+        "selector": "[aria-controls=navbar-mobile-sheet]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => getComputedStyle(document.getElementById('navbar-mobile-sheet')).opacity, (o) => o === '1'); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44, encima: '#navbar-mobile-sheet' }))",
+      "label": "280×653 lamina",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/280x653-lamina.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#la-casa"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '1', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "280×653 la-casa",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/280x653-la-casa.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#platos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '2', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "280×653 platos",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/280x653-platos.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#eventos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '3', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "280×653 eventos",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/280x653-eventos.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#preguntas"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '4', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "280×653 preguntas",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/280x653-preguntas.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#contacto"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '5', 15000); await __waitUntil(() => document.querySelectorAll('.leaflet-tile-loaded').length, (n) => n > 0, 8000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "280×653 contacto",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/280x653-contacto.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/carta"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-carta-estado]')?.dataset.cartaEstado, (e) => e === 'abierta', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "280×653 carta",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/280x653-carta.png"
+    },
+    {
+      "click": {
+        "selector": "[data-carta-card]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-volteado]') !== null, (v) => v, 5000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "280×653 carta-dorso",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/280x653-carta-dorso.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/carta/fuegos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelectorAll('[data-plato]').length, (n) => n === 6, 15000); await __qa.cartaEstable(); return __waitUntil(() => !__qa.gsap.globalTimeline.getChildren(true, true, false).some((t) => t.isActive() && t.repeat() !== -1 && t.totalDuration() < 5), (v) => v) })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "280×653 categoria",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/280x653-categoria.png"
+    },
+    {
+      "eval": "(window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }), __frames(4))"
+    },
+    {
+      "shot": "../shots/responsive/280x653-categoria-pie.png"
+    },
+    {
+      "eval": "(document.querySelector('[data-plato-abrir]').scrollIntoView({ block: 'center', behavior: 'instant' }), __frames(4))"
+    },
+    {
+      "click": {
+        "selector": "[data-plato-abrir]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-polaroid]')?.dataset.polaroidEstado, (e) => e === 'abierta', 8000); return __waitUntil(() => !__qa.gsap.globalTimeline.getChildren(true, true, false).some((t) => t.isActive() && t.repeat() !== -1 && t.totalDuration() < 5), (v) => v) })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "280×653 polaroid",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/280x653-polaroid.png"
+    },
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568,
+        "mobile": true,
+        "scale": 1
+      }
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.mode, (m) => m === 'intro', 15000); __qa.reloj(0.2); await __frames(30); return true })()"
+    },
+    {
+      "shot": "../shots/responsive/320x568-intro.png"
+    },
+    {
+      "eval": "(async () => { __qa.reloj(1); await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.mode, (m) => m === 'closed', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "320×568 cerrado",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/320x568-cerrado.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#home"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '0', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "320×568 home",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/320x568-home.png"
+    },
+    {
+      "click": {
+        "selector": "[aria-controls=navbar-mobile-sheet]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => getComputedStyle(document.getElementById('navbar-mobile-sheet')).opacity, (o) => o === '1'); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44, encima: '#navbar-mobile-sheet' }))",
+      "label": "320×568 lamina",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/320x568-lamina.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#la-casa"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '1', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "320×568 la-casa",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/320x568-la-casa.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#platos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '2', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "320×568 platos",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/320x568-platos.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#eventos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '3', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "320×568 eventos",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/320x568-eventos.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#preguntas"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '4', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "320×568 preguntas",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/320x568-preguntas.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#contacto"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '5', 15000); await __waitUntil(() => document.querySelectorAll('.leaflet-tile-loaded').length, (n) => n > 0, 8000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "320×568 contacto",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/320x568-contacto.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/carta"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-carta-estado]')?.dataset.cartaEstado, (e) => e === 'abierta', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "320×568 carta",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/320x568-carta.png"
+    },
+    {
+      "click": {
+        "selector": "[data-carta-card]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-volteado]') !== null, (v) => v, 5000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "320×568 carta-dorso",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/320x568-carta-dorso.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/carta/fuegos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelectorAll('[data-plato]').length, (n) => n === 6, 15000); await __qa.cartaEstable(); return __waitUntil(() => !__qa.gsap.globalTimeline.getChildren(true, true, false).some((t) => t.isActive() && t.repeat() !== -1 && t.totalDuration() < 5), (v) => v) })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "320×568 categoria",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/320x568-categoria.png"
+    },
+    {
+      "eval": "(window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }), __frames(4))"
+    },
+    {
+      "shot": "../shots/responsive/320x568-categoria-pie.png"
+    },
+    {
+      "eval": "(document.querySelector('[data-plato-abrir]').scrollIntoView({ block: 'center', behavior: 'instant' }), __frames(4))"
+    },
+    {
+      "click": {
+        "selector": "[data-plato-abrir]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-polaroid]')?.dataset.polaroidEstado, (e) => e === 'abierta', 8000); return __waitUntil(() => !__qa.gsap.globalTimeline.getChildren(true, true, false).some((t) => t.isActive() && t.repeat() !== -1 && t.totalDuration() < 5), (v) => v) })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "320×568 polaroid",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/320x568-polaroid.png"
+    },
+    {
+      "viewport": {
+        "width": 360,
+        "height": 740,
+        "mobile": true,
+        "scale": 1
+      }
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.mode, (m) => m === 'intro', 15000); __qa.reloj(0.2); await __frames(30); return true })()"
+    },
+    {
+      "shot": "../shots/responsive/360x740-intro.png"
+    },
+    {
+      "eval": "(async () => { __qa.reloj(1); await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.mode, (m) => m === 'closed', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "360×740 cerrado",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/360x740-cerrado.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#home"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '0', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "360×740 home",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/360x740-home.png"
+    },
+    {
+      "click": {
+        "selector": "[aria-controls=navbar-mobile-sheet]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => getComputedStyle(document.getElementById('navbar-mobile-sheet')).opacity, (o) => o === '1'); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44, encima: '#navbar-mobile-sheet' }))",
+      "label": "360×740 lamina",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/360x740-lamina.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#la-casa"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '1', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "360×740 la-casa",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/360x740-la-casa.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#platos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '2', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "360×740 platos",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/360x740-platos.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#eventos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '3', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "360×740 eventos",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/360x740-eventos.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#preguntas"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '4', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "360×740 preguntas",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/360x740-preguntas.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#contacto"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '5', 15000); await __waitUntil(() => document.querySelectorAll('.leaflet-tile-loaded').length, (n) => n > 0, 8000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "360×740 contacto",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/360x740-contacto.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/carta"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-carta-estado]')?.dataset.cartaEstado, (e) => e === 'abierta', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "360×740 carta",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/360x740-carta.png"
+    },
+    {
+      "click": {
+        "selector": "[data-carta-card]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-volteado]') !== null, (v) => v, 5000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "360×740 carta-dorso",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/360x740-carta-dorso.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/carta/fuegos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelectorAll('[data-plato]').length, (n) => n === 6, 15000); await __qa.cartaEstable(); return __waitUntil(() => !__qa.gsap.globalTimeline.getChildren(true, true, false).some((t) => t.isActive() && t.repeat() !== -1 && t.totalDuration() < 5), (v) => v) })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "360×740 categoria",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/360x740-categoria.png"
+    },
+    {
+      "eval": "(window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }), __frames(4))"
+    },
+    {
+      "shot": "../shots/responsive/360x740-categoria-pie.png"
+    },
+    {
+      "eval": "(document.querySelector('[data-plato-abrir]').scrollIntoView({ block: 'center', behavior: 'instant' }), __frames(4))"
+    },
+    {
+      "click": {
+        "selector": "[data-plato-abrir]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-polaroid]')?.dataset.polaroidEstado, (e) => e === 'abierta', 8000); return __waitUntil(() => !__qa.gsap.globalTimeline.getChildren(true, true, false).some((t) => t.isActive() && t.repeat() !== -1 && t.totalDuration() < 5), (v) => v) })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "360×740 polaroid",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/360x740-polaroid.png"
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "mobile": true,
+        "scale": 1
+      }
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.mode, (m) => m === 'intro', 15000); __qa.reloj(0.2); await __frames(30); return true })()"
+    },
+    {
+      "shot": "../shots/responsive/390x844-intro.png"
+    },
+    {
+      "eval": "(async () => { __qa.reloj(1); await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.mode, (m) => m === 'closed', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "390×844 cerrado",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/390x844-cerrado.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#home"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '0', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "390×844 home",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/390x844-home.png"
+    },
+    {
+      "click": {
+        "selector": "[aria-controls=navbar-mobile-sheet]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => getComputedStyle(document.getElementById('navbar-mobile-sheet')).opacity, (o) => o === '1'); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44, encima: '#navbar-mobile-sheet' }))",
+      "label": "390×844 lamina",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/390x844-lamina.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#la-casa"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '1', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "390×844 la-casa",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/390x844-la-casa.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#platos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '2', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "390×844 platos",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/390x844-platos.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#eventos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '3', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "390×844 eventos",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/390x844-eventos.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#preguntas"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '4', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "390×844 preguntas",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/390x844-preguntas.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#contacto"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '5', 15000); await __waitUntil(() => document.querySelectorAll('.leaflet-tile-loaded').length, (n) => n > 0, 8000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "390×844 contacto",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/390x844-contacto.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/carta"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-carta-estado]')?.dataset.cartaEstado, (e) => e === 'abierta', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "390×844 carta",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/390x844-carta.png"
+    },
+    {
+      "click": {
+        "selector": "[data-carta-card]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-volteado]') !== null, (v) => v, 5000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "390×844 carta-dorso",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/390x844-carta-dorso.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/carta/fuegos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelectorAll('[data-plato]').length, (n) => n === 6, 15000); await __qa.cartaEstable(); return __waitUntil(() => !__qa.gsap.globalTimeline.getChildren(true, true, false).some((t) => t.isActive() && t.repeat() !== -1 && t.totalDuration() < 5), (v) => v) })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "390×844 categoria",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/390x844-categoria.png"
+    },
+    {
+      "eval": "(window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }), __frames(4))"
+    },
+    {
+      "shot": "../shots/responsive/390x844-categoria-pie.png"
+    },
+    {
+      "eval": "(document.querySelector('[data-plato-abrir]').scrollIntoView({ block: 'center', behavior: 'instant' }), __frames(4))"
+    },
+    {
+      "click": {
+        "selector": "[data-plato-abrir]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-polaroid]')?.dataset.polaroidEstado, (e) => e === 'abierta', 8000); return __waitUntil(() => !__qa.gsap.globalTimeline.getChildren(true, true, false).some((t) => t.isActive() && t.repeat() !== -1 && t.totalDuration() < 5), (v) => v) })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "390×844 polaroid",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/390x844-polaroid.png"
+    },
+    {
+      "viewport": {
+        "width": 414,
+        "height": 896,
+        "mobile": true,
+        "scale": 1
+      }
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.mode, (m) => m === 'intro', 15000); __qa.reloj(0.2); await __frames(30); return true })()"
+    },
+    {
+      "shot": "../shots/responsive/414x896-intro.png"
+    },
+    {
+      "eval": "(async () => { __qa.reloj(1); await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.mode, (m) => m === 'closed', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "414×896 cerrado",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/414x896-cerrado.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#home"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '0', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "414×896 home",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/414x896-home.png"
+    },
+    {
+      "click": {
+        "selector": "[aria-controls=navbar-mobile-sheet]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => getComputedStyle(document.getElementById('navbar-mobile-sheet')).opacity, (o) => o === '1'); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44, encima: '#navbar-mobile-sheet' }))",
+      "label": "414×896 lamina",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/414x896-lamina.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#la-casa"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '1', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "414×896 la-casa",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/414x896-la-casa.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#platos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '2', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "414×896 platos",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/414x896-platos.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#eventos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '3', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "414×896 eventos",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/414x896-eventos.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#preguntas"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '4', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "414×896 preguntas",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/414x896-preguntas.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#contacto"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '5', 15000); await __waitUntil(() => document.querySelectorAll('.leaflet-tile-loaded').length, (n) => n > 0, 8000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "414×896 contacto",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/414x896-contacto.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/carta"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-carta-estado]')?.dataset.cartaEstado, (e) => e === 'abierta', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "414×896 carta",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/414x896-carta.png"
+    },
+    {
+      "click": {
+        "selector": "[data-carta-card]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-volteado]') !== null, (v) => v, 5000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "414×896 carta-dorso",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/414x896-carta-dorso.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/carta/fuegos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelectorAll('[data-plato]').length, (n) => n === 6, 15000); await __qa.cartaEstable(); return __waitUntil(() => !__qa.gsap.globalTimeline.getChildren(true, true, false).some((t) => t.isActive() && t.repeat() !== -1 && t.totalDuration() < 5), (v) => v) })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "414×896 categoria",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/414x896-categoria.png"
+    },
+    {
+      "eval": "(window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }), __frames(4))"
+    },
+    {
+      "shot": "../shots/responsive/414x896-categoria-pie.png"
+    },
+    {
+      "eval": "(document.querySelector('[data-plato-abrir]').scrollIntoView({ block: 'center', behavior: 'instant' }), __frames(4))"
+    },
+    {
+      "click": {
+        "selector": "[data-plato-abrir]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-polaroid]')?.dataset.polaroidEstado, (e) => e === 'abierta', 8000); return __waitUntil(() => !__qa.gsap.globalTimeline.getChildren(true, true, false).some((t) => t.isActive() && t.repeat() !== -1 && t.totalDuration() < 5), (v) => v) })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "414×896 polaroid",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/414x896-polaroid.png"
+    },
+    {
+      "viewport": {
+        "width": 768,
+        "height": 1024,
+        "mobile": true,
+        "scale": 1
+      }
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.mode, (m) => m === 'intro', 15000); __qa.reloj(0.2); await __frames(30); return true })()"
+    },
+    {
+      "shot": "../shots/responsive/768x1024-intro.png"
+    },
+    {
+      "eval": "(async () => { __qa.reloj(1); await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.mode, (m) => m === 'closed', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "768×1024 cerrado",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/768x1024-cerrado.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#home"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '0', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "768×1024 home",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/768x1024-home.png"
+    },
+    {
+      "click": {
+        "selector": "[aria-controls=navbar-mobile-sheet]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => getComputedStyle(document.getElementById('navbar-mobile-sheet')).opacity, (o) => o === '1'); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44, encima: '#navbar-mobile-sheet' }))",
+      "label": "768×1024 lamina",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/768x1024-lamina.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#la-casa"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '1', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "768×1024 la-casa",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/768x1024-la-casa.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#platos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '2', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "768×1024 platos",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/768x1024-platos.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#eventos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '3', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "768×1024 eventos",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/768x1024-eventos.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#preguntas"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '4', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "768×1024 preguntas",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/768x1024-preguntas.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#contacto"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '5', 15000); await __waitUntil(() => document.querySelectorAll('.leaflet-tile-loaded').length, (n) => n > 0, 8000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "768×1024 contacto",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/768x1024-contacto.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/carta"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-carta-estado]')?.dataset.cartaEstado, (e) => e === 'abierta', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "768×1024 carta",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/768x1024-carta.png"
+    },
+    {
+      "click": {
+        "selector": "[data-carta-card]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-volteado]') !== null, (v) => v, 5000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "768×1024 carta-dorso",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/768x1024-carta-dorso.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/carta/fuegos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelectorAll('[data-plato]').length, (n) => n === 6, 15000); await __qa.cartaEstable(); return __waitUntil(() => !__qa.gsap.globalTimeline.getChildren(true, true, false).some((t) => t.isActive() && t.repeat() !== -1 && t.totalDuration() < 5), (v) => v) })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "768×1024 categoria",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/768x1024-categoria.png"
+    },
+    {
+      "eval": "(window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }), __frames(4))"
+    },
+    {
+      "shot": "../shots/responsive/768x1024-categoria-pie.png"
+    },
+    {
+      "eval": "(document.querySelector('[data-plato-abrir]').scrollIntoView({ block: 'center', behavior: 'instant' }), __frames(4))"
+    },
+    {
+      "click": {
+        "selector": "[data-plato-abrir]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-polaroid]')?.dataset.polaroidEstado, (e) => e === 'abierta', 8000); return __waitUntil(() => !__qa.gsap.globalTimeline.getChildren(true, true, false).some((t) => t.isActive() && t.repeat() !== -1 && t.totalDuration() < 5), (v) => v) })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "768×1024 polaroid",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/768x1024-polaroid.png"
+    },
+    {
+      "viewport": {
+        "width": 1024,
+        "height": 768,
+        "mobile": true,
+        "scale": 1
+      }
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.mode, (m) => m === 'intro', 15000); __qa.reloj(0.2); await __frames(30); return true })()"
+    },
+    {
+      "shot": "../shots/responsive/1024x768-intro.png"
+    },
+    {
+      "eval": "(async () => { __qa.reloj(1); await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.mode, (m) => m === 'closed', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "1024×768 cerrado",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1024x768-cerrado.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#home"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '0', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "1024×768 home",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1024x768-home.png"
+    },
+    {
+      "click": {
+        "selector": "[aria-controls=navbar-mobile-sheet]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => getComputedStyle(document.getElementById('navbar-mobile-sheet')).opacity, (o) => o === '1'); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44, encima: '#navbar-mobile-sheet' }))",
+      "label": "1024×768 lamina",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1024x768-lamina.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#la-casa"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '1', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "1024×768 la-casa",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1024x768-la-casa.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#platos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '2', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "1024×768 platos",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1024x768-platos.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#eventos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '3', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "1024×768 eventos",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1024x768-eventos.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#preguntas"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '4', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "1024×768 preguntas",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1024x768-preguntas.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#contacto"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '5', 15000); await __waitUntil(() => document.querySelectorAll('.leaflet-tile-loaded').length, (n) => n > 0, 8000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "1024×768 contacto",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1024x768-contacto.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/carta"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-carta-estado]')?.dataset.cartaEstado, (e) => e === 'abierta', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "1024×768 carta",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1024x768-carta.png"
+    },
+    {
+      "click": {
+        "selector": "[data-carta-card]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-volteado]') !== null, (v) => v, 5000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "1024×768 carta-dorso",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1024x768-carta-dorso.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/carta/fuegos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelectorAll('[data-plato]').length, (n) => n === 6, 15000); await __qa.cartaEstable(); return __waitUntil(() => !__qa.gsap.globalTimeline.getChildren(true, true, false).some((t) => t.isActive() && t.repeat() !== -1 && t.totalDuration() < 5), (v) => v) })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "1024×768 categoria",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1024x768-categoria.png"
+    },
+    {
+      "eval": "(window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }), __frames(4))"
+    },
+    {
+      "shot": "../shots/responsive/1024x768-categoria-pie.png"
+    },
+    {
+      "eval": "(document.querySelector('[data-plato-abrir]').scrollIntoView({ block: 'center', behavior: 'instant' }), __frames(4))"
+    },
+    {
+      "click": {
+        "selector": "[data-plato-abrir]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-polaroid]')?.dataset.polaroidEstado, (e) => e === 'abierta', 8000); return __waitUntil(() => !__qa.gsap.globalTimeline.getChildren(true, true, false).some((t) => t.isActive() && t.repeat() !== -1 && t.totalDuration() < 5), (v) => v) })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "1024×768 polaroid",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1024x768-polaroid.png"
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 800,
+        "mobile": false,
+        "scale": 1
+      }
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.mode, (m) => m === 'intro', 15000); __qa.reloj(0.2); await __frames(30); return true })()"
+    },
+    {
+      "shot": "../shots/responsive/1280x800-intro.png"
+    },
+    {
+      "eval": "(async () => { __qa.reloj(1); await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.mode, (m) => m === 'closed', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "1280×800 cerrado",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1280x800-cerrado.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#home"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '0', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "1280×800 home",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1280x800-home.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#la-casa"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '1', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "1280×800 la-casa",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1280x800-la-casa.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#platos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '2', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "1280×800 platos",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1280x800-platos.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#eventos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '3', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "1280×800 eventos",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1280x800-eventos.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#preguntas"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '4', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "1280×800 preguntas",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1280x800-preguntas.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#contacto"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '5', 15000); await __waitUntil(() => document.querySelectorAll('.leaflet-tile-loaded').length, (n) => n > 0, 8000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "1280×800 contacto",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1280x800-contacto.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/carta"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-carta-estado]')?.dataset.cartaEstado, (e) => e === 'abierta', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "1280×800 carta",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1280x800-carta.png"
+    },
+    {
+      "click": {
+        "selector": "[data-carta-card]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-volteado]') !== null, (v) => v, 5000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "1280×800 carta-dorso",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1280x800-carta-dorso.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/carta/fuegos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelectorAll('[data-plato]').length, (n) => n === 6, 15000); await __qa.cartaEstable(); return __waitUntil(() => !__qa.gsap.globalTimeline.getChildren(true, true, false).some((t) => t.isActive() && t.repeat() !== -1 && t.totalDuration() < 5), (v) => v) })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "1280×800 categoria",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1280x800-categoria.png"
+    },
+    {
+      "eval": "(window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }), __frames(4))"
+    },
+    {
+      "shot": "../shots/responsive/1280x800-categoria-pie.png"
+    },
+    {
+      "eval": "(document.querySelector('[data-plato-abrir]').scrollIntoView({ block: 'center', behavior: 'instant' }), __frames(4))"
+    },
+    {
+      "click": {
+        "selector": "[data-plato-abrir]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-polaroid]')?.dataset.polaroidEstado, (e) => e === 'abierta', 8000); return __waitUntil(() => !__qa.gsap.globalTimeline.getChildren(true, true, false).some((t) => t.isActive() && t.repeat() !== -1 && t.totalDuration() < 5), (v) => v) })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "1280×800 polaroid",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1280x800-polaroid.png"
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "mobile": false,
+        "scale": 1
+      }
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.mode, (m) => m === 'intro', 15000); __qa.reloj(0.2); await __frames(30); return true })()"
+    },
+    {
+      "shot": "../shots/responsive/1440x900-intro.png"
+    },
+    {
+      "eval": "(async () => { __qa.reloj(1); await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.mode, (m) => m === 'closed', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "1440×900 cerrado",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1440x900-cerrado.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#home"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '0', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "1440×900 home",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1440x900-home.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#la-casa"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '1', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "1440×900 la-casa",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1440x900-la-casa.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#platos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '2', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "1440×900 platos",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1440x900-platos.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#eventos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '3', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "1440×900 eventos",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1440x900-eventos.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#preguntas"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '4', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "1440×900 preguntas",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1440x900-preguntas.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#contacto"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '5', 15000); await __waitUntil(() => document.querySelectorAll('.leaflet-tile-loaded').length, (n) => n > 0, 8000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "1440×900 contacto",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1440x900-contacto.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/carta"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-carta-estado]')?.dataset.cartaEstado, (e) => e === 'abierta', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "1440×900 carta",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1440x900-carta.png"
+    },
+    {
+      "click": {
+        "selector": "[data-carta-card]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-volteado]') !== null, (v) => v, 5000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "1440×900 carta-dorso",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1440x900-carta-dorso.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/carta/fuegos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelectorAll('[data-plato]').length, (n) => n === 6, 15000); await __qa.cartaEstable(); return __waitUntil(() => !__qa.gsap.globalTimeline.getChildren(true, true, false).some((t) => t.isActive() && t.repeat() !== -1 && t.totalDuration() < 5), (v) => v) })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "1440×900 categoria",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1440x900-categoria.png"
+    },
+    {
+      "eval": "(window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }), __frames(4))"
+    },
+    {
+      "shot": "../shots/responsive/1440x900-categoria-pie.png"
+    },
+    {
+      "eval": "(document.querySelector('[data-plato-abrir]').scrollIntoView({ block: 'center', behavior: 'instant' }), __frames(4))"
+    },
+    {
+      "click": {
+        "selector": "[data-plato-abrir]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-polaroid]')?.dataset.polaroidEstado, (e) => e === 'abierta', 8000); return __waitUntil(() => !__qa.gsap.globalTimeline.getChildren(true, true, false).some((t) => t.isActive() && t.repeat() !== -1 && t.totalDuration() < 5), (v) => v) })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "1440×900 polaroid",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1440x900-polaroid.png"
+    },
+    {
+      "viewport": {
+        "width": 1920,
+        "height": 1080,
+        "mobile": false,
+        "scale": 1
+      }
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.mode, (m) => m === 'intro', 15000); __qa.reloj(0.2); await __frames(30); return true })()"
+    },
+    {
+      "shot": "../shots/responsive/1920x1080-intro.png"
+    },
+    {
+      "eval": "(async () => { __qa.reloj(1); await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.mode, (m) => m === 'closed', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "1920×1080 cerrado",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1920x1080-cerrado.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#home"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '0', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "1920×1080 home",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1920x1080-home.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#la-casa"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '1', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "1920×1080 la-casa",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1920x1080-la-casa.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#platos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '2', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "1920×1080 platos",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1920x1080-platos.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#eventos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '3', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "1920×1080 eventos",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1920x1080-eventos.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#preguntas"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '4', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "1920×1080 preguntas",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1920x1080-preguntas.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#contacto"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '5', 15000); await __waitUntil(() => document.querySelectorAll('.leaflet-tile-loaded').length, (n) => n > 0, 8000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "1920×1080 contacto",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1920x1080-contacto.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/carta"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-carta-estado]')?.dataset.cartaEstado, (e) => e === 'abierta', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "1920×1080 carta",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1920x1080-carta.png"
+    },
+    {
+      "click": {
+        "selector": "[data-carta-card]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-volteado]') !== null, (v) => v, 5000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "1920×1080 carta-dorso",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1920x1080-carta-dorso.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/carta/fuegos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelectorAll('[data-plato]').length, (n) => n === 6, 15000); await __qa.cartaEstable(); return __waitUntil(() => !__qa.gsap.globalTimeline.getChildren(true, true, false).some((t) => t.isActive() && t.repeat() !== -1 && t.totalDuration() < 5), (v) => v) })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "1920×1080 categoria",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1920x1080-categoria.png"
+    },
+    {
+      "eval": "(window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }), __frames(4))"
+    },
+    {
+      "shot": "../shots/responsive/1920x1080-categoria-pie.png"
+    },
+    {
+      "eval": "(document.querySelector('[data-plato-abrir]').scrollIntoView({ block: 'center', behavior: 'instant' }), __frames(4))"
+    },
+    {
+      "click": {
+        "selector": "[data-plato-abrir]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-polaroid]')?.dataset.polaroidEstado, (e) => e === 'abierta', 8000); return __waitUntil(() => !__qa.gsap.globalTimeline.getChildren(true, true, false).some((t) => t.isActive() && t.repeat() !== -1 && t.totalDuration() < 5), (v) => v) })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "1920×1080 polaroid",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/1920x1080-polaroid.png"
+    },
+    {
+      "viewport": {
+        "width": 2560,
+        "height": 1440,
+        "mobile": false,
+        "scale": 1
+      }
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.mode, (m) => m === 'intro', 15000); __qa.reloj(0.2); await __frames(30); return true })()"
+    },
+    {
+      "shot": "../shots/responsive/2560x1440-intro.png"
+    },
+    {
+      "eval": "(async () => { __qa.reloj(1); await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.mode, (m) => m === 'closed', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "2560×1440 cerrado",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/2560x1440-cerrado.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#home"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '0', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "2560×1440 home",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/2560x1440-home.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#la-casa"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '1', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "2560×1440 la-casa",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/2560x1440-la-casa.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#platos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '2', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "2560×1440 platos",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/2560x1440-platos.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#eventos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '3', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "2560×1440 eventos",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/2560x1440-eventos.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#preguntas"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '4', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "2560×1440 preguntas",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/2560x1440-preguntas.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#contacto"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '5', 15000); await __waitUntil(() => document.querySelectorAll('.leaflet-tile-loaded').length, (n) => n > 0, 8000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "2560×1440 contacto",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/2560x1440-contacto.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/carta"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-carta-estado]')?.dataset.cartaEstado, (e) => e === 'abierta', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "2560×1440 carta",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/2560x1440-carta.png"
+    },
+    {
+      "click": {
+        "selector": "[data-carta-card]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-volteado]') !== null, (v) => v, 5000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "2560×1440 carta-dorso",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/2560x1440-carta-dorso.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/carta/fuegos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelectorAll('[data-plato]').length, (n) => n === 6, 15000); await __qa.cartaEstable(); return __waitUntil(() => !__qa.gsap.globalTimeline.getChildren(true, true, false).some((t) => t.isActive() && t.repeat() !== -1 && t.totalDuration() < 5), (v) => v) })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "2560×1440 categoria",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/2560x1440-categoria.png"
+    },
+    {
+      "eval": "(window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }), __frames(4))"
+    },
+    {
+      "shot": "../shots/responsive/2560x1440-categoria-pie.png"
+    },
+    {
+      "eval": "(document.querySelector('[data-plato-abrir]').scrollIntoView({ block: 'center', behavior: 'instant' }), __frames(4))"
+    },
+    {
+      "click": {
+        "selector": "[data-plato-abrir]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-polaroid]')?.dataset.polaroidEstado, (e) => e === 'abierta', 8000); return __waitUntil(() => !__qa.gsap.globalTimeline.getChildren(true, true, false).some((t) => t.isActive() && t.repeat() !== -1 && t.totalDuration() < 5), (v) => v) })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 24 }))",
+      "label": "2560×1440 polaroid",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/2560x1440-polaroid.png"
+    },
+    {
+      "viewport": {
+        "width": 667,
+        "height": 375,
+        "mobile": true,
+        "scale": 1
+      }
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.mode, (m) => m === 'intro', 15000); __qa.reloj(0.2); await __frames(30); return true })()"
+    },
+    {
+      "shot": "../shots/responsive/667x375-intro.png"
+    },
+    {
+      "eval": "(async () => { __qa.reloj(1); await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.mode, (m) => m === 'closed', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "667×375 cerrado",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/667x375-cerrado.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#home"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '0', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "667×375 home",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/667x375-home.png"
+    },
+    {
+      "click": {
+        "selector": "[aria-controls=navbar-mobile-sheet]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => getComputedStyle(document.getElementById('navbar-mobile-sheet')).opacity, (o) => o === '1'); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44, encima: '#navbar-mobile-sheet' }))",
+      "label": "667×375 lamina",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/667x375-lamina.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#la-casa"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '1', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "667×375 la-casa",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/667x375-la-casa.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#platos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '2', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "667×375 platos",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/667x375-platos.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#eventos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '3', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "667×375 eventos",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/667x375-eventos.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#preguntas"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '4', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "667×375 preguntas",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/667x375-preguntas.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#contacto"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '5', 15000); await __waitUntil(() => document.querySelectorAll('.leaflet-tile-loaded').length, (n) => n > 0, 8000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "667×375 contacto",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/667x375-contacto.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/carta"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-carta-estado]')?.dataset.cartaEstado, (e) => e === 'abierta', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "667×375 carta",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/667x375-carta.png"
+    },
+    {
+      "click": {
+        "selector": "[data-carta-card]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-volteado]') !== null, (v) => v, 5000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "667×375 carta-dorso",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/667x375-carta-dorso.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/carta/fuegos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelectorAll('[data-plato]').length, (n) => n === 6, 15000); await __qa.cartaEstable(); return __waitUntil(() => !__qa.gsap.globalTimeline.getChildren(true, true, false).some((t) => t.isActive() && t.repeat() !== -1 && t.totalDuration() < 5), (v) => v) })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "667×375 categoria",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/667x375-categoria.png"
+    },
+    {
+      "eval": "(window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }), __frames(4))"
+    },
+    {
+      "shot": "../shots/responsive/667x375-categoria-pie.png"
+    },
+    {
+      "eval": "(document.querySelector('[data-plato-abrir]').scrollIntoView({ block: 'center', behavior: 'instant' }), __frames(4))"
+    },
+    {
+      "click": {
+        "selector": "[data-plato-abrir]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-polaroid]')?.dataset.polaroidEstado, (e) => e === 'abierta', 8000); return __waitUntil(() => !__qa.gsap.globalTimeline.getChildren(true, true, false).some((t) => t.isActive() && t.repeat() !== -1 && t.totalDuration() < 5), (v) => v) })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "667×375 polaroid",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/667x375-polaroid.png"
+    },
+    {
+      "viewport": {
+        "width": 844,
+        "height": 390,
+        "mobile": true,
+        "scale": 1
+      }
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.mode, (m) => m === 'intro', 15000); __qa.reloj(0.2); await __frames(30); return true })()"
+    },
+    {
+      "shot": "../shots/responsive/844x390-intro.png"
+    },
+    {
+      "eval": "(async () => { __qa.reloj(1); await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.mode, (m) => m === 'closed', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "844×390 cerrado",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/844x390-cerrado.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#home"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '0', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "844×390 home",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/844x390-home.png"
+    },
+    {
+      "click": {
+        "selector": "[aria-controls=navbar-mobile-sheet]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => getComputedStyle(document.getElementById('navbar-mobile-sheet')).opacity, (o) => o === '1'); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44, encima: '#navbar-mobile-sheet' }))",
+      "label": "844×390 lamina",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/844x390-lamina.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#la-casa"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '1', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "844×390 la-casa",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/844x390-la-casa.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#platos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '2', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "844×390 platos",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/844x390-platos.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#eventos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '3', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "844×390 eventos",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/844x390-eventos.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#preguntas"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '4', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "844×390 preguntas",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/844x390-preguntas.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/#contacto"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '5', 15000); await __waitUntil(() => document.querySelectorAll('.leaflet-tile-loaded').length, (n) => n > 0, 8000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "844×390 contacto",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/844x390-contacto.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/carta"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-carta-estado]')?.dataset.cartaEstado, (e) => e === 'abierta', 15000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "844×390 carta",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/844x390-carta.png"
+    },
+    {
+      "click": {
+        "selector": "[data-carta-card]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-volteado]') !== null, (v) => v, 5000); return __qa.reposo() })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "844×390 carta-dorso",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/844x390-carta-dorso.png"
+    },
+    {
+      "nav": "about:blank"
+    },
+    {
+      "nav": "http://localhost:5173/carta/fuegos"
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelectorAll('[data-plato]').length, (n) => n === 6, 15000); await __qa.cartaEstable(); return __waitUntil(() => !__qa.gsap.globalTimeline.getChildren(true, true, false).some((t) => t.isActive() && t.repeat() !== -1 && t.totalDuration() < 5), (v) => v) })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "844×390 categoria",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/844x390-categoria.png"
+    },
+    {
+      "eval": "(window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }), __frames(4))"
+    },
+    {
+      "shot": "../shots/responsive/844x390-categoria-pie.png"
+    },
+    {
+      "eval": "(document.querySelector('[data-plato-abrir]').scrollIntoView({ block: 'center', behavior: 'instant' }), __frames(4))"
+    },
+    {
+      "click": {
+        "selector": "[data-plato-abrir]"
+      }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-polaroid]')?.dataset.polaroidEstado, (e) => e === 'abierta', 8000); return __waitUntil(() => !__qa.gsap.globalTimeline.getChildren(true, true, false).some((t) => t.isActive() && t.repeat() !== -1 && t.totalDuration() < 5), (v) => v) })()",
+      "expect": true
+    },
+    {
+      "eval": "(({ letraMin, ...r }) => ({ ...r, letra: letraMin === null || letraMin >= 10 ? 'ok' : letraMin }))(__auditar({ min: 44 }))",
+      "label": "844×390 polaroid",
+      "expect": {
+        "desborde": 0,
+        "fuera": [],
+        "tapados": [],
+        "chicos": [],
+        "cortados": [],
+        "letra": "ok"
+      }
+    },
+    {
+      "shot": "../shots/responsive/844x390-polaroid.png"
+    }
+  ]
+}

@@ -105,3 +105,36 @@
     radial-gradient(ellipse at center, transparent 35%, rgb(0 0 0 / 0.6) 100%),
     var(--brand-velo);
 }
+
+/*
+ * Áreas de toque (responsividad, v1.0.1). Con puntero táctil todo control mide 44 px como
+ * mínimo; con mouse no cambia nada. Variantes de tamaño:
+ *   `tactil:`  → solo con puntero táctil (p. ej. `tactil:size-11`).
+ *   `bajo:`    → pantallas bajas (celular acostado, ≤ 30rem de alto).
+ *   `angosto:` → pantallas de menos de 360 px (240–320).
+ *   `minimo:`  → pantallas de 260 px o menos (240): solo que no se rompa.
+ */
+@custom-variant tactil (@media (pointer: coarse));
+@custom-variant bajo (@media (max-height: 30rem));
+@custom-variant angosto (@media (max-width: 22.4375rem));
+@custom-variant minimo (@media (max-width: 16.25rem));
+
+@utility area-tactil {
+  @media (pointer: coarse) {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+  }
+}
+
+/* Link de texto suelto (no dentro de un párrafo): más área de toque sin mover lo de alrededor
+   (24 px con mouse, 44 px táctil). */
+@utility toque-linea {
+  --toque: 1.5rem;
+  display: inline-block;
+  padding-block: max(0px, calc((var(--toque) - 1lh) / 2));
+  margin-block: min(0px, calc((1lh - var(--toque)) / 2));
+  @media (pointer: coarse) {
+    --toque: 2.75rem;
+    min-width: 2.75rem;
+  }
+}

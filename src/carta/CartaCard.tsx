@@ -44,7 +44,7 @@ export function CartaCard({ categoria, index, volteado, tabStop, onActivar, onFo
   return (
     <li
       data-carta-item={categoria.slug}
-      className="w-[min(62vw,17rem)] shrink-0 snap-center translate-y-(--desp) rotate-(--rot) lg:w-auto lg:max-w-[min(17rem,calc((100svh-22rem)*0.75))] lg:flex-1 lg:translate-y-(--desp-lg)"
+      className="w-[min(62vw,17rem,calc((100svh-9.5rem)*0.75))] shrink-0 snap-center translate-y-(--desp) rotate-(--rot) lg:w-auto lg:max-w-[min(17rem,calc((100svh-22rem)*0.75))] lg:flex-1 lg:translate-y-(--desp-lg)"
       style={
         {
           '--rot': `${rot}deg`,
@@ -69,7 +69,7 @@ export function CartaCard({ categoria, index, volteado, tabStop, onActivar, onFo
             {/* Frente */}
             <span className="absolute inset-0 flex flex-col items-center border border-champan/10 bg-[color-mix(in_oklab,var(--color-champan)_6%,var(--color-tizon))] px-3 pt-[12%] pb-[18%] text-center shadow-[0_1.5rem_3rem_-1.5rem_var(--color-noche)] transition-colors duration-300 [backface-visibility:hidden] group-hover:border-champan/25">
               <span className="font-ui text-etiqueta text-champan/80">{categoria.numero}</span>
-              <span className="my-auto font-ui text-[clamp(1.05rem,1.75vw,1.9rem)] leading-[1.02] font-medium text-balance break-words uppercase text-champan">
+              <span className="my-auto font-ui text-subtitulo leading-[1.02] font-medium text-balance break-words uppercase text-champan">
                 {categoria.name}
               </span>
             </span>
@@ -87,7 +87,7 @@ export function CartaCard({ categoria, index, volteado, tabStop, onActivar, onFo
               ) : null}
               <span className="velo absolute inset-0" />
               <span className="relative font-ui text-etiqueta text-champan/90">{categoria.numero}</span>
-              <span className="relative my-auto font-ui text-[clamp(1.05rem,1.75vw,1.9rem)] leading-[1.02] font-medium text-balance break-words uppercase text-champan">
+              <span className="relative my-auto font-ui text-subtitulo leading-[1.02] font-medium text-balance break-words uppercase text-champan">
                 {categoria.name}
               </span>
               <span className="relative inline-flex items-center gap-2 rounded-full bg-oro px-4 py-2 font-ui text-etiqueta font-semibold uppercase text-noche transition-colors duration-300 group-hover:bg-champan">

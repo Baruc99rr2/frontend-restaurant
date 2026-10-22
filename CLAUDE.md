@@ -49,6 +49,9 @@ Motivo visual único: el **marco inclinado** (cuadrilátero rotado ~-16°, token
   (`scripts/qa-browser.mjs`: Chrome headless por DevTools, sin dependencias). El plan (JSON) admite viewport
   con emulación táctil (sirve para mobile real a 390 px), reduced motion, wheel, teclado, swipe, clic,
   `eval` (con `expect` opcional: falla si el resultado difiere) y capturas. Ver el encabezado del script.
+- **Responsividad:** `qa/plans/responsive.json` lo genera `pnpm qa:responsive` (`scripts/qa-responsive.mjs`, no editar el JSON a mano):
+  14 tamaños × todas las pantallas con `__auditar` (desborde, interactivos alcanzables y sin tapar, áreas táctiles, texto cortado).
+  Para iterar: `node scripts/qa-responsive.mjs --solo 240x320,667x375 --pantallas carta,categoria --out <scratch>.json`.
 - **Regresión:** `pnpm qa:regresion` corre todos los planes de `qa/plans/` (con `pnpm dev` levantado).
   Cada fase suma sus planes (`fN-*.json`) y antes de cerrar corre la regresión completa. Capturas en `qa/shots/` (ignorada).
 
@@ -97,5 +100,9 @@ Motivo visual único: el **marco inclinado** (cuadrilátero rotado ~-16°, token
   Un plan no puede consultar un panel antes de que esté activo (esperar `data-texts`); `content-visibility: hidden` en los inactivos.
 - **Archivos que lee `vite.config.ts`** (`src/config/seo.ts`, `loaderEstatico.ts` y lo que importan): imports relativos con extensión `.ts`
   y JSON con `with { type: 'json' }`, o Vite avisa (cargador nativo).
+- **Responsividad (v1.0.1):** todo control lleva `area-tactil` (44 px con puntero táctil; con mouse ≥ 24 px) y los links de texto
+  sueltos `toque-linea`. Ajustes por tamaño con las variantes de `tokens.css` (`tactil:`, `angosto:` < 360 px, `minimo:` ≤ 260 px,
+  `bajo:` ≤ 480 px de alto), no con valores sueltos. Lo que no entra en 375 px de alto scrollea dentro de su panel; nada se corta.
+  Cambio de layout → `node scripts/qa-responsive.mjs` acotado a lo tocado antes de la regresión.
 - **Fotos:** `placeholder` del catálogo es una clave; usar `Picture`/`BlurSwapImage` (resuelven con `usePlaceholder`), nunca `url(${placeholder})` a mano.
 - **Antes de corregir un error, reproducirlo** con un plan sobre el código anterior; el arreglo queda cubierto por ese plan.

@@ -26,13 +26,44 @@ export const esVertical = (vp: Viewport) => vp.width / vp.height < 1
 
 export type ClosedBox = { cx: number; cy: number; w: number; h: number; angle: number }
 
+/** Tope del título gigante del modo cerrado: alto en desktop (~25% del alto), ancho en vertical. */
+export function tituloTope(vp: Viewport) {
+  return esVertical(vp) ? Math.min(vp.width * 0.24, vp.height * 0.12) : Math.min(vp.width * 0.16, vp.height * 0.25)
+}
+
+/**
+ * Filas del modo cerrado en vertical (px), compartidas con `ClosedView` para que el marco
+ * nunca se pise con ellas:
+ * - arriba: navbar + fila de índice/etiqueta (en pantallas bajas, < 480 px, sin etiquetas);
+ * - debajo del marco: indicación + etiqueta derecha (en angosto, < 340 px, una debajo de la otra);
+ * - abajo: título gigante.
+ */
+export function filasVertical(vp: Viewport) {
+  const bajo = vp.height < 480
+  const angosto = vp.width < 340
+  const filaArriba = bajo ? 72 : 84
+  const arriba = filaArriba + 44 + 8
+  // Indicación (~18 px) y etiqueta derecha (2 líneas, ~29 px).
+  const filasBajoMarco = bajo ? 18 : angosto ? 18 + 8 + 29 : 29
+  const titulo = tituloTope(vp) * 0.82
+  const abajo = Math.max(vp.height * 0.02, 0) + titulo + 12 + filasBajoMarco + 14
+  return { bajo, angosto, filaArriba, arriba, abajo }
+}
+
 export function closedBox(vp: Viewport, index: number, baseAngle: number): ClosedBox {
   const variacion = VARIACION_POR_PANEL[index] ?? 0
   const angle = baseAngle + variacion
   if (esVertical(vp)) {
-    const h = vp.height * 0.54
+    // El alto rotado (con el ángulo más inclinado de los 6 paneles) entra en la banda libre;
+    // donde sobra lugar queda como siempre (54% del alto, centro al 47%).
+    const { arriba, abajo } = filasVertical(vp)
+    const maxRad = (Math.max(...VARIACION_POR_PANEL.map((v) => Math.abs(baseAngle + v))) * Math.PI) / 180
+    const banda = Math.max(0, vp.height - arriba - abajo)
+    const h = Math.min(vp.height * 0.54, banda / (Math.cos(maxRad) + 0.62 * Math.sin(maxRad)))
     const w = Math.min(vp.width * 0.64, h * 0.62)
-    return { cx: vp.width / 2, cy: vp.height * 0.47, w, h, angle }
+    const altoRotado = h * Math.cos(maxRad) + w * Math.sin(maxRad)
+    const cy = Math.min(Math.max(vp.height * 0.47, arriba + altoRotado / 2), vp.height - abajo - altoRotado / 2)
+    return { cx: vp.width / 2, cy, w, h, angle }
   }
   // Desktop: ~34vw × 72vh (ref. 06). Se limita para que el cuadrilátero rotado
   // no se salga por arriba ni por abajo en pantallas muy apaisadas.

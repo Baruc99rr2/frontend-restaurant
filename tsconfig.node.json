@@ -2,7 +2,10 @@
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
     "target": "ES2023",
-    "lib": ["ES2023"],
+    // DOM: vite.config.ts importa src/config/seo.ts → site.config.ts (applyBrandTheme toca el DOM).
+    "lib": ["ES2023", "DOM"],
+    "resolveJsonModule": true,
+    "paths": { "@/*": ["./src/*"] },
     "module": "ESNext",
     "moduleResolution": "bundler",
     "types": ["node"],

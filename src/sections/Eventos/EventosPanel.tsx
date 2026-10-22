@@ -258,11 +258,12 @@ export function EventosPanel({ active }: Props) {
                     <a
                       data-eventos-mailto
                       href={mailHref}
-                      aria-label={`${siteConfig.botones.pedirPresupuesto} (${copy.preguntas.links.email})`}
                       className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-champan/30 bg-noche/45 px-4 py-2.5 font-ui text-etiqueta font-semibold uppercase tracking-[0.12em] text-champan backdrop-blur-md transition-colors duration-300 hover:border-oro hover:text-oro focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro sm:py-3"
                     >
                       <Mail className="size-3.5" aria-hidden="true" />
+                      {/* El nombre accesible empieza con lo que se ve ("mail") y suma para qué es. */}
                       <span>{copy.preguntas.links.email}</span>
+                      <span className="sr-only">: {siteConfig.botones.pedirPresupuesto}</span>
                     </a>
                   </div>
                 </div>

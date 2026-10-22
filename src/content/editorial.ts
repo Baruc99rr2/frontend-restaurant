@@ -40,6 +40,15 @@ export function imagen(id: string | undefined): MediaImage | null {
   return (media.images as Record<string, MediaImage>)[id] ?? null
 }
 
+/**
+ * Portada de una categoría por su slug (editorial puro): la página de categoría la muestra sin
+ * esperar al repositorio (es lo primero grande que se ve).
+ */
+export function portadaDeSlug(slug: string): MediaImage | null {
+  const e = Object.values(editorial.categorias).find((c) => c.slug === slug)
+  return imagen(e?.portada)
+}
+
 export const esMediaId = (id: string): id is MediaId => id in media.images
 
 // --- Uniones con los datos operativos -------------------------------------

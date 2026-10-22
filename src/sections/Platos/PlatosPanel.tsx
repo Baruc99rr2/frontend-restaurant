@@ -265,7 +265,8 @@ export function PlatosPanel({ active, onVerCarta }: Props) {
             <SlideIn from="right" active={active} delay={0.3} className="size-full">
               <div
                 data-platos-derecha
-                className="flex size-full flex-col justify-between gap-4 border border-ceniza/20 bg-tizon p-4 sm:p-5 landscape:lg:p-7"
+                // min-h en mobile: reserva el alto antes de que lleguen los datos (sin salto de layout).
+                className="flex size-full min-h-56 flex-col justify-between gap-4 border border-ceniza/20 bg-tizon p-4 sm:p-5 landscape:lg:min-h-0 landscape:lg:p-7"
               >
                 {/* Puntos / guía del carrusel (activo oro, ancho mayor). Botones simples con
                     `aria-current`: no hay panel por punto, así que no son pestañas. El área de

@@ -1,0 +1,3 @@
+# Netlify y Cloudflare Pages: las rutas de la carta las resuelve la app (fallback de SPA).
+/carta        /index.html   200
+/carta/*      /index.html   200

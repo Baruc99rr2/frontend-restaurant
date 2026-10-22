@@ -7,6 +7,7 @@ import { atraparFoco, tabulables } from '@/components/focusTrap'
 import { teclaRoving } from '@/components/roving'
 import { useAjusteAncho } from '@/components/useAjusteAncho'
 import { CartaCard } from '@/carta/CartaCard'
+import { cargarCategoria, precargar } from '@/carta/cargas'
 import { navegarACategoria } from '@/carta/navegacion'
 import { useWipeTransition } from '@/carta/WipeTransition'
 import { formatPrecio } from '@/data/format'
@@ -199,6 +200,8 @@ export function CartaOverlay({ abierta, listo }: Props) {
   useEffect(() => {
     const root = rootRef.current
     if (!root || !visible) return
+    // Con la carta abierta, la página de categoría se pide en un rato libre.
+    precargar(cargarCategoria)
     const previo = document.activeElement
     openerRef.current = previo instanceof HTMLElement && !root.contains(previo) ? previo : null
     const raf = requestAnimationFrame(() => {
@@ -236,7 +239,11 @@ export function CartaOverlay({ abierta, listo }: Props) {
       setVolteado(i)
       return
     }
-    void transicion(() => navegarACategoria(cat.slug))
+    // Con la pantalla tapada: esperar el chunk de la categoría y recién ahí navegar.
+    void transicion(async () => {
+      await cargarCategoria().catch(() => {})
+      navegarACategoria(cat.slug)
+    })
   }
 
   const { contacto, marca, botones } = siteConfig

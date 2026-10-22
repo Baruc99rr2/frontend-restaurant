@@ -1,4 +1,5 @@
 import { useRef } from 'react'
+import { usePlaceholder } from '@/content/placeholders'
 import { gsap, useGSAP } from '@/motion/gsap'
 import { motionDuration, motionEase } from '@/motion/tokens'
 import { useReducedMotion } from '@/motion/useReducedMotion'
@@ -6,7 +7,7 @@ import { useReducedMotion } from '@/motion/useReducedMotion'
 export type BlurSwapImageProps = {
   src: string
   alt: string
-  /** Data URI o imagen de respaldo mientras carga. */
+  /** Clave de miniatura (`f1/retrato`), data URI o imagen de respaldo mientras carga. */
   placeholder?: string
   className?: string
   imgClassName?: string
@@ -48,7 +49,7 @@ function preloadImage(src: string): Promise<void> {
 export function BlurSwapImage({
   src,
   alt,
-  placeholder,
+  placeholder: placeholderClave,
   className = '',
   imgClassName = '',
 }: BlurSwapImageProps) {
@@ -58,6 +59,7 @@ export function BlurSwapImage({
   const reqIdRef = useRef(0)
   const tlRef = useRef<gsap.core.Timeline | null>(null)
   const reduced = useReducedMotion()
+  const placeholder = usePlaceholder(placeholderClave)
 
   useGSAP(
     () => {

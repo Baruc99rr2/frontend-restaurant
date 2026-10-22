@@ -76,6 +76,10 @@
   --text-etiqueta--line-height: 1.2;
   --text-etiqueta--letter-spacing: 0.18em;
 
+  /* Chapitas y marcas chicas (alérgenos, "No hay hoy", subtítulo del wordmark en mobile). */
+  --text-micro: 0.625rem;
+  --text-micro--line-height: 1.2;
+
   /* Motivo visual: marco inclinado (ref. 06) */
   --marco-rotacion: -16deg;
 }

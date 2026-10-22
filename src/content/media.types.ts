@@ -11,7 +11,7 @@ export type ImageVariant = {
 export type ImageShape = {
   lg: ImageVariant
   sm: ImageVariant
-  /** data: URI WebP de 16px de ancho, para carga progresiva. */
+  /** Clave de la miniatura borrosa de 16 px (`f1/paisaje`); se resuelve con `usePlaceholder()`. */
   placeholder: string
 }
 
@@ -34,6 +34,7 @@ export type MediaVideo = {
   source: { file: string; width: number; height: number; duration: number | null; kb: number }
   /** lg: pantallas ≥ 1024px; sm: el resto. */
   sources: { lg: MediaVideoSource; sm: MediaVideoSource }
+  /** `placeholder`: clave de la miniatura (`video/poster`). */
   poster: { lg: MediaPoster; sm: MediaPoster; placeholder: string }
 }
 

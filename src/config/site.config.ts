@@ -48,6 +48,23 @@ export const siteConfig = {
     themeColor: '#000000',
   },
 
+  /**
+   * Buscadores y redes (meta tags y Open Graph se escriben en index.html al compilar;
+   * el JSON-LD Restaurant se arma en el navegador con los datos del repositorio).
+   * La foto de Open Graph es `medios.openGraph` de editorial.json.
+   */
+  seo: {
+    // PLACEHOLDER: dominio del cliente, sin barra final (Open Graph y JSON-LD usan URLs absolutas).
+    url: 'https://quebracho.example',
+    titulo: 'Quebracho — cocina de fuego y bodega',
+    descripcion:
+      'Parrilla a leña de quebracho y bodega. Carta de temporada con menú del día, eventos y catering para tus celebraciones.',
+    /** schema.org servesCuisine */
+    cocina: ['Argentina', 'Parrilla'],
+    /** schema.org priceRange */
+    rangoPrecios: '$$',
+  },
+
   // backend: no lo trae. El endpoint público no expone teléfono ni email del local.
   // PLACEHOLDER: números y email de ejemplo, no reales.
   contacto: {

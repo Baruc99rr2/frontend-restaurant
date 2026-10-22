@@ -169,7 +169,7 @@ function IndexColumn({
                 type="button"
                 tabIndex={textsIn ? 0 : -1}
                 aria-current={actual ? 'step' : undefined}
-                aria-label={fill(copy.escenario.irA, { panel: p.titulo })}
+                aria-label={fill(copy.escenario.irA, { n: pad(i + 1), panel: p.titulo })}
                 onClick={(e) => {
                   e.stopPropagation()
                   // En táctil, el primer toque sobre el número actual despliega la lista.
@@ -217,13 +217,15 @@ export function ClosedView({ displayIndex, textsIn, faded, onGoTo }: Props) {
       if (!w || !h) return
       const disponible = w - (w < 640 ? 32 : 64)
       const tope = tituloTope(w, h)
-      for (const el of titleRefs.current) {
-        if (!el) continue
-        el.style.fontSize = '100px'
-        const ancho = el.scrollWidth
+      // En tres pasadas (escribir todos, medir todos, escribir todos): un solo reflow.
+      const titulos = titleRefs.current.filter((el): el is HTMLDivElement => !!el)
+      for (const el of titulos) el.style.fontSize = '100px'
+      const anchos = titulos.map((el) => el.scrollWidth)
+      titulos.forEach((el, i) => {
+        const ancho = anchos[i] ?? 0
         const px = ancho > 0 ? Math.min(tope, (disponible * 100) / ancho) : tope
         el.style.fontSize = `${Math.floor(px)}px`
-      }
+      })
     }
     fit()
     let cancel = false
@@ -258,7 +260,6 @@ export function ClosedView({ displayIndex, textsIn, faded, onGoTo }: Props) {
   // Desktop: junto a la esquina inferior derecha, lejos de la etiqueta derecha y del título.
   const hint = vertical ? { x: 16, y: bajoMarco } : { x: pts[4] + 24, y: pts[5] - 8 }
 
-  const panel = paneles[displayIndex] ?? paneles[0]!
   const slot = textsIn ? displayIndex + 1 : 0
   const izquierdas = [['', ''], ...paneles.map((p) => p.izquierda)]
   const derechas = [['', ''], ...paneles.map((p) => p.derecha)]
@@ -291,11 +292,7 @@ export function ClosedView({ displayIndex, textsIn, faded, onGoTo }: Props) {
 
   return (
     <div ref={rootRef} className="pointer-events-none absolute inset-0 z-10 font-ui text-etiqueta uppercase text-champan">
-      {/* Para lectores de pantalla: posición y panel actual. */}
-      <p className="sr-only" aria-live="polite">
-        {fill(copy.escenario.posicion, { n: displayIndex + 1, total: TOTAL_PANELES, panel: panel.titulo })}
-      </p>
-
+      {/* El anuncio del panel actual para lectores de pantalla vive en Stage (también en modo abierto). */}
       {/* Etiquetas laterales. Desktop: a los lados, a la altura del centro del marco.
           Mobile: índice + frase izq. arriba; frase der. debajo del marco (no entran las dos en una fila). */}
       <div

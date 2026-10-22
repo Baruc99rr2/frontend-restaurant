@@ -4,7 +4,8 @@ import { atraparFoco, tabulables } from '@/components/focusTrap'
 import { copy } from '@/content/copy.es'
 import type { PlatoCarta } from '@/content/editorial'
 import { formatPrecio } from '@/data/format'
-import { Flip, gsap, useGSAP } from '@/motion/gsap'
+import { Flip } from '@/motion/flip'
+import { gsap, useGSAP } from '@/motion/gsap'
 import { BlurSwapImage, WipeSwap } from '@/motion/primitives'
 import { motionDuration, motionEase } from '@/motion/tokens'
 import { useReducedMotion } from '@/motion/useReducedMotion'
@@ -271,7 +272,7 @@ export function Polaroid({
               <WipeSwap
                 value={plato?.name ?? ''}
                 as="p"
-                className="font-serif text-cuerpo leading-snug font-bold text-noche sm:text-[1.1875rem]"
+                className="font-serif text-cuerpo leading-snug font-bold text-noche"
               />
             </div>
             <div data-polaroid-precio className="shrink-0">

@@ -1,5 +1,6 @@
 import { useEffect, useRef, type ComponentType } from 'react'
 import { Picture } from '@/components/Picture'
+import { usePlaceholder } from '@/content/placeholders'
 import { paneles } from '@/content/copy.es'
 import type { PanelKey } from '@/content/editorial'
 import { gsap, useGSAP } from '@/motion/gsap'
@@ -35,7 +36,9 @@ type StageVideoProps = {
 }
 
 /**
- * Video de HOME (§5 Video): `muted playsinline loop preload="metadata"` con póster.
+ * Video de HOME (§5 Video): `muted playsinline loop preload="none"` con póster: no se baja
+ * nada del video hasta que tiene que correr (`play()`), así el póster, las fuentes y el JS
+ * no compiten con él en la primera carga.
  * Corre solo con `playing` (HOME abierto), la pestaña visible y sin reduced motion
  * (con reduced motion queda el póster).
  */
@@ -60,18 +63,24 @@ function StageVideo({ playing, videoRef }: StageVideoProps) {
   }, [playing, reduced, videoRef])
 
   if (!videoInfo) return <div className="size-full bg-tizon" />
+  return <VideoConPoster videoRef={videoRef} />
+}
+
+function VideoConPoster({ videoRef }: { videoRef: React.RefObject<HTMLVideoElement | null> }) {
+  const placeholder = usePlaceholder(videoInfo?.placeholder)
+  if (!videoInfo) return null
 
   return (
     <video
       ref={videoRef}
       className="size-full bg-cover bg-center object-cover"
-      style={{ backgroundImage: `url(${videoInfo.placeholder})` }}
+      style={placeholder ? { backgroundImage: `url(${placeholder})` } : undefined}
       src={videoInfo.src}
       poster={videoInfo.poster}
       muted
       playsInline
       loop
-      preload="metadata"
+      preload="none"
       aria-hidden="true"
       tabIndex={-1}
     />
@@ -85,11 +94,23 @@ type StageMediaProps = {
   videoPlaying: boolean
   /** Panel visible al montar: su foto carga con prioridad alta, el resto después. */
   initialIndex: number
+  /** Panel actual: se cargan su foto y las de los vecinos (el paso siguiente ya está listo). */
+  activeIndex: number
+  /** Terminada la intro y con el navegador libre: se piden todas las fotos (saltos del navbar). */
+  cargarTodo: boolean
   /** Abriendo o abierto: velo y fondos de sección visibles (fundido al abrir y cerrar). */
   abierto: boolean
 }
 
-export function StageMedia({ layerRefs, videoRef, videoPlaying, initialIndex, abierto }: StageMediaProps) {
+export function StageMedia({
+  layerRefs,
+  videoRef,
+  videoPlaying,
+  initialIndex,
+  activeIndex,
+  cargarTodo,
+  abierto,
+}: StageMediaProps) {
   const reduced = useReducedMotion()
   const capasRef = useRef<(HTMLDivElement | null)[]>([])
 
@@ -110,7 +131,9 @@ export function StageMedia({ layerRefs, videoRef, videoPlaying, initialIndex, ab
   return (
     <>
       {paneles.map((panel, i) => {
-        const foto = fotoEscenario(i)
+        // Primera carga: solo el panel de entrada y sus vecinos; el resto cuando el navegador queda libre.
+        const cargar = cargarTodo || Math.abs(i - activeIndex) <= 1 || Math.abs(i - initialIndex) <= 1
+        const foto = cargar ? fotoEscenario(i) : null
         const Fondo = FONDOS[panel.key]
         return (
           <div

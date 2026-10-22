@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type MouseEvent } from 'react'
 import Lenis from 'lenis'
 import { navegar } from '@/app/router'
+import { cargarCartaOverlay, precargar } from '@/carta/cargas'
 import { navegarACategoria, volverALaCarta } from '@/carta/navegacion'
 import { Polaroid, type PuntoClic } from '@/carta/Polaroid'
 import { useWipeTransition } from '@/carta/WipeTransition'
@@ -9,7 +10,7 @@ import { Picture } from '@/components/Picture'
 import { useTopeTitulo } from '@/components/useAjusteAncho'
 import { siteConfig } from '@/config/site.config'
 import { copy } from '@/content/copy.es'
-import { categoriasCarta, type PlatoCarta } from '@/content/editorial'
+import { categoriasCarta, portadaDeSlug, type PlatoCarta } from '@/content/editorial'
 import { resumirHorario } from '@/data/estado'
 import { formatPrecio } from '@/data/format'
 import { retryLocal, useLocal } from '@/data/useLocal'
@@ -51,7 +52,7 @@ function PlatoItem({
       data-plato={plato.id}
       data-disponible={disponible ? 'true' : 'false'}
       data-con-foto={tieneFoto ? 'true' : 'false'}
-      className={`border-b border-hoja py-5 ${disponible ? '' : 'opacity-60'}`}
+      className="border-b border-hoja py-5"
     >
       <div className="flex items-baseline gap-2">
         {tieneFoto ? (
@@ -60,14 +61,14 @@ function PlatoItem({
             data-plato-abrir={plato.id}
             aria-haspopup="dialog"
             onClick={(e) => onAbrirFoto(plato.id, e)}
-            className="cursor-pointer text-left font-ui text-ui font-bold uppercase tracking-[0.06em] text-champan underline decoration-oro/60 decoration-1 underline-offset-4 transition-colors duration-200 hover:text-oro focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro"
+            className={`cursor-pointer text-left font-ui text-ui font-bold uppercase tracking-[0.06em] ${disponible ? 'text-champan' : 'text-ceniza'} underline decoration-oro/60 decoration-1 underline-offset-4 transition-colors duration-200 hover:text-oro focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro`}
           >
             {plato.name}
           </button>
         ) : (
           <span
             data-plato-nombre={plato.id}
-            className="font-ui text-ui font-bold uppercase tracking-[0.06em] text-champan"
+            className={`font-ui text-ui font-bold uppercase tracking-[0.06em] ${disponible ? 'text-champan' : 'text-ceniza'}`}
           >
             {plato.name}
           </span>
@@ -86,8 +87,8 @@ function PlatoItem({
 
         <span
           data-plato-precio
-          className={`shrink-0 font-ui text-ui font-bold tabular-nums text-oro ${
-            disponible ? '' : 'line-through decoration-oro/65 decoration-1'
+          className={`shrink-0 font-ui text-ui font-bold tabular-nums ${
+            disponible ? 'text-oro' : 'text-ceniza line-through decoration-ceniza decoration-1'
           }`}
         >
           {formatPrecio(plato.price_cents)}
@@ -111,7 +112,7 @@ function PlatoItem({
                     key={a}
                     data-alergeno={a}
                     title={info?.nombre ?? a}
-                    className="rounded-sm border border-hoja bg-tizon/45 px-1.5 py-0.5 font-ui text-[0.625rem] font-semibold uppercase tracking-[0.08em] text-champan/85 no-underline"
+                    className="rounded-sm border border-hoja bg-tizon/45 px-1.5 py-0.5 font-ui text-micro font-semibold uppercase tracking-[0.08em] text-champan/85 no-underline"
                   >
                     {info?.marca ?? a}
                   </abbr>
@@ -123,7 +124,7 @@ function PlatoItem({
           {!disponible ? (
             <span
               data-plato-sin-stock
-              className="inline-flex items-center rounded-full border border-oro/45 bg-tizon/75 px-2.5 py-0.5 font-ui text-[0.625rem] font-semibold uppercase tracking-[0.14em] text-champan"
+              className="inline-flex items-center rounded-full border border-oro/45 bg-tizon/75 px-2.5 py-0.5 font-ui text-micro font-semibold uppercase tracking-[0.14em] text-champan"
             >
               {copy.carta.sinStock}
             </span>
@@ -179,8 +180,14 @@ export function CategoryPage({ slug }: { slug: string }) {
     })
   }, [categoria])
 
+  const portada = categoria?.portada ?? portadaDeSlug(slug)
+  const mostrarPortada = local.status === 'loading' ? !!portada : !!categoria && !vacia
+
   const tituloRef = useRef<HTMLDivElement | null>(null)
   useTopeTitulo(tituloRef, categoria && !vacia ? categoria.name : undefined)
+
+  // "← Categorías" vuelve al escenario con la carta: su chunk se pide en un rato libre.
+  useEffect(() => precargar(cargarCartaOverlay), [])
 
   // Al montar una categoría, empezar arriba de todo.
   useLayoutEffect(() => {
@@ -275,7 +282,7 @@ export function CategoryPage({ slug }: { slug: string }) {
               type="button"
               data-categoria-carta
               onClick={irACarta}
-              className="shrink-0 cursor-pointer rounded-full border border-champan/25 bg-champan/5 px-2.5 py-2 font-ui text-[0.625rem] font-semibold uppercase tracking-[0.08em] text-champan transition-colors duration-200 hover:border-oro hover:text-oro focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro sm:px-4 sm:py-2.5 sm:text-etiqueta sm:tracking-[0.15em]"
+              className="shrink-0 cursor-pointer rounded-full border border-champan/25 bg-champan/5 px-2.5 py-2 font-ui text-micro font-semibold uppercase tracking-[0.08em] text-champan transition-colors duration-200 hover:border-oro hover:text-oro focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oro sm:px-4 sm:py-2.5 sm:text-etiqueta sm:tracking-[0.15em]"
             >
               {copy.carta.categorias}
             </button>
@@ -287,10 +294,10 @@ export function CategoryPage({ slug }: { slug: string }) {
               onClick={irAInicio}
               className="group shrink-0 cursor-pointer text-center font-serif text-champan focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-oro"
             >
-              <span className="block text-[0.95rem] leading-[0.92] tracking-[0.04em] uppercase transition-colors group-hover:text-oro sm:text-subtitulo sm:tracking-[0.06em]">
+              <span className="block text-cuerpo leading-[0.92] tracking-[0.04em] uppercase transition-colors group-hover:text-oro sm:text-subtitulo sm:tracking-[0.06em]">
                 {linea1}
               </span>
-              <span className="mt-0.5 block text-[0.5625rem] leading-none tracking-[0.1em] uppercase text-champan/80 sm:text-etiqueta sm:tracking-[0.14em]">
+              <span className="mt-0.5 block text-micro leading-none tracking-[0.1em] uppercase text-champan/80 sm:text-etiqueta sm:tracking-[0.14em]">
                 {linea2}
               </span>
             </button>
@@ -340,26 +347,27 @@ export function CategoryPage({ slug }: { slug: string }) {
         ) : null}
 
         {/* Categoría válida con platos */}
-        {categoria && !vacia ? (
-          <>
-            {/* Portada a lo ancho (~60vh, oscurecida) con número y nombre gigantes */}
-            <section
-              data-categoria-portada
-              className="relative -mt-18 flex min-h-[54svh] w-full items-end overflow-hidden bg-tizon pt-28 pb-10 sm:-mt-20 sm:min-h-[60svh] sm:pb-14"
-            >
-              {categoria.portada ? (
-                <Picture
-                  image={categoria.portada}
-                  shape="banda"
-                  alt=""
-                  sizes="100vw"
-                  loading="eager"
-                  fetchPriority="high"
-                  className="absolute inset-0 size-full object-cover"
-                />
-              ) : null}
-              <div className="velo absolute inset-0" />
+        {/* Portada a lo ancho (~60vh, oscurecida) con número y nombre gigantes. La foto sale de
+            editorial por slug: se ve mientras carga el repositorio (es lo primero grande). */}
+        {mostrarPortada ? (
+          <section
+            data-categoria-portada
+            className="relative -mt-18 flex min-h-[54svh] w-full items-end overflow-hidden bg-tizon pt-28 pb-10 sm:-mt-20 sm:min-h-[60svh] sm:pb-14"
+          >
+            {portada ? (
+              <Picture
+                image={portada}
+                shape="banda"
+                alt=""
+                sizes="100vw"
+                loading="eager"
+                fetchPriority="high"
+                className="absolute inset-0 size-full object-cover"
+              />
+            ) : null}
+            <div className="velo absolute inset-0" />
 
+            {categoria && !vacia ? (
               <div className="relative z-10 mx-auto w-full max-w-6xl px-4 sm:px-8">
                 <Reveal
                   as="p"
@@ -378,8 +386,12 @@ export function CategoryPage({ slug }: { slug: string }) {
                   </Reveal>
                 </div>
               </div>
-            </section>
+            ) : null}
+          </section>
+        ) : null}
 
+        {categoria && !vacia ? (
+          <>
             {/* Cuerpo: cabecera con nombre + horario a la derecha, grupos en 2 columnas y leyenda */}
             <section className="mx-auto max-w-6xl px-4 pt-10 pb-14 sm:px-8 sm:pt-14 sm:pb-20">
               <div className="flex flex-col justify-between gap-4 border-b border-hoja pb-6 md:flex-row md:items-end">
@@ -448,7 +460,7 @@ export function CategoryPage({ slug }: { slug: string }) {
                 </span>
                 {leyendaAlergenos.map((a) => (
                   <span key={a.clave} data-leyenda-marca={a.clave} className="inline-flex items-center gap-1.5">
-                    <span className="rounded-sm border border-hoja bg-tizon/45 px-1.5 py-0.5 text-[0.625rem] font-semibold uppercase text-champan/85">
+                    <span className="rounded-sm border border-hoja bg-tizon/45 px-1.5 py-0.5 text-micro font-semibold uppercase text-champan/85">
                       {a.marca}
                     </span>
                     <span>{a.nombre}</span>

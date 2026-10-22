@@ -3,7 +3,7 @@
   "steps": [
     { "viewport": { "width": 1440, "height": 900 } },
     { "nav": "http://localhost:5173/#platos" },
-    { "wait": 2600 },
+    { "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '2', 15000); return __qa.reposo(); })()", "expect": true },
     {
       "eval": "(() => { const root = document.querySelector('[data-mode]'); const panel = document.querySelector('[data-open-panel=\"platos\"]'); window.__platosState = () => { const activeDot = panel.querySelector('[data-platos-dot][aria-current=\"true\"]'); const allSelected = panel.querySelectorAll('[data-platos-dot][aria-current=\"true\"]').length; const fila = panel.querySelector('[data-platos-fila]'); const oIn = panel.querySelector('[data-platos-origen] p').children[1]; const rIn = panel.querySelector('[data-platos-region] p').children[1]; const dIn = panel.querySelector('[data-platos-descripcion] p').children[1]; const nWrap = panel.querySelector('[data-platos-nombre] h3'); const nOut = nWrap.children[0]; const nIn = nWrap.children[1]; const mIn = panel.querySelector('[data-platos-meta] p').children[1]; const marco = panel.querySelector('[data-platos-marco]'); const img = marco.querySelector('img'); const mRect = marco.getBoundingClientRect(); const iRect = img.getBoundingClientRect(); const cs = getComputedStyle(img); const contained = iRect.left >= mRect.left - 1 && iRect.top >= mRect.top - 1 && iRect.right <= mRect.right + 1 && iRect.bottom <= mRect.bottom + 1; return { stage: [root.dataset.mode, root.dataset.active, root.dataset.texts, location.hash], dot: Number(activeDot?.dataset.platosDot), selectedCount: allSelected, paused: fila.dataset.platosPaused === 'true', origen: oIn.textContent, region: rIn.textContent, nombre: nIn.textContent, meta: mIn.textContent.replace(/\\u00a0/g, ' '), descOk: dIn.textContent.length > 20, outHidden: getComputedStyle(nOut).display === 'none', inUnclipped: !nIn.style.clipPath, imgSharp: cs.filter === 'none' || cs.filter === 'blur(0px)', imgContained: contained, imgFile: img.getAttribute('src')?.split('/').pop() ?? '' }; }; return __platosState(); })()",
       "label": "1 desktop /#platos: abre en plato 0 (Bife de chorizo grueso) con imagen nítida y contenida",
@@ -144,7 +144,7 @@
     { "viewport": { "width": 390, "height": 844, "mobile": true, "scale": 2 } },
     { "nav": "about:blank" },
     { "nav": "http://localhost:5173/#platos" },
-    { "wait": 2600 },
+    { "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '2', 15000); return __qa.reposo(); })()", "expect": true },
     {
       "eval": "(() => { const panel = document.querySelector('[data-open-panel=\"platos\"]'); const s = panel.querySelector('[data-stage-scroller]'); const dot = panel.querySelector('[data-platos-dot][aria-current=\"true\"]')?.dataset.platosDot; const nIn = panel.querySelector('[data-platos-nombre] h3').children[1].textContent; return [document.documentElement.scrollWidth, s.scrollHeight <= s.clientHeight, dot, nIn]; })()",
       "label": "10 mobile 390×844: sin desborde horizontal y entra en pantalla",

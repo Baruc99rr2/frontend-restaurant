@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react'
+import { cuandoEsteLibre } from '@/app/libre'
 import { rutaActual } from '@/app/router'
-import { CartaOverlay } from '@/carta/CartaOverlay'
+import { cargarCartaOverlay } from '@/carta/cargas'
 import { abrirCarta, cerrarCarta, escenarioDebajoDeLaCarta } from '@/carta/navegacion'
 import { Navbar } from '@/components/Navbar'
 import { copy, paneles } from '@/content/copy.es'
@@ -15,8 +16,11 @@ import { Intro } from '@/stage/Intro'
 import { OpenView } from '@/stage/OpenView'
 import { StageMedia } from '@/stage/StageMedia'
 import { StageProvider, useStage } from '@/stage/StageProvider'
-import { panelIndexFromHash } from '@/stage/stageMachine'
+import { panelIndexFromHash, TOTAL_PANELES } from '@/stage/stageMachine'
 import { useStepInput } from '@/stage/useStepInput'
+
+// La carta viaja en su propio chunk: se monta apenas llega (está cerrada hasta que la ruta es `/carta`).
+const CartaOverlay = lazy(() => cargarCartaOverlay().then((m) => ({ default: m.CartaOverlay })))
 
 /**
  * Escenario a pantalla completa (§5): 100svh, sin scroll nativo, 6 paneles y dos modos.
@@ -291,6 +295,15 @@ function StageInner({ entrada, carta }: { entrada: Entrada; carta: boolean }) {
   // El video corre solo con HOME abierto (y se pausa apenas se sale de HOME o se abre la carta).
   const videoPlaying = abierto && paneles[displayIndex]?.key === 'home' && !carta
 
+  // Primera carga liviana: hasta que termina la intro (y el navegador queda libre) no se monta
+  // la carta ni se piden las fotos lejanas del escenario (ver StageMedia).
+  const introTerminada = mode !== 'loading' && mode !== 'intro'
+  const [enReposo, setEnReposo] = useState(false)
+  useEffect(() => {
+    if (!introTerminada || enReposo) return
+    return cuandoEsteLibre(() => setEnReposo(true))
+  }, [introTerminada, enReposo])
+
   return (
     <div
       className="group/stage fixed inset-0 h-svh w-full touch-pinch-zoom overflow-hidden bg-noche text-champan select-none"
@@ -299,6 +312,16 @@ function StageInner({ entrada, carta }: { entrada: Entrada; carta: boolean }) {
       data-texts={textsPanel ?? undefined}
       data-lock={state.lock ? '' : undefined}
     >
+      {/* Lectores de pantalla: cada cambio de panel (modo cerrado y abierto) se anuncia. */}
+      <p className="sr-only" aria-live="polite" data-anuncio-panel>
+        {introTerminada && !carta
+          ? fill(copy.escenario.posicion, {
+              n: String(displayIndex + 1),
+              total: String(TOTAL_PANELES),
+              panel: paneles[displayIndex]?.titulo ?? '',
+            })
+          : ''}
+      </p>
       <div ref={frameWrapRef} inert={carta} className="invisible absolute inset-0 opacity-0">
         <Frame
           controller={frame}
@@ -311,6 +334,8 @@ function StageInner({ entrada, carta }: { entrada: Entrada; carta: boolean }) {
             videoRef={videoRef}
             videoPlaying={videoPlaying}
             initialIndex={entrada.index}
+            activeIndex={displayIndex}
+            cargarTodo={enReposo}
             abierto={abierto}
           />
         </Frame>
@@ -327,10 +352,15 @@ function StageInner({ entrada, carta }: { entrada: Entrada; carta: boolean }) {
           onClose={() => dispatch({ type: 'CLOSE' })}
           onVerCarta={verCarta}
           onGoTo={goTo}
+          montarTodo={enReposo}
         />
       </div>
 
-      <CartaOverlay abierta={carta} listo={mode !== 'loading'} />
+      {carta || enReposo ? (
+        <Suspense fallback={null}>
+          <CartaOverlay abierta={carta} listo={mode !== 'loading'} />
+        </Suspense>
+      ) : null}
 
       <div
         ref={chromeRef}
@@ -351,7 +381,6 @@ function StageInner({ entrada, carta }: { entrada: Entrada; carta: boolean }) {
         frame={frame}
         frameWrapRef={frameWrapRef}
         layerRefs={layerRefs}
-        videoRef={videoRef}
         chromeRef={chromeRef}
         initialIndex={entrada.index}
         openOnEnter={entrada.abierto}

@@ -34,12 +34,21 @@ export function createFrameController(initial: FrameShape): Internals {
   let points: FramePoints | null = null
   let tween: gsap.core.Tween | null = null
 
-  const viewport = (): Viewport => ({
-    width: el?.clientWidth ?? window.innerWidth,
-    height: el?.clientHeight ?? window.innerHeight,
-  })
-  const angle = () => (el ? leerRotacion(el) : -16)
-  const target = (s: FrameShape) => shapePoints(s, viewport(), angle())
+  // Medidas cacheadas: se leen al enganchar el elemento y en cada `relayout` (resize), nunca
+  // en el onUpdate de un tween (leer clientWidth/estilo después de escribir el clip-path
+  // forzaba un reflow por frame).
+  let medidas: { viewport: Viewport; angle: number } | null = null
+  const medir = () => {
+    medidas = {
+      viewport: { width: el?.clientWidth ?? window.innerWidth, height: el?.clientHeight ?? window.innerHeight },
+      angle: el ? leerRotacion(el) : -16,
+    }
+    return medidas
+  }
+  const target = (s: FrameShape) => {
+    const m = medidas ?? medir()
+    return shapePoints(s, m.viewport, m.angle)
+  }
 
   const write = (p: FramePoints) => {
     points = p
@@ -52,9 +61,11 @@ export function createFrameController(initial: FrameShape): Internals {
     },
     attach(node) {
       el = node
+      medir()
       if (node) write(target(shape))
     },
     relayout() {
+      medir()
       // Con un tween en curso, su onUpdate ya apunta al destino recalculado.
       if (tween?.isActive()) return
       write(target(shape))

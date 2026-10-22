@@ -3,7 +3,7 @@
 // Botones repetidos: site.config.ts → botones.
 
 import type { RedSocial } from '@/config/site.config'
-import type { PanelKey } from './editorial'
+import type { PanelKey } from './editorial.ts'
 
 export type Panel = {
   key: PanelKey
@@ -35,7 +35,8 @@ export const copy = {
   /** Escenario (modo cerrado/abierto). {panel}, {n}, {total} se reemplazan. */
   escenario: {
     abrir: 'Entrar a {panel}',
-    irA: 'Ir a {panel}',
+    /** Empieza con el número visible del botón (el nombre accesible contiene lo que se ve). */
+    irA: '{n}: ir a {panel}',
     posicion: 'Panel {n} de {total}: {panel}',
     paneles: 'Paneles',
     indice: 'Índice',

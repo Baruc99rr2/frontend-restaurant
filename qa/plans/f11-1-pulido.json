@@ -1,0 +1,49 @@
+{
+  "descripcion": "F11 · Pulido: index.html con title/description/Open Graph y el loader estático; JSON-LD Restaurant con los datos del repositorio; anuncio aria-live del panel también en modo abierto; paneles inactivos sin maquetar (content-visibility) y montados al activarse; carta montada después de la intro; miniaturas borrosas resueltas desde su chunk; reduced motion en la categoría (Lenis sin suavizado) y la polaroid (fundido corto, sin Flip).",
+  "steps": [
+    { "viewport": { "width": 1440, "height": 900 } },
+    { "nav": "http://localhost:5173/#home" },
+    {
+      "eval": "(async () => { const html = await (await fetch('/')).text(); return { titulo: /<title>Quebracho — cocina de fuego y bodega<\\/title>/.test(html), descripcion: html.includes('<meta name=\"description\"'), og: ['og:title', 'og:description', 'og:image', 'og:url', 'og:locale'].every((p) => html.includes(`property=\"${p}\"`)), loader: html.includes('id=\"cargador\"') }; })()",
+      "label": "1 index.html: title, description, Open Graph y el loader estático desde site.config.ts",
+      "expect": { "titulo": true, "descripcion": true, "og": true, "loader": true }
+    },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '0', 15000); await __qa.reposo(); const s = document.getElementById('ld-restaurante'); const ld = JSON.parse(s.textContent); return { tipo: ld['@type'], nombre: ld.name, direccion: ld.address?.streetAddress, franjas: ld.openingHoursSpecification.length, martes: ld.openingHoursSpecification.find((f) => f.dayOfWeek.endsWith('Tuesday') && f.opens === '20:00')?.closes, menu: ld.menu, cargador: document.getElementById('cargador') }; })()",
+      "label": "2 JSON-LD Restaurant con nombre, dirección y horario del repositorio; el loader estático ya no está",
+      "expect": { "tipo": "Restaurant", "nombre": "Quebracho", "direccion": "Güemes 1150, San Salvador de Jujuy", "franjas": 11, "martes": "00:30", "menu": "https://quebracho.example/carta", "cargador": null }
+    },
+    {
+      "eval": "(async () => { const cv = (k) => getComputedStyle(document.querySelector(`[data-open-panel=\"${k}\"]`)).contentVisibility; return [cv('home'), cv('eventos'), document.querySelector('[data-anuncio-panel]').textContent]; })()",
+      "label": "3 HOME abierto: su panel visible, los inactivos sin maquetar; anuncio del panel",
+      "expect": ["visible", "hidden", "Panel 1 de 6: HOME"]
+    },
+    { "key": "ArrowDown" },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '1', 8000); await __qa.estable(); return [document.querySelector('[data-anuncio-panel]').textContent, getComputedStyle(document.querySelector('[data-open-panel=\"la-casa\"]')).contentVisibility, document.querySelector('[data-open-panel=\"la-casa\"] [role=\"tablist\"]') !== null]; })()",
+      "label": "4 paso abierto a LA CASA: se anuncia (aria-live en modo abierto) y el panel está montado y visible",
+      "expect": ["Panel 2 de 6: LA CASA", "visible", true]
+    },
+    {
+      "eval": "(async () => { const ok = await __waitUntil(() => document.querySelector('[data-carta-estado]') !== null, (v) => v === true, 8000); const img = document.querySelector('[data-panel=\"la-casa\"] img'); const ph = await __waitUntil(() => img?.style.backgroundImage ?? '', (b) => b.startsWith('url(\"data:image/webp'), 8000); return [ok, ph.startsWith('url(\"data:image/webp')]; })()",
+      "label": "5 la carta se montó después de la intro y las fotos tienen su miniatura borrosa (chunk aparte)",
+      "expect": [true, true]
+    },
+    { "reducedMotion": true },
+    { "nav": "http://localhost:5173/carta/fuegos" },
+    {
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-categoria] h1'), (e) => !!e, 10000); await __qa.cartaEstable(); window.scrollTo({ top: 400, behavior: 'instant' }); await __frames(3); return [Math.round(window.scrollY), document.documentElement.classList.contains('lenis-smooth')]; })()",
+      "label": "6 reduced motion: la categoría scrollea sin suavizado de Lenis",
+      "expect": [400, false]
+    },
+    { "click": { "selector": "[data-plato-abrir]" } },
+    {
+      "eval": "(async () => { const t0 = performance.now(); const p = document.querySelector('[data-polaroid]'); await __waitUntil(() => p.dataset.polaroidEstado, (e) => e === 'abierta', 3000); const dt = performance.now() - t0; const tr = getComputedStyle(document.querySelector('[data-polaroid-flip]')).transform; return [dt < 500, tr === 'none' || tr === 'matrix(1, 0, 0, 1, 0, 0)']; })()",
+      "label": "7 reduced motion: la polaroid abre con un fundido corto, sin Flip",
+      "expect": [true, true]
+    },
+    { "key": "Escape" },
+    { "eval": "__waitUntil(() => document.querySelector('[data-polaroid]').dataset.polaroidEstado, (e) => e === 'cerrada', 3000)", "expect": "cerrada" },
+    { "reducedMotion": false }
+  ]
+}

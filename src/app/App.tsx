@@ -1,12 +1,14 @@
 import { lazy, Suspense } from 'react'
 import { useRuta } from '@/app/router'
-import { CategoryPage } from '@/carta/CategoryPage'
+import { Seo } from '@/app/Seo'
+import { cargarCategoria } from '@/carta/cargas'
 import { WipeTransitionProvider } from '@/carta/WipeTransition'
 import Stage from '@/stage/Stage'
 
 // Rutas (src/app/router.ts):
-// `/` escenario · `/carta` escenario + overlay de la carta (el mismo <Stage>, no se desmonta)
-// · `/carta/:slug` página de categoría (F10; hoy un placeholder).
+// `/` escenario · `/carta` escenario + overlay de la carta (el mismo <Stage>, no se desmonta;
+// el overlay va en su chunk) · `/carta/:slug` página de categoría (chunk propio con Lenis y Flip).
+const CategoryPage = lazy(() => cargarCategoria().then((m) => ({ default: m.CategoryPage })))
 // Páginas de QA solo en desarrollo (fuera del bundle de producción):
 // /dev (primitivas, navbar, botón MENU) · /dev/datos (datos y medios) · /dev/tokens (muestras).
 const DevPage = import.meta.env.DEV ? lazy(() => import('@/app/DevPage')) : null
@@ -15,7 +17,13 @@ const TokensPage = import.meta.env.DEV ? lazy(() => import('@/app/TokensPage')) 
 
 function Rutas() {
   const ruta = useRuta()
-  if (ruta.nombre === 'categoria') return <CategoryPage key={ruta.slug} slug={ruta.slug} />
+  if (ruta.nombre === 'categoria') {
+    return (
+      <Suspense fallback={<div className="min-h-svh bg-monte" />}>
+        <CategoryPage key={ruta.slug} slug={ruta.slug} />
+      </Suspense>
+    )
+  }
   if (ruta.nombre === 'otra') {
     const dev =
       (DevPage && ruta.path === '/dev' && <DevPage />) ||
@@ -30,6 +38,7 @@ function Rutas() {
 export default function App() {
   return (
     <WipeTransitionProvider>
+      <Seo />
       <Rutas />
     </WipeTransitionProvider>
   )

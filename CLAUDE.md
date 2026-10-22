@@ -40,6 +40,7 @@ Motivo visual único: el **marco inclinado** (cuadrilátero rotado ~-16°, token
 - `pnpm media` — procesa `content/` → `public/media/` + `src/content/media.generated.ts`
 - `pnpm check:content` — ids de `editorial.json` ↔ mock ↔ medios
 - `pnpm api:check` — genera tipos desde `api/openapi.json` y verifica que `src/data/types.ts` sea idéntico (solo local)
+- `pnpm preview` — sirve `dist/` (con fallback de SPA); Lighthouse se mide contra esto
 - Rutas (`src/app/router.ts`, sin dependencias): `/` escenario · `/carta` escenario + overlay de la carta (el mismo `<Stage>`,
   no se desmonta) · `/carta/:slug` categoría · solo dev: `/dev` (primitivas, navbar, MENU), `/dev/datos` (datos y medios), `/dev/tokens` (muestras).
 - Escenario (`src/stage/`): estado en `stageMachine.ts` (reducer puro); los timelines viven en `Stage.tsx`/`Intro.tsx`
@@ -68,7 +69,7 @@ Motivo visual único: el **marco inclinado** (cuadrilátero rotado ~-16°, token
 - TypeScript fijado en `~6.0` hasta que `typescript-eslint` soporte TS 7.
 - pnpm 11 bloquea scripts de instalación: los permitidos van en `pnpm-workspace.yaml` → `allowBuilds` (hoy solo `ffmpeg-static`).
 
-## Reglas aprendidas (errores de F5–F8 que no se repiten)
+## Reglas aprendidas (errores de F5–F11 que no se repiten)
 
 - **Fondos de sección:** van en la capa del panel (`FONDOS` en `src/stage/StageMedia.tsx`, cada sección exporta su `XFondo`),
   nunca dentro de `[data-open-text]`. Esa capa es lo que el escenario mueve en el paso abierto; lo que está en el texto se desvanece.
@@ -92,4 +93,9 @@ Motivo visual único: el **marco inclinado** (cuadrilátero rotado ~-16°, token
 - **Navegación:** abrir/cerrar algo que tiene URL es navegar (`src/app/router.ts`; carta en `src/carta/navegacion.ts`), así
   botones, `Esc` y atrás del navegador comparten un solo estado. Cambio de página con barrido: `useWipeTransition().transicion(cambio)`
   (`src/carta/WipeTransition.tsx`), no otro barrido.
+- **Montaje diferido (F11):** los paneles del modo abierto se montan al activarse o en reposo, y la carta al terminar la intro.
+  Un plan no puede consultar un panel antes de que esté activo (esperar `data-texts`); `content-visibility: hidden` en los inactivos.
+- **Archivos que lee `vite.config.ts`** (`src/config/seo.ts`, `loaderEstatico.ts` y lo que importan): imports relativos con extensión `.ts`
+  y JSON con `with { type: 'json' }`, o Vite avisa (cargador nativo).
+- **Fotos:** `placeholder` del catálogo es una clave; usar `Picture`/`BlurSwapImage` (resuelven con `usePlaceholder`), nunca `url(${placeholder})` a mano.
 - **Antes de corregir un error, reproducirlo** con un plan sobre el código anterior; el arreglo queda cubierto por ese plan.

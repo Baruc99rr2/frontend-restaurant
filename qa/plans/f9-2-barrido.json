@@ -69,8 +69,8 @@
     { "eval": "(async () => { await __waitUntil(() => location.pathname, (p) => p === '/carta/entradas'); return __qa.cartaEstable(); })()", "expect": true },
     { "click": { "selector": "[data-categoria-inicio]" } },
     {
-      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '0', 15000); await __qa.estable(); return [__carta().ruta, __carta().escenario, __carta().carta]; })()",
-      "label": "10 'Volver al inicio' (mismo barrido): escenario con HOME abierto",
+      "eval": "(async () => { await __waitUntil(() => document.querySelector('[data-mode]')?.dataset.texts, (t) => t === '0', 15000); await __qa.estable(); return [__carta().ruta, __carta().escenario, __carta().carta ?? 'cerrada']; })()",
+      "label": "10 'Volver al inicio' (mismo barrido): escenario con HOME abierto (la carta, cerrada o todavía sin montar: se monta en reposo, F11)",
       "expect": ["/#home", ["open", "0", "0"], "cerrada"]
     },
     { "key": "ArrowDown" },

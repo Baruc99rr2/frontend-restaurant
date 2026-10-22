@@ -1,4 +1,5 @@
 import type { ImageShapeName, MediaImage } from '@/content/media.types'
+import { usePlaceholder } from '@/content/placeholders'
 
 type Props = {
   image: MediaImage
@@ -24,6 +25,7 @@ export function Picture({
   onLoad,
 }: Props) {
   const s = image[shape]
+  const placeholder = usePlaceholder(s.placeholder)
   const variantes = s.sm.width === s.lg.width ? [s.lg] : [s.sm, s.lg]
   const srcset = (fmt: 'avif' | 'webp') => variantes.map((v) => `${v[fmt]} ${v.width}w`).join(', ')
 
@@ -42,7 +44,7 @@ export function Picture({
         onLoad={onLoad}
         decoding="async"
         className={`bg-cover bg-center ${className}`}
-        style={{ backgroundImage: `url(${s.placeholder})` }}
+        style={placeholder ? { backgroundImage: `url(${placeholder})` } : undefined}
       />
     </picture>
   )

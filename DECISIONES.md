@@ -346,3 +346,42 @@ Gravedad: **alta** (rompe navegación o datos) · **media** (se ve mal en un cas
 - Sin stock (atenuado, precio tachado, "No hay hoy"), platos sin foto sin cursor ni clic, categoría inexistente con aviso, desktop 1440 y mobile 390 sin desborde, contra la ref. 11 (dos columnas, nombre + horario arriba, porción entre paréntesis).
 - Reglas aprendidas: colores solo tokens (sombra con `var(--color-noche)`), transform con un dueño (Flip en `[data-polaroid-flip]`, rotación en `[data-polaroid-marco]`), estado de listeners en `useLayoutEffect`, navegación por ruta, copy desde `copy.es.ts`, planes sin `wait`. F10 solo tocó archivos de su alcance (`src/carta/`, `router.ts`, `package.json`, planes, docs).
 - Plan nuevo `f10-4-revision.json` (títulos, leyenda, contador, línea).
+
+## F11 — Pulido: rendimiento, accesibilidad, SEO, white-label (2026-10-21) — `chore(web): pulido y documentacion white-label`
+
+**Bundle (chunk principal 540 kB → 148 kB, sin el aviso de 500 kB)**
+- Miniaturas borrosas fuera del principal: `pnpm media` escribe `media.generated.ts` (rutas y medidas; `placeholder` pasa a ser una clave `f1/paisaje`) y `media.placeholders.generated.ts` (data URIs) → el chunk de miniaturas se pide al arrancar (`cargarPlaceholders()` en `main.tsx`) y `usePlaceholder(clave)` (`src/content/placeholders.ts`) lo resuelve cuando llega; mientras, se ve el fondo del contenedor.
+- Por ruta: overlay de la carta y página de categoría en chunks propios (`src/carta/cargas.ts`); la categoría lleva Lenis y Flip. El barrido espera el chunk con la pantalla tapada (nunca descubre una página vacía) y cada uno precarga al otro en un rato libre.
+- Flip fuera de `gsap.ts` (`src/motion/flip.ts`, solo la polaroid). React y GSAP en chunks propios (`codeSplitting.groups` de rolldown) → caché entre versiones; Flip excluido del grupo de GSAP.
+- `/dev` ya estaba fuera del build (`import.meta.env.DEV`).
+
+**Lighthouse móvil (simulado, `pnpm preview` local): de 49 a 92 en el inicio**
+- Lo que pesaba: React montaba los 6 paneles del modo abierto aunque no se ven (tarea larga de ~850 ms con CPU ×4), reflows forzados por frame en el marco, 4 saltos de layout en paneles ocultos al llegar los datos, y el LCP atado al final de la intro.
+- Paneles del modo abierto: el activo se monta al toque (también por hash); el resto de a uno por rato libre después de la intro (`OpenView` + `cuandoEsteLibre`, `src/app/libre.ts`). Montado no se desmonta (conserva su estado).
+- Paneles inactivos con `content-visibility: hidden` → no se maquetan: CLS 0,15 → 0 y menos estilo/layout. Es seguro: el escenario desvanece los textos del panel saliente antes de cambiar `textsPanel`, y los inactivos ya son `inert` + `aria-hidden`.
+- `frameController` cachea viewport y ángulo (se miden en `attach`/`relayout`), en vez de leer `clientWidth` y el estilo en cada `onUpdate` (forzaba un reflow por frame). `ClosedView` ajusta los títulos en tres pasadas (escribir, medir, escribir).
+- Loader de la intro ya en `index.html` (`src/config/loaderEstatico.ts`, mismas clases que `Intro.tsx`) y el primer render de React después del primer pintado (`requestAnimationFrame` + `setTimeout`) → se pinta antes de que corra el JS.
+- La intro ya no espera el primer cuadro del video (el póster lo cubre) y el video va con `preload="none"` hasta que tiene que correr → póster, fuentes y JS no compiten con 2,3 MB de video.
+- Precargas: fuentes de la intro (nombres con hash, desde el bundle) en el `<head>`; el póster de HOME (solo en `/`) y, en `/carta/:slug`, la portada de esa categoría + su chunk, desde el script del loader (la ruta solo se sabe en el navegador).
+- La carta se monta al terminar la intro (en reposo) y `StageMedia` pide primero las fotos del panel actual y sus vecinos (precarga del panel siguiente); el resto en reposo, antes de que el navbar pueda saltar lejos.
+- PLATOS reserva alto en mobile (`min-h-56`) para que no salte al llegar los datos.
+- La portada de la categoría sale de `editorial.json` por slug (`portadaDeSlug`) y se ve sin esperar al repositorio (es el LCP); número y título entran con su `Reveal` cuando llegan los datos.
+
+**Accesibilidad**
+- Anuncio `aria-live` del panel movido de `ClosedView` (oculto en modo abierto) a `Stage` → se anuncian también los pasos abiertos.
+- Números laterales: el nombre accesible empieza con el número visible (`"01: ir a HOME"`); botón de mail de EVENTOS sin `aria-label` (texto visible + `sr-only`).
+- Plato sin stock atenuado con color (`ceniza`, 5,2:1 sobre `monte`) en vez de `opacity: 0.6` (dejaba descripción y precio por debajo de 4,5:1).
+- Token tipográfico `text-micro` (0,625 rem) para chapitas; la categoría y la polaroid ya no usan tamaños sueltos.
+
+**SEO**
+- `site.config.ts → seo` (dominio, título, descripción, cocina, rango de precios). El build escribe `<title>`, description, Open Graph y Twitter en `index.html` (plugin en `vite.config.ts`, `src/config/seo.ts`); la foto de Open Graph es `medios.openGraph` de editorial.
+- JSON-LD `Restaurant` armado en el navegador (`src/app/Seo.tsx`) con nombre, dirección y horario del repositorio + contacto/coordenadas/redes de config → sigue valiendo con el backend real en F12; mientras carga o si falla, no se escribe nada.
+- `public/robots.txt` (Lighthouse lo pedía: el fallback devolvía el HTML).
+- `vite.config.ts` importa con extensión y atributo JSON (`with { type: 'json' }`) → sin el aviso del cargador nativo de Vite; `tsconfig.node.json` suma `DOM`, `resolveJsonModule` y el alias.
+
+**Despliegue**
+- Fallback de SPA para `/carta` y `/carta/:slug`: `vercel.json` y `public/_redirects` (Netlify y Cloudflare Pages); nginx, Apache y otros en el README. Solo esas rutas: el resto que no existe da 404 del hosting.
+
+**QA**
+- Plan `f11-1-pulido.json` (head, JSON-LD, aria-live en modo abierto, content-visibility, carta en reposo, miniaturas, reduced motion en categoría y polaroid).
+- Ajustes por el montaje diferido: `f6-1` cambia sus dos `{ "wait": 2600 }` por esperar el panel activo; el `__waitUntil` propio de `f7-1` y `f8-1` tolera que el panel todavía no esté; `f9-2` paso 10 acepta la carta sin montar; `f10-1` mide el color del precio sin stock en vez de la opacidad.

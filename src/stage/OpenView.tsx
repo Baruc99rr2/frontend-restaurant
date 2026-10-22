@@ -1,5 +1,6 @@
-import { useLayoutEffect, useRef, type RefObject } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from 'react'
 import { Frame as FrameIcon } from 'lucide-react'
+import { cuandoEsteLibre } from '@/app/libre'
 import { siteConfig } from '@/config/site.config'
 import { copy, paneles, type Panel } from '@/content/copy.es'
 import type { PanelKey } from '@/content/editorial'
@@ -30,6 +31,11 @@ type Props = {
   onClose: () => void
   onVerCarta: () => void
   onGoTo: (index: number) => void
+  /**
+   * Terminada la intro y con el navegador libre: se montan los paneles que faltan, de a uno
+   * por rato libre (el primer render queda liviano y no hay una sola tarea larga).
+   */
+  montarTodo: boolean
 }
 
 /**
@@ -61,9 +67,20 @@ function PanelPlaceholder({ panel, active }: { panel: Panel; active: boolean }) 
   )
 }
 
-export function OpenView({ rootRef, textsPanel, visible, onClose, onVerCarta, onGoTo }: Props) {
+export function OpenView({ rootRef, textsPanel, visible, onClose, onVerCarta, onGoTo, montarTodo }: Props) {
   const closeRef = useRef<HTMLButtonElement | null>(null)
   const reduced = useReducedMotion()
+
+  // Paneles montados: el activo siempre (también si se entra por hash), los ya vistos, y en
+  // reposo el resto de a uno. Montado no se desmonta (conserva su estado).
+  const [vistos, setVistos] = useState<ReadonlySet<number>>(() => new Set(textsPanel === null ? [] : [textsPanel]))
+  const [enReposo, setEnReposo] = useState(0)
+  // Estado derivado durante el render (patrón de React), sin efecto: el panel nuevo se monta ya.
+  if (textsPanel !== null && !vistos.has(textsPanel)) setVistos(new Set(vistos).add(textsPanel))
+  useEffect(() => {
+    if (!montarTodo || enReposo >= paneles.length) return
+    return cuandoEsteLibre(() => setEnReposo((n) => n + 1), 1000)
+  }, [montarTodo, enReposo])
 
   // Botón "Vista general": fundido al abrir/cerrar (mismo ritmo que el velo de `StageMedia`).
   useGSAP(
@@ -90,6 +107,7 @@ export function OpenView({ rootRef, textsPanel, visible, onClose, onVerCarta, on
     <div ref={rootRef} className="pointer-events-none absolute inset-0 z-20">
       {paneles.map((panel, i) => {
         const active = textsPanel === i
+        const montado = active || vistos.has(i) || i < enReposo
         return (
           <section
             key={panel.key}
@@ -97,9 +115,12 @@ export function OpenView({ rootRef, textsPanel, visible, onClose, onVerCarta, on
             aria-label={panel.navbar ?? panel.titulo}
             aria-hidden={!active}
             inert={!active}
-            className={`absolute inset-0 ${active && !FONDO_INTERACTIVO.includes(panel.key) ? 'pointer-events-auto' : ''}`}
+            // Inactivo: sus textos ya están ocultos (el escenario los desvanece antes de cambiar
+            // `textsPanel`), así que no se maqueta ni se pinta (`content-visibility: hidden`):
+            // menos trabajo al cargar y sin saltos de layout cuando llegan los datos.
+            className={`absolute inset-0 ${active ? '' : '[content-visibility:hidden]'} ${active && !FONDO_INTERACTIVO.includes(panel.key) ? 'pointer-events-auto' : ''}`}
           >
-            {panel.key === 'home' ? (
+            {!montado ? null : panel.key === 'home' ? (
               <HomePanel active={active} onVerCarta={onVerCarta} onConocerLaCasa={() => onGoTo(1)} />
             ) : panel.key === 'la-casa' ? (
               <LaCasaPanel active={active} />

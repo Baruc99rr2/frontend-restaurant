@@ -1,6 +1,6 @@
 # ESTADO
 
-Última actualización: 2026-10-21 — **F10 hecha y revisada**. Próxima: F11.
+Última actualización: 2026-10-21 — **F11 hecha: demo v1.0** (tag `v1.0-demo`). Próxima: F12 (conexión al backend, cuando haya un local real).
 Repo remoto: https://github.com/Baruc99rr2/frontend-restaurant (público).
 
 ## Sub-fases
@@ -22,9 +22,17 @@ Repo remoto: https://github.com/Baruc99rr2/frontend-restaurant (público).
 | F9 — Overlay de la carta (+ "Reglas aprendidas" en CLAUDE.md) | ✅ hecha | `feat(web): overlay de carta` |
 | F10 — Página de categoría y polaroid | ✅ hecha | `feat(web): categoria y polaroid` |
 | — Revisión de F10 (historial verificado, título gigante con tope, leyenda de alérgenos, contador de la polaroid) | ✅ hecha | `fix(web): revision de F10` |
-| F11–F12 | pendiente | — |
+| F11 — Pulido: rendimiento, accesibilidad, SEO, white-label | ✅ hecha | `chore(web): pulido y documentacion white-label` |
+| F12 — Conexión al backend | pendiente (no ejecutar todavía) | — |
 
 ## Qué hay hoy
+
+- **F11 (rendimiento, SEO, white-label):**
+  - Chunks: app ~148 kB (era 540), React y GSAP aparte, y por ruta: overlay de la carta y página de categoría (`src/carta/cargas.ts`, con Lenis y Flip — `src/motion/flip.ts`), mapa, y miniaturas borrosas (`media.placeholders.generated.ts`, resueltas con `usePlaceholder` de `src/content/placeholders.ts`; en el catálogo `placeholder` es una clave `f1/paisaje`).
+  - `index.html` lo arma el plugin de `vite.config.ts`: title/description/Open Graph desde `site.config.ts → seo` (`src/config/seo.ts`), precarga de fuentes y el loader de la intro ya en el HTML (`src/config/loaderEstatico.ts`, con un script que precarga el póster en `/` y la portada + chunk en `/carta/:slug`). React renderiza después del primer pintado. JSON-LD `Restaurant` en runtime (`src/app/Seo.tsx`) con datos del repositorio.
+  - Primera carga liviana: paneles del modo abierto montados de a uno en reposo (el activo al toque), inactivos con `content-visibility: hidden`; la carta se monta al terminar la intro; `StageMedia` pide primero el panel actual y sus vecinos; la intro no espera al video (`preload="none"`); `frameController` cachea medidas. Helper `cuandoEsteLibre` (`src/app/libre.ts`).
+  - Anuncio `aria-live` del panel en `Stage` (modo cerrado y abierto). Token `text-micro`.
+  - Despliegue: `vercel.json`, `public/_redirects` (Netlify/Cloudflare), `public/robots.txt`; nginx/Apache en el README. README con "Cómo adaptar a un cliente" y "Pendientes antes de vender".
 
 - **Stack:** Vite 8 + React 19 + TS 6 strict + Tailwind v4 + ESLint 10 + GSAP 3.15 (`@gsap/react`) + `lenis` 1.3 + `leaflet` 1.9 + `lucide-react`. Alias `@/`.
 - **Rutas** (`src/app/router.ts`, router propio con `popstate`): `/` escenario · `/carta` escenario + overlay de la carta (mismo `<Stage>`, no se desmonta) · `/carta/:slug` página de categoría · solo en dev: `/dev` (primitivas, navbar, MENU, reduced motion), `/dev/datos` (datos + editorial + medios), `/dev/tokens` (muestras).
@@ -58,6 +66,22 @@ Repo remoto: https://github.com/Baruc99rr2/frontend-restaurant (público).
   - Planes sin esperas fijas: `__waitUntil` / `__frames` / `__sleep` (los inyecta `qa-browser.mjs`) y, en dev, `window.__qa` (`src/motion/qa.ts`): `reloj(escala)` enlentece GSAP para muestras a mitad de animación, `estable()` espera el escenario quieto (también carta y barrido), `reposo()` además sin animaciones (capturas), `cartaEstable()` carta y barrido quietos sin mirar el escenario (página de categoría). Planes nuevos: no usar `{ "wait": N }` para esperar estados.
   - Pasos del plan: además de los anteriores, teclas ←/→/Inicio/Fin y `"shift": true`, `{ "atras": true }` / `{ "adelante": true }` (botones del navegador) y `{ "click": { "selector": "…" } }`; en viewport mobile el `click` es un toque.
   - No editar archivos del proyecto mientras corre la regresión: Tailwind vigila todo el repo y Vite recarga la página a mitad del plan.
+
+## Verificación F11
+
+- `pnpm build` ✅ sin avisos (sin el de 500 kB ni el del cargador nativo de Vite) · `pnpm lint` ✅ · `pnpm check:content` ✅.
+- `pnpm qa:regresion` ✅ **24/24 planes, 312 chequeos, sin errores de consola** (F3–F10 + `f10-3-historial`, `f10-4-revision`, `f11-1-pulido`).
+- Lighthouse móvil (simulado, Moto G Power / Slow 4G, `pnpm preview` local, mejor de 2 corridas):
+
+  | Página | Performance | Accesibilidad | Buenas prácticas | SEO |
+  |---|---|---|---|---|
+  | `/` (inicio, intro) | **92** (antes 49) | **100** | 100 | 100 |
+  | `/carta/fuegos` | **88** | **100** (antes 96) | 100 | 100 |
+  | `/carta` (entrada directa) | 75 | 100 | 100 | 100 |
+  | `/#eventos` (entrada por hash) | 70 | 100 | 100 | 100 |
+
+  Inicio: FCP 2,0 s · LCP 2,9 s · TBT 100 ms · CLS 0. Las entradas directas a `/carta` y por hash montan su panel con todo el escenario en el primer render (TBT 490–650 ms): ver pendientes.
+- Pasada en 375 / 768 / 1280 / 1920 (cerrado, HOME, EVENTOS, CONTACTO, carta, categoría): sin desborde horizontal.
 
 ## Verificación F10
 
@@ -143,10 +167,13 @@ Repo remoto: https://github.com/Baruc99rr2/frontend-restaurant (público).
 
 ## Pendientes / para la próxima sesión
 
-- **Sub-fases restantes:** F11, F12.
-- **Producción:** el hosting tiene que servir `index.html` para `/carta` y `/carta/:slug` (fallback de SPA); en dev lo hace Vite. Va con F11.
+- **Sub-fase restante:** F12 (conexión al backend). Antes de vender: ver "Pendientes antes de vender" en el README.
+- **Rendimiento de entradas directas:** `/carta` (75) y `/#eventos` (70) en Lighthouse móvil: el primer render monta el escenario + el panel o la carta de una. Opciones: partir el escenario en un chunk propio y dividir el montaje del panel inicial.
+- Lighthouse medido en local (`pnpm preview`, HTTP/1.1 sin compresión Brotli); en el hosting real hay que volver a medir.
+- **Polaroid:** el atrás del navegador sale de la categoría en vez de cerrar la foto (decisión de producto: ¿la foto tiene URL?).
+- Tamaños tipográficos sueltos en CONTACTO (`text-[0.6875rem]`, …): pasar a la escala.
+- **SEO:** sin `sitemap.xml` (las categorías salen del backend: generarlo en F12).
 - **Menú del día:** si el backend manda más de un plato del día, hoy se muestra el primero disponible.
-- **Bundle:** el chunk principal pasó de 503 kB a ~565 kB con F10 (`lenis` + `Flip` de GSAP) y `vite build` avisa (> 500 kB). Lo grueso son los placeholders de `media.generated.ts` y GSAP; dividir en F11 (rendimiento).
 - Probar en un teléfono real el carrusel con snap, el flip 3D de los cartelitos y la polaroid (en QA el toque está emulado).
 - **Licencias:** confirmar si fotos y video son de licencia libre → recién ahí versionar `public/media/`. Ojo: el video (HOME, ahora a pantalla completa) muestra el cartel de otro negocio ("Historia Meze & Grill"), `restaurant5` el nombre "Gustav", `food2` una botella de Guinness.
 - **Medios en baja resolución:** fuentes de 495–1280 px y video 852×480; a pantalla completa se notan.

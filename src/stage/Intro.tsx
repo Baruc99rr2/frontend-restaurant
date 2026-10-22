@@ -11,7 +11,8 @@ import { useStage } from '@/stage/StageProvider'
 /**
  * Intro (§5, refs 12–14):
  * 1. Fondo negro y loader: monograma con anillo de progreso dorado. Espera el póster
- *    (o la foto del panel de entrada), las fuentes y el primer frame del video (tope 3,5 s).
+ *    (o la foto del panel de entrada) y las fuentes (tope 3,5 s). El video no se espera:
+ *    el póster es su primer cuadro y el video arranca encima cuando puede (F11, rendimiento).
  * 2. El marco aparece a escala 0.25 en el centro y crece hasta la forma cerrada
  *    (media con zoom 1.15 → 1).
  * 3. Entran título, etiquetas, wordmark y MENU (`onTextsIn`).
@@ -22,7 +23,6 @@ type Props = {
   frame: FrameController
   frameWrapRef: React.RefObject<HTMLDivElement | null>
   layerRefs: React.RefObject<(HTMLDivElement | null)[]>
-  videoRef: React.RefObject<HTMLVideoElement | null>
   chromeRef: React.RefObject<HTMLDivElement | null>
   initialIndex: number
   /** Entrada directa en modo abierto (la URL trae hash). */
@@ -52,17 +52,6 @@ function esperarFuentes(): Promise<void> {
   )
 }
 
-/** Primer frame del video disponible (con `preload="metadata"` alcanza `loadeddata`). */
-function esperarVideo(video: HTMLVideoElement | null): Promise<void> {
-  return new Promise((resolve) => {
-    if (!video || video.readyState >= 2) return resolve()
-    const done = () => resolve()
-    video.addEventListener('loadeddata', done, { once: true })
-    video.addEventListener('canplay', done, { once: true })
-    video.addEventListener('error', done, { once: true })
-  })
-}
-
 function esperarImagenDeCapa(layer: HTMLDivElement | null | undefined): Promise<void> {
   const img = layer?.querySelector('img')
   if (!img) return Promise.resolve()
@@ -77,7 +66,6 @@ export function Intro({
   frame,
   frameWrapRef,
   layerRefs,
-  videoRef,
   chromeRef,
   initialIndex,
   openOnEnter,
@@ -118,7 +106,6 @@ export function Intro({
     const tareas: Promise<void>[] = [
       esperarFuentes(),
       esHome ? precargarImagen(videoInfo?.poster) : esperarImagenDeCapa(layer),
-      esHome ? esperarVideo(videoRef.current) : Promise.resolve(),
     ]
     let hechas = 0
     for (const tarea of tareas) {
